@@ -26,7 +26,7 @@ sed -i -e 's/^PermitRootLogin *yes/PermitRootLogin without-password/' /etc/ssh/s
 # can set a root password here reasonably safely
 
 # If you've not managed to install an authorized_keys file by this point
-# and if there root's password is locked (i.e. set to "!") then get rid of the root
+# and if root's password is locked (i.e. set to "!") then get rid of the root
 # password so that you can log in at the console with no password
 # This isn't the security risk it might seem, since we should have set sshd_config
 # to have PermitRootLogin without-password by this point, so the login won't be allowed remotely
