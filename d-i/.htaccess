@@ -1,0 +1,3 @@
+<FilesMatch "\.cfg$">
+ForceType text/plain
+</FilesMatch>
