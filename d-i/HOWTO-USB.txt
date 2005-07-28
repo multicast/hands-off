@@ -1,37 +1,56 @@
-As recommended in http://d-i.alioth.debian.org/manual/en.i386/ch04s02.html grab a copy of the boot.img.gz:
+As recommended in
+
+  http://d-i.alioth.debian.org/manual/en.i386/ch04s02.html
+
+grab a copy of the boot.img.gz:
 
   http://http.us.debian.org/debian/dists/sarge/main/installer-i386/current/images/hd-media/boot.img.gz
 
-put it on the stick (i.e.  zcat boot.img.gz > /dev/sda)
+put it on the stick (i.e. zcat boot.img.gz > /dev/sda)
 
-Mount it  (i.e. mount /dev/sda /mnt)
+Mount it (i.e. mount /dev/sda /mnt),
 
 grab a copy of the netinst .iso from here:
 
-  http://cdimage.debian.org/pub/cdimage-testing/sarge_d-i/i386/rc3/sarge-i386-netinst.iso
+  http://cdimage.debian.org/debian-cd/3.1_r0a/i386/iso-cd/debian-31r0a-i386-netinst.iso
 
-and copy it to /mnt (or wherever the stick is mounted)
+and copy it to /mnt (or wherever the stick is mounted).
 
-also copy this file to the stick:  http://hands.com/d-i/preseed.cfg
+Also copy these files to the stick: 
+
+  http://hands.com/d-i/preseed.cfg
+  http://hands.com/d-i/site-files/hands/type-files/default/base_exclude
 
 and add a section like this to the syslinux.cfg on the stick:
 
    label auto
         kernel linux26
-        append vga=normal initrd=initrd26.gz ramdisk_size=10414 root=/dev/rd/0 rw preseed/file=/hd-media/preseed.cfg languagechooser/language-name=English countrychooser/shortlist=GB console-keymaps-at/keymap=uk  --
+        append initrd=initrd26.gz ramdisk_size=10414 root=/dev/rd/0 rw preseed/file=/hd-media/preseed.cfg languagechooser/language-name=English countrychooser/shortlist=GB console-keymaps-at/keymap=uk  --
 
 And maybe one like:
 
    label debug
         kernel linux26
-        append vga=normal initrd=initrd26.gz ramdisk_size=10414 root=/dev/rd/0 rw preseed/file=/hd-media/preseed.cfg languagechooser/language-name=English countrychooser/shortlist=GB console-keymaps-at/keymap=uk -- preseed/override=debug.cfg
+        append initrd=initrd26.gz ramdisk_size=10414 root=/dev/rd/0 rw preseed/file=/hd-media/preseed.cfg languagechooser/language-name=English countrychooser/shortlist=GB console-keymaps-at/keymap=uk preseed/override=debug.cfg --
 
 
-Unmount the stick and your done.
+Unmount the stick and you're done.
 
-To install, boot from the stick, type auto at the boot prompt, go make a cup of tea, and come back to a newly installed machine.
+(If you find that you're running out of room on the kernel command
+ line for boot-time local/cfg= settings, you can make a tweaked
+ netinst ISO image (conatining a tweaked initrd.gz image) as mentioned
+ in the HOWTO-CD.txt, and use that for the language settings instead)
 
-Of course, at this point "All Your Base are belong to us!" unless you took the precaution of not using the bit that sticks my ssh ID in your root's authorised_keys
+To install, boot from the stick, type auto at the boot prompt, go make
+a cup of tea, and come back to a newly installed machine.
 
+Take note -- the default install sets your root password to nothing,
+so anyone who gets access to the console while you're away making your
+tea owns the machine.  Various other configurations either install a
+password, or install an ssh key, so don't just blindly use them unless
+you don't mind me owning your machine :-)
+
+You might also want to refer to http://hands.com/d-i/ for hints on
+what you should type at the boot prompt.
 
 Cheers, Phil.

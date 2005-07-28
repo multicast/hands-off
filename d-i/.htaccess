@@ -1,3 +1,4 @@
 <FilesMatch "\.cfg$">
 ForceType text/plain
 </FilesMatch>
+AddDescription " --> preseed.cfg" 1
