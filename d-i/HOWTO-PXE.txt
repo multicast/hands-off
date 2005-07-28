@@ -1,0 +1,79 @@
+First, you should look at:
+
+  http://www.debian.org/releases/stable/i386/install
+
+  Specifically:  4.6. Preparing Files for TFTP Net Booting
+ 
+N.B. if you have a machine that doesn't support PXE booting, you can
+kick it off from a floppy.  See: http://www.rom-o-matic.net/
+
+In short, you need to have set up:
+
+  dhcp
+  tftpd-hpa
+
+Then, get the PXE tarball:
+
+  cd /tmp
+  wget http://ftp.uk.debian.org/debian/dists/sarge/main/installer-i386/current//images/netboot/netboot.tar.gz
+
+untar it into /tftpboot (or wherever you've pointed your tftp server)
+
+  tar -C /tftpboot -xvzf netboot.tar.gz
+
+Now, for the lazy, just copy my initrd images, or make them yourself as described below:
+
+  wget http://hands.com/d-i/misc/pxe-auto-initrd-2.4.gz -O /tftpboot/debian-installer/i386/auto-ird.gz
+  wget http://hands.com/d-i/misc/pxe-auto-initrd-2.6.gz -O /tftpboot/debian-installer/i386/2.6/auto-ird.gz
+  wget http://hands.com/d-i/misc/pxelinux.cfg -O /tftpboot/debian-installer/i386/pxelinux.cfg/default
+
+Alternatively, to generate the initrd images yourself (as needed to
+change the preseed to default to your own preseed server etc.):
+
+Decompress the initrd.gz of interest:
+
+  zcat /tftpboot/debian-installer/i386/2.6/initrd.gz > /tmp/initrd-2.6
+
+and/or
+
+  zcat /tftpboot/debian-installer/i386/initrd.gz > /tmp/initrd-2.4
+
+Then loop mount the image:
+
+  mount -o loop /tmp/initrd-2.6 /mnt
+or
+  mount -o loop /tmp/initrd-2.4 /mnt
+
+and copy on the preseeding files:
+
+  wget http://hands.com/d-i/preseed.cfg -O /mnt/preseed.cfg
+  wget http://hands.com/d-i/misc/S35preseed -O /mnt/lib/debian-installer-startup.d/S35preseed
+  chmod +x /mnt/lib/debian-installer-startup.d/S35preseed
+
+(The S35preseed file is a backport from the post-sarge
+ debian-installer, that consults the preseed.cfg file if present).
+
+Then unmount and re-compress the image (repeat for the other one if
+you want support for both 2.4 & 2.6 kernels).
+
+  umount /mnt
+  gzip < initrd-2.6 > /tftpboot/debian-installer/i386/2.6/auto-ird.gz
+or
+  gzip < initrd-2.4 > /tftpboot/debian-installer/i386/auto-ird.gz
+
+Then edit the pxelinux.cfg file to allow preseed boots, by adding lines like:
+
+=-=-=-=-
+label auto
+        kernel debian-installer/i386/linux
+        append initrd=debian-installer/i386/auto-ird.gz ramdisk_size=9424 root=/dev/rd/0 devfs=mount,dall rw --
+label auto26
+        kernel debian-installer/i386/2.6/linux
+        append initrd=debian-installer/i386/2.6/auto-ird.gz ramdisk_size=10934 root=/dev/rd/0 devfs=mount,dall rw --
+=-=-=-=-
+
+into the file:  /tftpboot/debian-installer/i386/pxelinux.cfg/default
+
+You're now ready to try a PXE boot.  Give it a go, and read
+http://hands.com/d-i/ for hints on what to type at the boot prompt to
+kick things off.

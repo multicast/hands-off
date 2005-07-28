@@ -1,0 +1,41 @@
+#!/bin/sh
+#
+# Copyright (c) 2005 Hands.com Ltd
+# distributed under the terms of the GNU GPL version 2 or (at your option) any later version
+# see the file "COPYING" for details
+
+set -e
+
+log() {
+    logger -t early_script "$@"
+}
+
+DI_URL=$(debconf-get local/di-url)
+
+log "debug: Running script from ${DI_URL}"
+
+set -x
+
+# script to restart the install -- handy for testing
+{
+  echo "#!/bin/sh"
+  echo "dd if=/dev/zero of=/dev/discs/disc0/disc count=1 && sync && reboot"
+} > /usr/bin/zapme
+chmod +x /usr/bin/zapme
+
+# package to allow packages to be excluded from the base install
+BSW_VER=0.2
+wget ${DI_URL}/udebs/bootstrapwrap_${BSW_VER}_all.udeb -O /tmp/bootstrapwrap_${BSW_VER}_all.udeb &&
+  udpkg -i /tmp/bootstrapwrap_${BSW_VER}_all.udeb &&
+  rm /tmp/bootstrapwrap_${BSW_VER}_all.udeb
+# get the base_in/exclude stuff in place for bootstrapwrap
+for f in base_include base_exclude ; do
+  if [ -f /hd-media/$f ] ; then
+    cp /hd-media/$f /
+  else
+    SITE_TYPE_URL="${DI_URL}/dsd/$f"
+    wget ${SITE_TYPE_URL} -O /$f || log "warning: ${SITE_TYPE_URL} not found"
+  fi
+done
+
+log "debug: ends successfully"

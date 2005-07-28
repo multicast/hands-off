@@ -1,0 +1,7 @@
+kernel = "/boot/xen-linux-2.6.11-xenu"
+memory = 64
+name = "DebianDomain1"
+disk = [ 'phy:vg/vm1hda,hda,w' ]
+dhcp="dhcp"
+root = "/dev/hda1 ro"
+extra = "4"

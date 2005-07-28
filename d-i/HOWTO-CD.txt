@@ -1,0 +1,149 @@
+From standard Debian boot media:
+================================
+
+If using standard install images, then you can point at the preseed
+scripts, either on your local copy, or the main site (for reasons of
+paranoia, you should really copy the scripts to a local server,
+convince yourself that they're not doing anything naughty, and then
+point at your local server, but if you cannot be bothered, feel free
+to just point at the main site.
+
+So, at the boot prompt type something like:
+
+boot:  linux preseed/url=http://hands.com/d-i/1
+
+"1" is just a symlink to preseed.cfg, to save typing and characters on
+the kernel command-line
+
+PROBLEMS:
+
+  The trouble with doing this is that the preseed files are only
+  grabbed after the network is up, so you will still get asked for the
+  machine name.
+
+  Also, we'll get the language prompts, and prompts such as selecting
+  the network interface to use if multiple NICs are present.
+
+Using a customised image:
+=========================
+
+1) Building your own:
+
+loop mount the image you want to base your custom one on:
+
+  mount -o loop,ro debian-31r0a-i386-netinst.iso /mnt
+
+create a working directory, and copy the contents there, and make the
+copy writable:
+
+  
+  mkdir d-i-CD
+  cp -a /mnt d-i-CD/new
+  chmod -R +w d-i-CD/new
+
+Next we need to produce tweaked versions of the initrd files, with the
+relevant preseed files included.  (Note, it is possible to achieve the
+same effect by specifying a few parameters on the command line, but
+this consumes to many kernel parameters, and so removes the
+flexibility of being able to specify the local/cfg= parameter with any
+certainty).
+
+Tweaking initrd
+===============
+
+Decompress the initrd.gz of interest:
+
+  zcat new/install/2.6/initrd.gz > /tmp/initrd-2.6
+
+and/or
+
+  zcat new/install/initrd.gz > /tmp/initrd-2.4
+
+Then loop mount the image:
+
+  mount -o loop /tmp/initrd-2.6 /mnt
+or
+  mount -o loop /tmp/initrd-2.4 /mnt
+
+and copy on the preseeding files:
+
+  wget http://hands.com/d-i/preseed.cfg -O /mnt/preseed.cfg
+  wget http://hands.com/d-i/misc/S35preseed -O /mnt/lib/debian-installer-startup.d/S35preseed
+  chmod +x /mnt/lib/debian-installer-startup.d/S35preseed
+
+(The S35preseed file is a backport from the post-sarge
+ debian-installer, that consults the preseed.cfg file if present)
+
+Edit the preseed file, if you need to.  If you're not in the UK,
+you'll want to edit the language & keyboard settings, and you should
+really consider pointing the preseed/url at a local server so that you
+can audit the files and be sure that I don't subsequently change
+them. (Paranoia is your friend).
+
+Then unmount and re-compress the image (repeat for the other one if
+you want support for both 2.4 & 2.6 kernels)
+
+  umount /mnt
+  gzip < initrd-2.6 > new/install/2.6/autord.gz
+or
+  gzip < initrd-2.4 > new/install/autord.gz
+
+edit new/isolinux/isolinux.cfg, adding a couple of targets:
+
+=-=-=-=-
+LABEL auto
+  kernel /install/vmlinuz
+  append vga=normal initrd=/install/autord.gz ramdisk_size=10240 root=/dev/rd/0 devfs=mount,dall rw --
+LABEL auto26
+  kernel /install/2.6/vmlinuz
+  append vga=normal initrd=/install/2.6/autord.gz ramdisk_size=10240 root=/dev/rd/0 devfs=mount,dall rw --
+=-=-=-=-
+
+Also edit new/isolinux/isolinux.txt, adding something above the boot
+prompt so it's clear that you've tweaked the image. I use this, please
+come up with your own:
+
+=-=-=-=-
+splash.rle
+
+Phil Hands' preseed tweaked netinst --- see http://hands.com/d-i/ for details
+type "auto" (or "auto26" for 2.6 kernel) for an automatic install
+
+Press F1-control ...
+=-=-=-=-
+
+Note, that that file contains control characters, and ends without a
+newline, so you'll need to edit it with something that will leave that
+intact (I use emacs).
+
+Now make the new iso image:
+
+  cd ..
+  mkisofs -o new.iso -r -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table new
+  
+and burn it with something like this:
+
+  cdrecord -v speed=16 dev=/dev/cdroms/cdrom0 -eject driveropts=burnproof new.iso
+
+(Obviously, with the inclusion of the two new autord.gz files, this is
+ a bit bigger than the original -- you could keep down to the old size
+ by removing the initrd.gz files, at the cost of losing the ability to
+ also use the CD as a normal debian-installer boot disk)
+
+If you're feeling incredibly lazy (and trusting), here's one I made earlier:
+
+  http://hands.com/d-i/misc/debian-31r0a-i386-netinst-hands-preseed.iso
+
+Once you've got a CD, boot from it, and read http://hands.com/d-i/ for
+hints on what to type at the boot prompt to kick things off.
+
+Have Fun!
+
+
+TODO:
+
+  Make a CD with all the preseed files, all the associated scripts,
+  and all the packages that get downloaded, so that you can preseed a
+  machine with no NIC -- if anyone does this, please tell me about it.
+
+Cheers, Phil.

@@ -1,0 +1,128 @@
+<title>"Hands-off" Debian Installation</title>
+<h1>"Hands-off" Debian Installation</h1>
+
+<h2>!!Restructuring in progress!!</h2>
+<p>The old setup should still work, but there is now a new set of files
+as well, under the dsd directory.  This is based around the idea of classes
+rather than a site and type hierarchy (which was complicated, and didn't
+reflect the problem very well).  The initrd preseed file in the new setup is called dashslashdash.cfg, it loads dsd.cfg which then descends into the dsd directory.
+
+<p>The idea is that this will become part of the official Debian media
+in which case if you don't specify anything weird on the command line,
+all will appear normal, but if you add a -/- option it will be interpreted
+as a class list, and will kick off an auto install.  For example:
+
+<pre>
+  boot: linux26 -/-=kde341;site-hands -/url=http://intra.hands.com/d-i/
+</pre>
+would set both the <tt>kde341</tt> and the <tt>site-hands</tt> classes, and would download the
+rest of the configuration settings from the specified server. If either the -/- or the -/url settings are set, the auto install is triggered.  If you just want a default minimal install that can be achieved with:
+<pre>
+  boot: linux26 -/-=;
+</pre> 
+
+<hr>
+<h2>(old readme)...</h2>
+
+<p>This is a debian-installer preseed setup that is intended to allow
+booting from any medium (PXE CD and USB-stick currently working) and
+then detects where the install is being run, and changes its default
+actions in response.
+
+<p>At present, this only does something interesting if you happen to
+be at one of my client sites, but I'm happy to add other people's
+favourite configurations to the system as it is, or you can grab a
+copy and add your own sites on a server of your own -- either way, I'd
+appreciate feedback on some standard default machine types that people
+would like, so that you might be able to, for example, type this at
+the boot prompt:
+
+<pre>
+  boot: auto26 local/cfg=kdedesktop
+</pre>
+
+and come back to a machine running a fairly standard desktop setup.
+
+<p>The setups that appear at first will be fairly specific to clients
+of mine that need to roll out machines for specific purposes, so at
+present we have "dnsserver" and "snortsensor", but I'm willing to set
+up access to the site specific subdirectories such that other people
+using this can edit their setups and thus provide the world with more
+real-world examples.  Get in touch with <a
+href="mailto:&#112;&#104;&#105;&#108;&#064;&#104;&#097;&#110;&#100;&#115;&#046;&#099;&#111;&#109;">Philip
+Hands</a> if you want to get involved.
+
+<p>As it stands, if you boot this on some random site, typing auto or
+auto26 at the boot prompt, you'll install the default machine setup,
+for the default site, which results in a minimal Debian install (with
+exim and at excluded, so you can decide what MTA you like without
+having to download exim, or answer questions about your preferred exim
+setup).
+
+<p>If it all works correctly, you'll end up with a system that has no
+root password --- of course, for my sites, I install ssh keys, and for
+some of my clients, I install predetermined passwords, but I don't
+suppose you want me to be able to log into your systems, so setting no
+password so you can set one yourself seemed like a fair choice.
+
+<p>Read the relevant HOWTO-*.txt to see how to set up boot media as
+you require.
+
+<p>If you care about security, or if you want to customise this
+without reference to me, you should be able to copy the contents of
+this directory to a local server, and either tweak the preseed.cfg
+file used to point at your server rather than mine, or specify the
+server to use as the third field in the local/cfg kernel command-line
+parameter (see below).
+
+
+<h2>local/cfg</h2>
+
+local/cfg is used for local boot time tweaking in this setup, and is
+treated as a semi-colon separated parameter list.  specifying it on
+the command line causes it to be defined as a debconf variable, so
+that it can subsequently be used in the commands in preseed scripts.
+
+If it's defined then it's treated as being a semi-colon separated
+list, and the values are used to set local/type, local/site &
+local/di-url respectively.  If it's not defined then the values of
+these variables are determined automatically, and for most people will
+end up being "default", "default", "http://hands.com/d-i/"
+respectively.
+
+So, the format is:
+
+<pre>
+  local/cfg=type;site;url
+</pre>
+
+and blank fields are treated as though they were not set, so you don't
+have to type "default" into the first in order to set the rest, just
+start with a semi-colon instead.  Also, if you only want to set the
+first field, don't include any semi-colons, and the rest will act on
+defaults.
+
+
+<h3>boot prompt examples:</h3>
+
+<p>Specify an alternate source for the rest of the configuration (which
+you'll need to have mirrored to make this work)
+<pre>
+  boot: auto local/cfg=;;http://intranet.example.com/d-i
+</pre>
+
+<p>Install a Xen based setup (very basic at present):
+<pre>
+  boot: auto26 local/cfg=xen0
+</pre>
+
+Force the install to act as though it was happening on my home network
+(not very useful for anyone else, until more sites get added, but here
+to show the technique):
+<pre>
+  boot: auto26 local/cfg=;hands
+</pre>
+
+<p>Have Fun!
+
+<p>Cheers, Phil.
