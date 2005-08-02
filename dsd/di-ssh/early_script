@@ -5,6 +5,7 @@ in_local_class() {
 }
 
 # tell anna to install an extra udeb
+echo network-console >> /var/cache/anna/udeb_include
 echo openssh-server-udeb >> /var/cache/anna/udeb_include
 
 if in_local_class "sleeps" ; then
