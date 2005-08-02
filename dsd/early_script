@@ -49,8 +49,12 @@ done
 for class in $(local_classes); do
   CLASS_EARLY_URL="${DI_URL}/dsd/${class}/early_script"
   wget ${CLASS_EARLY_URL}  -O /tmp/early_script-${class} || \
-     log "warning: ${CLASS_EARLY_URL} not found"
-  sh /tmp/early_script-${class} > /var/log/early_script-${class}.out 2>&1
+    log "warning: ${CLASS_EARLY_URL} not found"
+
+  if [ -e /tmp/early_script-${class} ] ; then
+    chmod +x /tmp/early_script-${class}
+    /tmp/early_script-${class} > /var/log/early_script-${class}.out 2>&1
+  fi
 done
 
 log "debug: ends successfully"

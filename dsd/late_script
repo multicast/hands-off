@@ -55,7 +55,7 @@ for class in $(local_classes); do
 done
 
 ### this is for debugging --- kill the sleep to continue
-if in_local_class "sleep" ; then
+if in_local_class "sleeps" ; then
   sleep 10000 || true
 fi
 
