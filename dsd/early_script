@@ -40,14 +40,16 @@ for f in base_include base_exclude ; do
   if [ -f /hd-media/$f ] ; then
     cp /hd-media/$f /
   else
-    SITE_TYPE_URL="${DI_URL}/dsd/$f"
-    wget ${SITE_TYPE_URL} -O /$f || log "warning: ${SITE_TYPE_URL} not found"
+    INEXCLUDE_URL="${DI_URL}/dsd/$f"
+    wget ${INEXCLUDE_URL} -O /$f || log "warning: ${INEXCLUDE_URL} not found"
   fi
 done
 
 # chain onto class specific late_script(s) if any
 for class in $(local_classes); do
-  wget $(debconf-get local/di-url)/dsd/${class}/early_script  -O /tmp/early_script-${class}
+  CLASS_EARLY_URL="${DI_URL}/dsd/${class}/early_script"
+  wget ${CLASS_EARLY_URL}  -O /tmp/early_script-${class} || \
+     log "warning: ${CLASS_EARLY_URL} not found"
   sh /tmp/early_script-${class} > /var/log/early_script-${class}.out 2>&1
 done
 
