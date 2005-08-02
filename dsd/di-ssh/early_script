@@ -8,5 +8,5 @@ in_local_class() {
 echo openssh-server-udeb >> /var/cache/anna/udeb_include
 
 if in_local_class "sleeps" ; then
-    sleep 10000 ; true
+    sleep 10000 || true
 fi

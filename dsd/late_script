@@ -56,7 +56,7 @@ done
 
 ### this is for debugging --- kill the sleep to continue
 if in_local_class "sleep" ; then
-  set +e ; sleep 10000 ; true
+  sleep 10000 || true
 fi
 
 # chain onto class specific late_script(s) if any
