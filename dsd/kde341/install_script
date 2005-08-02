@@ -5,8 +5,6 @@
 # see the file "COPYING" for details
 
 debconf-get() { echo GET $1 | debconf-communicate | cut -d ' ' -f 2 ; }
-debconf-fset() { echo FSET $@ | debconf-communicate ; }
-debconf-set() { echo SET $@ | debconf-communicate ; }
 
 # the value of the server URL is passed in as parameter #1
 DI_URL=$(debconf-get local/di-url)
@@ -74,6 +72,6 @@ apt-get -y install wdm
 
 /etc/init.d/wdm restart
 
-log 'debug: xen0-install_script exiting successfully'
+log 'debug: kde341/install_script exiting successfully'
 
 exit 0

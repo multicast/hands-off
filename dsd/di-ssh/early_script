@@ -1,0 +1,4 @@
+#!/bin/sh
+
+# tell anna to install an extra udeb
+echo openssh-server-udeb >> /var/cache/anna/udeb_include
