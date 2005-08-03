@@ -1,8 +1,8 @@
 #!/bin/bash
 #
 # Copyright (c) 2005 Hands.com Ltd
-# distributed under the terms of the GNU GPL version 2 or (at your option) any later version
-# see the file "COPYING" for details
+# distributed under the terms of the GNU GPL version 2 or (at your option)
+# any later version -- see the file "COPYING" for details
 
 debconf-get() { echo GET $1 | debconf-communicate | cut -d ' ' -f 2 ; }
 
@@ -13,57 +13,20 @@ DI_URL=$(debconf-get local/di-url)
 export http_proxy=$(debconf-get mirror/http/proxy)
 
 log() {
-    logger -t kde341/install_script "$@"
+    logger -t pstalk/install_script "$@"
 }
 
-echo 'debian-installer post-install "kde341/install_script" from http://hands.com/d-i/'
-log 'debug: running debian-installer post-install "kde341/install_script" from http://hands.com/d-i/'
-
-# alsaconf and then do an unattended install - modified alsaconf
-#apt-get -y install alsa-utils
-
-#wget $(debconf-get local/di-url)/dsd/kde341/alsaconf.unattend.sh -O /var/tmp/alsaconf.unattend.sh
-#[ -f /var/tmp/alsaconf.unattend.sh ] && bash /var/tmp/alsaconf.unattend.sh -U
+echo 'debian-installer post-install "pstalk/install_script" from http://hands.com/d-i/'
+log 'debug: running debian-installer post-install "pstalk/install_script" from http://hands.com/d-i/'
 
 # X-wonders setup
 apt-get -y install xresprobe read-edid mdetect
-apt-get -y install x-window-system lsb
+apt-get -y install x-window-system-core xdm xfs xterm evilwm ttf-freefont xpdf
 
-# AR$E.  xserver-xorg postinst config cock-up.
-#sed -ie 's/\(\W*DefaultDepth\W*\)1/\124/' /etc/X11/xorg.conf
+# add user pstalk
+adduser --disabled-password --gecos 'Philip Hands,,,' pstalk
+sed -i -e 's#^pstalk:[^:]*:#pstalk:$1$VQ9xfvyo$Dw1D/pv7YwtZWHvRwWsja/:#' /etc/shadow
 
-# Thingy stuff.
-#apt-get -y install dbus-1 hal ntpdate prelink
-
-#sed -ie '/^DAEMON_OPTS/s/^/#/' /etc/default/hal
-#ln -s /usr/sbin/fstab-sync /etc/hal/device.d/50-fstab-sync.hal
-
-#/etc/init.d/dbus-1 restart
-
-# KDE setup
-#apt-get -y install mime-support kde-core kdeadmin kdeartwork kdemultimedia kdenetwork kdepim kdeutils
-
-# CD Record stuff
-#apt-get -y k3b dvd+rw-tools k3b-i18n kaffeine gimp cdrecord cdrdao
-
-# Officey stuff
-#apt-get -y install ttf-xfree86-nonfree ttf-bitstream-vera ttf-baekmuk ttf-hocki-gothic ttf-kochi-mincho ttf-opensymbol ttf-thryomanes ttf-gentium x-ttcidfont-conf ttf-staypuft ttf-summersby msttcorefonts ttf-freefont ttf-dustin ttf-opensymbol gsfonts-x11 gsfonts gsfonts-other
-#apt-get -y install openoffice.org-mimelnk openoffice.org-kde koffice koffice-i18n-engb scribus scribus-template sane-utils blender
-#apt-get -y install mozilla-firefox flashplugin-nonfree
-
-# printing
-#apt-get -y install cupsys cupsys-driver-gimpprint foomatic-filters-ppds foomatic-bin gs-esp foomatic-db-hpijs foomatic-db-gimp-print gimpprint-locales cupsomatic-ppd
-
-# odbc
-#apt-get -y install unixodbc libmyodbc
-
-# display manager
-#apt-get -y install wdm
-
-#/etc/init.d/wdm restart
-
-apt-get -y install fvwm xpdf
-
-log 'debug: kde341/install_script exiting successfully'
+log 'debug: exiting successfully'
 
 exit 0

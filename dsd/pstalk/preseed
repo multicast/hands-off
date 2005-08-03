@@ -24,7 +24,8 @@ libmyodbc	libmyodbc/addtoodbc	boolean true
 exim4-config	exim4/dc_eximconfig_configtype	select	local delivery only; not on a network
 
 # Select the desired default display manager.
-wdm	shared/default-x-display-manager	select	wdm
+xdm     shared/default-x-display-manager        select  xdm
+
 
 # setting password
 passwd	passwd/root-password		password debian
