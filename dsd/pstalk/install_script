@@ -27,6 +27,13 @@ apt-get -y install x-window-system-core xdm xfs xterm evilwm ttf-freefont xpdf
 adduser --disabled-password --gecos 'Philip Hands,,,' pstalk
 sed -i -e 's#^pstalk:[^:]*:#pstalk:$1$VQ9xfvyo$Dw1D/pv7YwtZWHvRwWsja/:#' /etc/shadow
 
+cat > /home/pstalk/.bash_history <<!EOF!
+xpdf -fullscreen preseeding.pdf
+!EOF!
+chown pstalk. /home/pstalk/.bash_history
+
+wget $(debconf-get local/di-url)/dsd/pstalk/preseeding.pdf -O /home/pstalk/preseeding.pdf
+
 log 'debug: exiting successfully'
 
 exit 0

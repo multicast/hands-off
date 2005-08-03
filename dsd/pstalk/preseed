@@ -33,3 +33,39 @@ passwd	passwd/root-password		password debian
 # Do you want the cdrecord binaries to be installed SUID root?
 cdrecord	cdrecord/SUID_bit	boolean	true
 
+# random X settings, for IBM thinkpad -- shouldn't be here really
+xserver-xfree86	xserver-xfree86/config/device/identifier	string	Generic Video Card
+xserver-xfree86	xserver-xfree86/config/monitor/screen-size	select	17 inches (430 mm)
+xserver-xfree86	xserver-xfree86/config/device/use_fbdev	boolean	
+xserver-xfree86	xserver-xfree86/config/monitor/selection-method	select	Medium
+xserver-xfree86	shared/default-x-server	select	xserver-xfree86
+xserver-xfree86	xserver-xfree86/config/inputdevice/mouse/emulate3buttons	boolean	false
+xserver-xfree86	xserver-xfree86/config/device/bus_id	string	
+xserver-xfree86	xserver-xfree86/config/inputdevice/keyboard/layout	string	uk
+xserver-xfree86	xserver-xfree86/config/monitor/horiz-sync	string	30-65
+xserver-xfree86	xserver-xfree86/config/monitor/identifier	string	Generic Monitor
+xserver-xfree86	xserver-xfree86/autodetect_mouse	boolean	false
+xserver-xorg	xserver-xorg/config/display/default_depth	select	24
+xserver-xfree86	xserver-xfree86/config/device/video_ram	string	
+xserver-xfree86	xserver-xfree86/config/monitor/mode-list	select	1280x1024 @ 60Hz
+xserver-xfree86	xserver-xfree86/config/monitor/lcd	boolean	true
+xserver-xfree86	xserver-xfree86/config/inputdevice/keyboard/internal	string	
+xserver-xfree86	xserver-xfree86/config/inputdevice/keyboard/rules	string	xfree86
+xserver-xfree86	xserver-xfree86/config/inputdevice/keyboard/model	string	pc105
+xserver-xfree86	xserver-xfree86/config/write_dri_section	boolean	true
+xserver-xfree86	xserver-xfree86/config/device/driver	select	neomagic
+xserver-xfree86	xserver-xfree86/config/monitor/vert-refresh	string	50-75
+xserver-xfree86	xserver-xfree86/config/display/default_depth	select	24
+xserver-xfree86	xserver-xfree86/config/inputdevice/mouse/zaxismapping	boolean	false
+xserver-xfree86	xserver-xfree86/config/display/modes	multiselect	1024x768, 800x600, 640x480
+xserver-xfree86	xserver-xfree86/config/modules	multiselect	GLcore, bitmap, dbe, ddc, dri, extmod, freetype, glx, int10, record, speedo, type1, vbe, xtt
+xserver-xfree86	xserver-xfree86/config/inputdevice/keyboard/options	string	
+xserver-xfree86	xserver-xfree86/config/inputdevice/mouse/protocol	select	ImPS/2
+xserver-common	xserver-common/xwrapper/allowed_users	select	Console Users Only
+xserver-common	xserver-common/xwrapper/actual_allowed_users	string	console
+xserver-xfree86	xserver-xfree86/autodetect_video_card	boolean	false
+xserver-xfree86	xserver-xfree86/config/inputdevice/keyboard/variant	string	
+xserver-xfree86	xserver-xfree86/config/inputdevice/mouse/port	select	/dev/input/mice
+xserver-xfree86	xserver-xfree86/config/write_files_section	boolean	true
+xserver-xfree86	xserver-xfree86/autodetect_monitor	boolean	false
+xserver-common	xserver-common/xwrapper/nice_value	string	0
