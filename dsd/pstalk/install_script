@@ -32,6 +32,12 @@ xpdf -fullscreen preseeding.pdf
 !EOF!
 chown pstalk. /home/pstalk/.bash_history
 
+cat > /home/pstalk/.xsession <<!EOF!
+#!/bin/sh
+xpdf -fullscreen preseeding.pdf &
+exec evilwm
+!EOF!
+
 wget $(debconf-get local/di-url)/dsd/pstalk/preseeding.pdf -O /home/pstalk/preseeding.pdf
 
 log 'debug: exiting successfully'
