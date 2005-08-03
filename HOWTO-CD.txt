@@ -10,10 +10,7 @@ to just point at the main site.
 
 So, at the boot prompt type something like:
 
-boot:  linux preseed/url=http://hands.com/d-i/1
-
-"1" is just a symlink to preseed.cfg, to save typing and characters on
-the kernel command-line
+boot:  linux preseed/url=http://hands.com/d-i/dashslashdash.cfg
 
 PROBLEMS:
 
@@ -41,11 +38,15 @@ copy writable:
   cp -a /mnt d-i-CD/new
   chmod -R +w d-i-CD/new
 
+and unmount the cd image:
+
+  umount /mnt
+
 Next we need to produce tweaked versions of the initrd files, with the
-relevant preseed files included.  (Note, it is possible to achieve the
+dashslashdash.udeb added (Note, it is possible to achieve the
 same effect by specifying a few parameters on the command line, but
 this consumes to many kernel parameters, and so removes the
-flexibility of being able to specify the local/cfg= parameter with any
+flexibility of being able to specify the -/-= parameter with any
 certainty).
 
 Tweaking initrd
@@ -53,11 +54,11 @@ Tweaking initrd
 
 Decompress the initrd.gz of interest:
 
-  zcat new/install/2.6/initrd.gz > /tmp/initrd-2.6
+  zcat d-i-CD/new/install/2.6/initrd.gz > /tmp/initrd-2.6
 
 and/or
 
-  zcat new/install/initrd.gz > /tmp/initrd-2.4
+  zcat d-i-CD/new/install/initrd.gz > /tmp/initrd-2.4
 
 Then loop mount the image:
 
@@ -65,41 +66,42 @@ Then loop mount the image:
 or
   mount -o loop /tmp/initrd-2.4 /mnt
 
-and copy on the preseeding files:
+and copy on the dashslashdash_0.1_all.udeb:
 
-  wget http://hands.com/d-i/preseed.cfg -O /mnt/preseed.cfg
-  wget http://hands.com/d-i/misc/S35preseed -O /mnt/lib/debian-installer-startup.d/S35preseed
-  chmod +x /mnt/lib/debian-installer-startup.d/S35preseed
+  wget -N http://hands.com/d-i/udebs/dashslashdash_0.1_all.udeb -O /mnt/tmp/dashslashdash_0.1_all.udeb
 
-(The S35preseed file is a backport from the post-sarge
- debian-installer, that consults the preseed.cfg file if present)
+then chroot into the initrd:
 
-Edit the preseed file, if you need to.  If you're not in the UK,
-you'll want to edit the language & keyboard settings, and you should
-really consider pointing the preseed/url at a local server so that you
-can audit the files and be sure that I don't subsequently change
+  chroot /mnt /bin/sh
+
+then install the udeb, and discard the udeb itself, and exit the chroot:
+
+  udpkg -i /tmp/dashslashdash_0.1_all.udeb
+  rm /tmp/dashslashdash_0.1_all.udeb
+  exit
+
+You might want to edit the /mnt/dashslashdash.cfg preseed file so that
+it deafults to your local server rather than http://hands.com, that way
+you can audit the files and be sure that I don't subsequently change
 them. (Paranoia is your friend).
 
 Then unmount and re-compress the image (repeat for the other one if
 you want support for both 2.4 & 2.6 kernels)
 
   umount /mnt
-  gzip < initrd-2.6 > new/install/2.6/autord.gz
+  gzip < /tmp/initrd-2.6 > d-i-CD/new/install/2.6/initrd.gz
 or
-  gzip < initrd-2.4 > new/install/autord.gz
+  gzip < /tmp/initrd-2.4 > d-i-CD/new/install/initrd.gz
 
-edit new/isolinux/isolinux.cfg, adding a couple of targets:
+To save typing, you can add targets to new/isolinux/isolinux.cfg:
 
 =-=-=-=-
-LABEL auto
+LABEL kde341
   kernel /install/vmlinuz
-  append vga=normal initrd=/install/autord.gz ramdisk_size=10240 root=/dev/rd/0 devfs=mount,dall rw --
-LABEL auto26
-  kernel /install/2.6/vmlinuz
-  append vga=normal initrd=/install/2.6/autord.gz ramdisk_size=10240 root=/dev/rd/0 devfs=mount,dall rw --
+  append vga=normal initrd=/install/initrd.gz ramdisk_size=10240 root=/dev/rd/0 devfs=mount,dall rw -/-=kde341;site-mysite --
 =-=-=-=-
 
-Also edit new/isolinux/isolinux.txt, adding something above the boot
+Also edit d-i-CD/new/isolinux/isolinux.txt, adding something above the boot
 prompt so it's clear that you've tweaked the image. I use this, please
 come up with your own:
 
@@ -107,7 +109,7 @@ come up with your own:
 splash.rle
 
 Phil Hands' preseed tweaked netinst --- see http://hands.com/d-i/ for details
-type "auto" (or "auto26" for 2.6 kernel) for an automatic install
+add -/-=<class>;... and/or -/url=http://... parameter for an automatic install
 
 Press F1-control ...
 =-=-=-=-
@@ -118,17 +120,11 @@ intact (I use emacs).
 
 Now make the new iso image:
 
-  cd ..
-  mkisofs -o new.iso -r -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table new
+  mkisofs -o d-i-CD/new.iso -r -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table d-i-CD/new
   
 and burn it with something like this:
 
-  cdrecord -v speed=16 dev=/dev/cdroms/cdrom0 -eject driveropts=burnproof new.iso
-
-(Obviously, with the inclusion of the two new autord.gz files, this is
- a bit bigger than the original -- you could keep down to the old size
- by removing the initrd.gz files, at the cost of losing the ability to
- also use the CD as a normal debian-installer boot disk)
+  cdrecord -v speed=16 dev=/dev/cdroms/cdrom0 -eject driveropts=burnproof d-i-CD/new.iso
 
 If you're feeling incredibly lazy (and trusting), here's one I made earlier:
 
