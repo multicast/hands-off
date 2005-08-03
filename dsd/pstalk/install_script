@@ -20,7 +20,7 @@ echo 'debian-installer post-install "pstalk/install_script" from http://hands.co
 log 'debug: running debian-installer post-install "pstalk/install_script" from http://hands.com/d-i/'
 
 # X-wonders setup
-apt-get -y install xresprobe read-edid mdetect
+#apt-get -y install xresprobe read-edid mdetect
 apt-get -y install x-window-system-core xdm xfs xterm evilwm ttf-freefont xpdf
 
 # add user pstalk
