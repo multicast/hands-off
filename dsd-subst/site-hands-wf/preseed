@@ -1,0 +1,8 @@
+# hands-am specific settings
+#
+# Copyright (c) 2005 Hands.com Ltd
+# distributed under the terms of the GNU GPL version 2 or (at your option) any later version
+# see the file "COPYING" for details
+
+#d-i	mirror/http/proxy	string http://gatekeeper:80/
+d-i	mirror/http/proxy	string http://sheikh:3128/
