@@ -1,0 +1,2 @@
+#
+d-i preseed/include_command     string ( IFS=';'; for cls in $(debconf-get local/classes); do [ "$cls" ] && preseed_fetch "${cls}/subclasses" /tmp/cls-$cls; done )

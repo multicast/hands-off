@@ -1,2 +1,1 @@
-# dsd/site-hands/subclasses
-d-i preseed/include_command     string debconf-set local/classes "uk;$(debconf-get local/classes)"
+uk
