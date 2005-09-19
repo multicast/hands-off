@@ -56,7 +56,7 @@ echo "export LESSOPEN=\"|lesspipe '%s'\"" >> /etc/bash.bashrc
 # Xen requirements
 apt-get -y install screen ssh debootstrap python python2.3-twisted iproute bridge-utils libcurl3-dev
 
-XEN_VER=2.0.6
+XEN_VER=2.0.7
 XEN_TGZ=xen-${XEN_VER}-install-x86_32.tgz
 cd /root
 #wget http://www.cl.cam.ac.uk/Research/SRG/netos/xen/downloads/${XEN_TGZ}
