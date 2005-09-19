@@ -12,4 +12,4 @@
 # which means that the highest priority classes should be specified first there
 # so that they end up last here (very biblical ;-)
 #
-d-i preseed/include_command     string ( set -x; echo $(debconf-get local/classes)|sed -e 's/;/\n/g'> /tmp/cls-; while true; do f=$(ls /tmp/cls-* 2>/dev/null|head -1); [ -z "$f" ] && break; while read cls; do allcls="$cls;$allcls"; preseed_fetch "$(dirname $last_location)/${cls}/subclasses" /tmp/cls-$cls; done < $f; rm $f; done; debconf-set local/classes $(echo $allcls|sed -e 's/^;//') ) > /var/log/class_setup.debug 2>&1
+d-i preseed/include_command     string ( set -x; echo $(debconf-get local/classes)|sed -e 's/;/\n/g'> /tmp/cls-; while true; do f=$(ls /tmp/cls-* 2>/dev/null|head -1); [ -z "$f" ] && break; while read cls; do allcls="$cls;$allcls"; preseed_fetch "$(dirname $last_location)/${cls}/subclasses" /tmp/cls-$cls; done < $f; rm $f; done; debconf-set local/classes $(echo $allcls|sed -e 's/;$//') ) > /var/log/class_setup.debug 2>&1
