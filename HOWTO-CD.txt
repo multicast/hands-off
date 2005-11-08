@@ -60,38 +60,20 @@ and/or
 
   zcat d-i-CD/new/install/initrd.gz > /tmp/initrd-2.4
 
-Then loop mount the image:
+*********************************************************
+*** Then follow the instructions in README-initrd.txt ***
+*********************************************************
 
-  mount -o loop /tmp/initrd-2.6 /mnt
-or
-  mount -o loop /tmp/initrd-2.4 /mnt
+Now you just compress the initrd you just unmounted:
 
-and copy on the dashslashdash_0.1_all.udeb:
-
-  wget -N http://hands.com/d-i/udebs/dashslashdash_0.1_all.udeb -O /mnt/tmp/dashslashdash_0.1_all.udeb
-
-then chroot into the initrd:
-
-  chroot /mnt /bin/sh
-
-then install the udeb, and discard the udeb itself, and exit the chroot:
-
-  udpkg -i /tmp/dashslashdash_0.1_all.udeb
-  rm /tmp/dashslashdash_0.1_all.udeb
-  exit
-
-You might want to edit the /mnt/dashslashdash.cfg preseed file so that
-it deafults to your local server rather than http://hands.com, that way
-you can audit the files and be sure that I don't subsequently change
-them. (Paranoia is your friend).
-
-Then unmount and re-compress the image (repeat for the other one if
-you want support for both 2.4 & 2.6 kernels)
-
-  umount /mnt
   gzip < /tmp/initrd-2.6 > d-i-CD/new/install/2.6/initrd.gz
 or
   gzip < /tmp/initrd-2.4 > d-i-CD/new/install/initrd.gz
+
+(repeat for the other initrd if you want support for both 2.4 & 2.6 kernels)
+
+--
+
 
 To save typing, you can add targets to new/isolinux/isolinux.cfg:
 

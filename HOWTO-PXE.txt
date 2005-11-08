@@ -28,7 +28,7 @@ Now, for the lazy, just copy my initrd images, or make them yourself as describe
   wget http://hands.com/d-i/misc/pxelinux.cfg -O /tftpboot/debian-installer/i386/pxelinux.cfg/default
 
 Alternatively, to generate the initrd images yourself (as needed to
-change the preseed to default to your own preseed server etc.):
+change the preseed to default to your own preseed server etc.)
 
 Decompress the initrd.gz of interest:
 
@@ -38,22 +38,11 @@ and/or
 
   zcat /tftpboot/debian-installer/i386/initrd.gz > /tmp/initrd-2.4
 
-Then loop mount the image:
+*********************************************************
+*** Then follow the instructions in README-initrd.txt ***
+*********************************************************
 
-  mount -o loop /tmp/initrd-2.6 /mnt
-or
-  mount -o loop /tmp/initrd-2.4 /mnt
-
-and copy on the preseeding files:
-
-  wget http://hands.com/d-i/preseed.cfg -O /mnt/preseed.cfg
-  wget http://hands.com/d-i/misc/S35preseed -O /mnt/lib/debian-installer-startup.d/S35preseed
-  chmod +x /mnt/lib/debian-installer-startup.d/S35preseed
-
-(The S35preseed file is a backport from the post-sarge
- debian-installer, that consults the preseed.cfg file if present).
-
-Then unmount and re-compress the image (repeat for the other one if
+When you're done, unmount and re-compress the image (repeat for the other one if
 you want support for both 2.4 & 2.6 kernels).
 
   umount /mnt

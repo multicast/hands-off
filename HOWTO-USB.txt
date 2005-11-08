@@ -11,7 +11,7 @@ put it on the stick (i.e. zcat boot.img.gz > /dev/sda)
 Mount it (i.e. mount /dev/sda /mnt),
 
 Read http://hands.com/d-i/HOWTO-CD.txt, and generate or grab an image.
-and copy  the resulting imnage to /mnt (or wherever the stick is mounted).
+and copy  the resulting image to /mnt (or wherever the stick is mounted).
 
 Unmount the stick and you're done.
 
