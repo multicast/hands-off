@@ -46,9 +46,9 @@ When you're done, unmount and re-compress the image (repeat for the other one if
 you want support for both 2.4 & 2.6 kernels).
 
   umount /mnt
-  gzip < initrd-2.6 > /tftpboot/debian-installer/i386/2.6/auto-ird.gz
+  gzip < /tmp/initrd-2.6 > /tftpboot/debian-installer/i386/2.6/auto-ird.gz
 or
-  gzip < initrd-2.4 > /tftpboot/debian-installer/i386/auto-ird.gz
+  gzip < /tmp/initrd-2.4 > /tftpboot/debian-installer/i386/auto-ird.gz
 
 Then edit the pxelinux.cfg file to allow preseed boots, by adding lines like:
 
