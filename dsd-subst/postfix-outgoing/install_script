@@ -65,8 +65,8 @@ apt-get -y install postfix
 # postfix and amavis configs
 get_file dsd-subst/postfix-outgoing/amavisd.conf /etc/amavis/amavisd.conf
 get_file dsd-subst/postfix-outgoing/files/master.cf /etc/postfix/master.cf
-get_file dsd-subst/postfix-outgoing/files/main.cf -O /etc/postfix/main.cf
-get_file dsd-subst/postfix-outgoing/files/aliases -O /etc/aliases
+get_file dsd-subst/postfix-outgoing/files/main.cf /etc/postfix/main.cf
+get_file dsd-subst/postfix-outgoing/files/aliases /etc/aliases
 
 # install webmin and allow access from thingy.  internal network.
 apt-get -y install webmin-postfix webmin-core webmin-spamassassin
