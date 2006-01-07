@@ -37,7 +37,7 @@ cat >> /etc/apt/sources.list <<'EOF'
 
 deb http://ftp.uk.debian.org/debian stable contrib non-free
 deb http://security.debian.org stable/updates contrib non-free
-deb http://ftp.uk.debian.org/debian unstable main contrib non-free
+deb http://volatile.debian.net/debian-volatile sarge/volatile main contrib non-free
 EOF
 apt-get update
 
