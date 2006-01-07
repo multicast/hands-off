@@ -4,9 +4,6 @@
 # distributed under the terms of the GNU GPL version 2 or (at your option) any later version
 # see the file "COPYING" for details
 
-# make fsck automatically fix problems at boot time.
-sed -i -e 's/^FSCKFIX=no/FSCKFIX=yes/' /etc/default/rcS
-
 debconf-get() { echo GET $1 | debconf-communicate | cut -d ' ' -f 2 ; }
 debconf-fset() { echo FSET $@ | debconf-communicate ; }
 debconf-set() { echo SET $@ | debconf-communicate ; }
@@ -32,7 +29,7 @@ log() {
 echo 'debian-installer post-install "install_script" from http://hands.com/d-i/'
 log 'debug: running debian-installer post-install "install_script" from http://hands.com/d-i/'
 
-# have to use unstable, because of thingy.  clamav.
+# have to use volatile, because of clamav.
 cat >> /etc/apt/sources.list <<'EOF'
 
 deb http://ftp.uk.debian.org/debian stable contrib non-free
@@ -40,8 +37,6 @@ deb http://security.debian.org stable/updates contrib non-free
 deb http://volatile.debian.net/debian-volatile sarge/volatile main contrib non-free
 EOF
 apt-get update
-
-yes | apt-get -y install libc6
 
 # install spamassassin, clamav and amavisd
 apt-get -y install clamav clamav-daemon clamav-freshclam \
@@ -56,17 +51,16 @@ usermod -G amavis clamav
 
 # okay.  now we pin the damn packages to "stable".
 # why we do this is because of damn clamav.
-get_file dsd-subst/postfix-outgoing/files/preferences /etc/apt/preferences
+#get_file dsd-subst/postfix-outgoing/files/preferences /etc/apt/preferences
 
 # install postfix 
 apt-get -y install postfix
 
-
 # postfix and amavis configs
 get_file dsd-subst/postfix-outgoing/amavisd.conf /etc/amavis/amavisd.conf
-get_file dsd-subst/postfix-outgoing/files/master.cf /etc/postfix/master.cf
-get_file dsd-subst/postfix-outgoing/files/main.cf /etc/postfix/main.cf
-get_file dsd-subst/postfix-outgoing/files/aliases /etc/aliases
+#get_file dsd-subst/postfix-outgoing/files/master.cf /etc/postfix/master.cf
+#get_file dsd-subst/postfix-outgoing/files/main.cf /etc/postfix/main.cf
+#get_file dsd-subst/postfix-outgoing/files/aliases /etc/aliases
 
 # install webmin and allow access from thingy.  internal network.
 apt-get -y install webmin-postfix webmin-core webmin-spamassassin

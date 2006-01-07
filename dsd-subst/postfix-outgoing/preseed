@@ -5,46 +5,47 @@
 # see the file "COPYING" for details
 
 # Please select your desired default color depth in bits.
-xserver-xorg	xserver-xorg/config/display/default_depth	select 24
+#xserver-xorg	xserver-xorg/config/display/default_depth	select 24
 
 # make sure default depth is seen already
-xserver-xorg	xserver-xorg/config/display/default_depth	seen true
+#xserver-xorg	xserver-xorg/config/display/default_depth	seen true
 
 # Emulate 3 button mouse?
-xserver-xfree86	xserver-xfree86/config/inputdevice/mouse/emulate3buttons	boolean	false
+#xserver-xfree86	xserver-xfree86/config/inputdevice/mouse/emulate3buttons	boolean	false
 
 # prelink openoffice binaries
-openoffice.org-bin	 openoffice.org-bin/prelink	 boolean true
+#openoffice.org-bin	 openoffice.org-bin/prelink	 boolean true
 
 # myodbc
-libmyodbc	libmyodbc/addtoodbc	boolean true
+#libmyodbc	libmyodbc/addtoodbc	boolean true
 
 # AR$E!
-exim4-config	exim4/dc_eximconfig_configtype	select	local delivery only; not on a network
+#exim4-config	exim4/dc_eximconfig_configtype	select	local delivery only; not on a network
 
 # Select the desired default display manager.
-wdm	shared/default-x-display-manager	select	wdm
+#wdm	shared/default-x-display-manager	select	wdm
 
 # setting password
 passwd	passwd/root-password-again	password debian
 passwd	passwd/root-password		password debian
 
 # Do you want the cdrecord binaries to be installed SUID root?
-cdrecord	cdrecord/SUID_bit	boolean	true
+#cdrecord	cdrecord/SUID_bit	boolean	true
 
-# postfix "incoming satellite" options
-postfix	postfix/db_upgrade_warning	boolean	true
-postfix	postfix/mailname	string	iyonder.net
-postfix	postfix/main_mailer_type	select	Satellite system
-postfix	postfix/relayhost	string	smtp.iyonder.net
-postfix	postfix/procmail	boolean	false
+####
+# Local address extension character?
+#postfix	postfix/recipient_delim	string	+
+# General type of configuration?
+postfix	postfix/main_mailer_type	select	Internet Site
+# Use procmail for local delivery?
+#postfix	postfix/procmail	boolean	false
+# Force synchronous updates on mail queue?
 postfix	postfix/chattr	boolean	false
-postfix	postfix/root_address	string	postmaster@iyonder.net
-postfix	postfix/rfc1035_violation	boolean	false
-postfix	postfix/mynetworks	string	127.0.0.0/8 10.0.0.0/8
-postfix	postfix/destinations	string	localhost.localdomain, localhost.localdomain, localhost
-postfix	postfix/nqmgr_upgrade_warning	boolean	
+# Other destinations to accept mail for? (blank for none)
+postfix	postfix/destinations	string	
+# Mailbox size limit
 postfix	postfix/mailbox_limit	string	0
+####
 
 # clamav-freshclam stuff
 clamav-freshclam	clamav-freshclam/autoupdate_freshclam	select	daemon
