@@ -49,7 +49,8 @@ mkdir ${target_parts_d}
 
 # get all the classes install_scripts
 for class in $(local_classes); do
-  target=${target_parts_d}/$(printf "%02d-%s" $((x++)) ${class})
+  : $((x++)) # increment x each time round the loop
+  target=${target_parts_d}/$(printf "%03d-%s" $x ${class})
   wget $(debconf-get local/di-url)/dsd-subst/${class}/install_script -O ${target}
   chmod +x ${target}
 done
