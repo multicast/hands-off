@@ -38,15 +38,15 @@ deb http://volatile.debian.net/debian-volatile sarge/volatile main contrib non-f
 EOF
 apt-get update
 
+# install postfix 
+DEBIAN_FRONTEND=noninteractive apt-get -y install postfix
+
 # install spamassassin, clamav and mailscanner
 apt-get -y install clamav clamav-daemon clamav-freshclam \
                    spamassassin libnet-dns-perl spamc mailscanner tnef
 
 # enable spamassassin
 sed -i -e 's/^ENABLED=0/ENABLED=1/' /etc/default/spamassassin
-
-# install postfix 
-DEBIAN_FRONTEND=noninteractive apt-get -y install postfix
 
 # reconfigure postfix to use mailscanner, see:
 # http://www.sng.ecs.soton.ac.uk/mailscanner/install/postfix.shtml
