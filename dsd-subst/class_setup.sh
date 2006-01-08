@@ -16,7 +16,7 @@ split_semi() {
 }
 
 join_semi() {
-  tr '\n' ';' | sed -e 's/;$//
+  tr '\n' ';' | sed -e 's/;$//'
 }
 
 subclasses() {
