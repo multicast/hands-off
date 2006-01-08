@@ -40,6 +40,6 @@ sieve() {
   sieve | grep -v $x
 }
 
-classes="domain-$(debconf-get netcfg/get_domain);$(debconf-get local/classes)"
+classes="$(debconf-get local/classes)"
 
 echo local local/classes string $(expandclasses "$classes" | sieve | join_semi)
