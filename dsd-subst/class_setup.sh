@@ -37,7 +37,7 @@ expandclasses() {
 sieve() {
   read x || return
   echo $x
-  sieve | grep -v $x
+  sieve | grep -v "^$x$"
 }
 
 classes="$(debconf-get local/classes)"
