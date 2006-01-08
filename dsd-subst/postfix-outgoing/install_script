@@ -38,29 +38,24 @@ deb http://volatile.debian.net/debian-volatile sarge/volatile main contrib non-f
 EOF
 apt-get update
 
-# install spamassassin, clamav and amavisd
+# install spamassassin, clamav and mailscanner
 apt-get -y install clamav clamav-daemon clamav-freshclam \
-                   spamassassin libnet-dns-perl spamc amavisd-new
+                   spamassassin libnet-dns-perl spamc mailscanner tnef
 
 # enable spamassassin
 sed -i -e 's/^ENABLED=0/ENABLED=1/' /etc/default/spamassassin
 
-# make clamav possible to read amavis stuff
-echo AllowSupplementaryGroups >> /etc/clamav/clamd.conf
-usermod -G amavis clamav
-
-# okay.  now we pin the damn packages to "stable".
-# why we do this is because of damn clamav.
-#get_file dsd-subst/postfix-outgoing/files/preferences /etc/apt/preferences
-
 # install postfix 
 DEBIAN_FRONTEND=noninteractive apt-get -y install postfix
 
-# postfix and amavis configs
-get_file dsd-subst/postfix-outgoing/amavisd.conf /etc/amavis/amavisd.conf
-#get_file dsd-subst/postfix-outgoing/files/master.cf /etc/postfix/master.cf
-#get_file dsd-subst/postfix-outgoing/files/main.cf /etc/postfix/main.cf
-#get_file dsd-subst/postfix-outgoing/files/aliases /etc/aliases
+# reconfigure postfix to use mailscanner, see:
+# http://www.sng.ecs.soton.ac.uk/mailscanner/install/postfix.shtml
+echo header_checks = regexp:/etc/postfix/header_checks >> /etc/postfix/main.cf
+echo '/^Received:/ HOLD' > /etc/postfix/header_checks
+
+# get the mailscanner config file
+get_file dsd-subst/postfix-outgoing/files/MailScanner.conf /etc/MailScanner/MailScanner.conf
+
 
 # install webmin and allow access from thingy.  internal network.
 apt-get -y install webmin-postfix webmin-core webmin-spamassassin
@@ -72,9 +67,9 @@ apt-get -y install arc lha unarj unrar bzip2 lzop zoo
 
 # restart servers
 /etc/init.d/clamav-daemon restart
-/etc/init.d/amavis restart
 /etc/init.d/postfix reload
 /etc/init.d/spamassassin restart
+/etc/init.d/mailscanner restart
 /etc/init.d/webmin restart
 
 log 'debug: postfix-incoming-install_script exiting successfully'
