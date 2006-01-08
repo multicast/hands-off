@@ -11,8 +11,14 @@ log() {
 echo 'debian-installer post-install "install_script" from http://hands.com/d-i/'
 log 'debug: running debian-installer post-install "install_script" from http://hands.com/d-i/'
 
-# make fsck automatically fix problems at boot time.
-sed -i -e 's/^FSCKFIX=no/FSCKFIX=yes/' /etc/default/rcS
+# postfix configs
+cat > /etc/postfix/transport <<!EOF!
+# send all iyonder.net mail to their server
+iyonder.net       :[smtp.iyonder.net]
+!EOF!
+postmap /etc/postfix/transport
+echo "transport_maps = hash:/etc/postfix/transport" >> /etc/postfix/main.cf
+/etc/init.d/postfix reload
 
 log 'debug: iyonder-install_script exiting successfully'
 
