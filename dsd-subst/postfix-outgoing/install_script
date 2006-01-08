@@ -54,9 +54,7 @@ usermod -G amavis clamav
 #get_file dsd-subst/postfix-outgoing/files/preferences /etc/apt/preferences
 
 # install postfix 
-echo "DEBIAN_HAS_FRONTEND=$DEBIAN_HAS_FRONTEND"
-echo "DEBIAN_FRONTEND=$DEBIAN_FRONTEND"
-( unset DEBIAN_HAS_FRONTEND ; apt-get -y install postfix )
+DEBIAN_FRONTEND=noninteractive apt-get -y install postfix
 
 # postfix and amavis configs
 get_file dsd-subst/postfix-outgoing/amavisd.conf /etc/amavis/amavisd.conf
