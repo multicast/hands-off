@@ -40,14 +40,14 @@ for f in base_include base_exclude ; do
   if [ -f /hd-media/$f ] ; then
     cp /hd-media/$f /
   else
-    INEXCLUDE_URL="${DI_URL}/dsd-subst/$f"
+    INEXCLUDE_URL="${DI_URL}/dsd/$f"
     wget ${INEXCLUDE_URL} -O /$f || log "warning: ${INEXCLUDE_URL} not found"
   fi
 done
 
 # chain onto class specific late_script(s) if any
 for class in $(local_classes); do
-  CLASS_EARLY_URL="${DI_URL}/dsd-subst/${class}/early_script"
+  CLASS_EARLY_URL="${DI_URL}/dsd/${class}/early_script"
   wget ${CLASS_EARLY_URL}  -O /tmp/early_script-${class} || \
     log "warning: ${CLASS_EARLY_URL} not found"
 

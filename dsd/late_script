@@ -14,7 +14,7 @@ local_classes() {
     echo "$(debconf-get local/classes)" | sed -e 's/;/\n/g'
 }
 
-log "debug: Running script from http://hands.com/d-i/dsd-subst/late_script"
+log "debug: Running script from http://hands.com/d-i/dsd/late_script"
 set -x
 
 # let's see what was installed by the end of the run (copied to /var/log/debian-installer/ along with the other log files)
@@ -42,7 +42,7 @@ fi
 
 # get install script so  that it's ready for the first boot, and we don't
 # necisarilly need net access after the reboot (handy when changing IP addresses)
-wget $(debconf-get local/di-url)/dsd-subst/install_script -O /target/var/tmp/base-config.late_command
+wget $(debconf-get local/di-url)/dsd/install_script -O /target/var/tmp/base-config.late_command
 chmod +x /target/var/tmp/base-config.late_command
 target_parts_d=/target/var/tmp/base-config.late_command.d
 mkdir ${target_parts_d}
@@ -51,7 +51,7 @@ mkdir ${target_parts_d}
 for class in $(local_classes); do
   : $((x++)) # increment x each time round the loop
   target=${target_parts_d}/$(printf "%03d-%s" $x ${class})
-  wget $(debconf-get local/di-url)/dsd-subst/${class}/install_script -O ${target}
+  wget $(debconf-get local/di-url)/dsd/${class}/install_script -O ${target}
   chmod +x ${target}
 done
 
@@ -62,7 +62,7 @@ fi
 
 # chain onto class specific late_script(s) if any
 for class in $(local_classes); do
-  wget $(debconf-get local/di-url)/dsd-subst/${class}/late_script  -O /tmp/late_script-${class}
+  wget $(debconf-get local/di-url)/dsd/${class}/late_script  -O /tmp/late_script-${class}
   sh /tmp/late_script-${class} > /var/log/late_script-${class}.out 2>&1
 done
 

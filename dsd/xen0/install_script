@@ -60,7 +60,7 @@ XEN_VER=2.0.7
 XEN_TGZ=xen-${XEN_VER}-install-x86_32.tgz
 cd /root
 #wget http://www.cl.cam.ac.uk/Research/SRG/netos/xen/downloads/${XEN_TGZ}
-wget --progress=bar:force ${DI_URL}/dsd-subst/xen0/files/${XEN_TGZ}
+wget --progress=bar:force ${DI_URL}/dsd/xen0/files/${XEN_TGZ}
 tar -xzvf ${XEN_TGZ}
 cd xen-*-install
 ./install.sh
