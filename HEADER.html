@@ -4,7 +4,7 @@
 <h2>New dashslashdash.udeb based setup</h2>
 <p>This now uses the idea of classes (largely ripped off from FAI) with each class having a directory under the dsd directory.
 
-<p>The initrd preseed file in the new setup is called dashslashdash.cfg, it loads dsd.cfg which then descends into the dsd directory.
+<p>The initrd preseed file in the new setup is called dashslashdash.sh, it loads dsd/0-first.sh (from where you tell it, or this web site) which then bootstraps the rest of the preseed setup.  This only works because dashslashdash contains a patched preseed.sh that allows for the execution of scripts and using their output as the preseed values.
 
 <p>The idea is that this will become part of the official Debian media
 in which case if you don't specify anything weird on the command line,
@@ -20,11 +20,9 @@ rest of the configuration settings from the specified server. If either the -/- 
   boot: linux26 -/-=;
 </pre> 
 
-<p>In the new setup, I've not yet got round to reimplementing the 
+<p>In the new setup, I've not yet got round to fully reimplementing the 
 site detection part of what was possible in the previous revision, but that
-will be coming soon.  I intend to do this by adding the ability to have
-optional preseed files, so that if a site class exists it will be used
-but will not cause an error if absent.
+will be coming soon, although there is a hook to make it look for domain-<yourdomain> as an extra class in 0-first.sh, although it still needs some work.
 
 <p>If you find this useful, and have ideas about how to improve it, or would like to contribute your recipes, please get in touch with <a
 href="mailto:&#112;&#104;&#105;&#108;&#064;&#104;&#097;&#110;&#100;&#115;&#046;&#099;&#111;&#109;">Philip
@@ -73,6 +71,8 @@ system. <b>-/url</b> is used to tell the system to get its preseed files
 from somewhere other than http://hands.com/d-i/
 
 <h3>boot prompt examples:</h3>
+
+<b>WARNING:</b> I'm afraid I've not tested all of the classes since the move to the latest dashslashdash version, so I wouldn't necessarily expect all of them to work.  The iyonder ones are recent, so should be fine -- the site-hands one definitely works, and the uk one works.
 
 <p>Specify an alternate source for the rest of the configuration (which
 you'll need to have mirrored to make this work)
