@@ -1,30 +1,5 @@
-From standard Debian boot media:
-================================
-
-If using standard install images, then you can point at the preseed
-scripts, either on your local copy, or the main site (for reasons of
-paranoia, you should really copy the scripts to a local server,
-convince yourself that they're not doing anything naughty, and then
-point at your local server, but if you cannot be bothered, feel free
-to just point at the main site.
-
-So, at the boot prompt type something like:
-
-boot:  linux preseed/url=http://hands.com/d-i/dashslashdash.cfg
-
-PROBLEMS:
-
-  The trouble with doing this is that the preseed files are only
-  grabbed after the network is up, so you will still get asked for the
-  machine name.
-
-  Also, we'll get the language prompts, and prompts such as selecting
-  the network interface to use if multiple NICs are present.
-
-Using a customised image:
-=========================
-
-1) Building your own:
+Creating -/- ready CD images
+============================
 
 loop mount the image you want to base your custom one on:
 
@@ -43,11 +18,7 @@ and unmount the cd image:
   umount /mnt
 
 Next we need to produce tweaked versions of the initrd files, with the
-dashslashdash.udeb added (Note, it is possible to achieve the
-same effect by specifying a few parameters on the command line, but
-this consumes to many kernel parameters, and so removes the
-flexibility of being able to specify the -/-= parameter with any
-certainty).
+dashslashdash.udeb
 
 Tweaking initrd
 ===============
@@ -78,9 +49,9 @@ or
 To save typing, you can add targets to new/isolinux/isolinux.cfg:
 
 =-=-=-=-
-LABEL kde341
+LABEL postfix
   kernel /install/vmlinuz
-  append vga=normal initrd=/install/initrd.gz ramdisk_size=10240 root=/dev/rd/0 devfs=mount,dall rw -/-=kde341;site-mysite --
+  append vga=normal initrd=/install/initrd.gz ramdisk_size=10240 root=/dev/rd/0 devfs=mount,dall rw -/-=postfix;site-mysite -/url=http://intranet.example.com/d-i --
 =-=-=-=-
 
 Also edit d-i-CD/new/isolinux/isolinux.txt, adding something above the boot
@@ -123,5 +94,9 @@ TODO:
   Make a CD with all the preseed files, all the associated scripts,
   and all the packages that get downloaded, so that you can preseed a
   machine with no NIC -- if anyone does this, please tell me about it.
+
+  It should be easier these days, with the /dashslashdash.sh approach,
+  you just need to make it look for the relevant start file in the
+  conditional bit near the end (like the /hd-media cases)
 
 Cheers, Phil.

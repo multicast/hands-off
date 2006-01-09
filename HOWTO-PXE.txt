@@ -5,7 +5,9 @@ First, you should look at:
   Specifically:  4.6. Preparing Files for TFTP Net Booting
  
 N.B. if you have a machine that doesn't support PXE booting, you can
-kick it off from a floppy.  See: http://www.rom-o-matic.net/
+kick it off from a floppy.  See:
+
+  http://www.rom-o-matic.net/
 
 In short, you need to have set up:
 
@@ -21,16 +23,7 @@ untar it into /tftpboot (or wherever you've pointed your tftp server)
 
   tar -C /tftpboot -xvzf netboot.tar.gz
 
-Now, for the lazy, just copy my initrd images, or make them yourself as described below:
-
-  wget http://hands.com/d-i/misc/pxe-auto-initrd-2.4.gz -O /tftpboot/debian-installer/i386/auto-ird.gz
-  wget http://hands.com/d-i/misc/pxe-auto-initrd-2.6.gz -O /tftpboot/debian-installer/i386/2.6/auto-ird.gz
-  wget http://hands.com/d-i/misc/pxelinux.cfg -O /tftpboot/debian-installer/i386/pxelinux.cfg/default
-
-Alternatively, to generate the initrd images yourself (as needed to
-change the preseed to default to your own preseed server etc.)
-
-Decompress the initrd.gz of interest:
+To generate the initrd images first decompress the initrd.gz of interest:
 
   zcat /tftpboot/debian-installer/i386/2.6/initrd.gz > /tmp/initrd-2.6
 
@@ -49,19 +42,6 @@ you want support for both 2.4 & 2.6 kernels).
   gzip < /tmp/initrd-2.6 > /tftpboot/debian-installer/i386/2.6/auto-ird.gz
 or
   gzip < /tmp/initrd-2.4 > /tftpboot/debian-installer/i386/auto-ird.gz
-
-Then edit the pxelinux.cfg file to allow preseed boots, by adding lines like:
-
-=-=-=-=-
-label auto
-        kernel debian-installer/i386/linux
-        append initrd=debian-installer/i386/auto-ird.gz ramdisk_size=9424 root=/dev/rd/0 devfs=mount,dall rw --
-label auto26
-        kernel debian-installer/i386/2.6/linux
-        append initrd=debian-installer/i386/2.6/auto-ird.gz ramdisk_size=10934 root=/dev/rd/0 devfs=mount,dall rw --
-=-=-=-=-
-
-into the file:  /tftpboot/debian-installer/i386/pxelinux.cfg/default
 
 You're now ready to try a PXE boot.  Give it a go, and read
 http://hands.com/d-i/ for hints on what to type at the boot prompt to

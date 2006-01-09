@@ -17,19 +17,19 @@ or
 
 and copy on the dashslashdash_0.1_all.udeb:
 
-  wget -N http://hands.com/d-i/udebs/dashslashdash_0.1_all.udeb -O /mnt/tmp/dashslashdash_0.1_all.udeb
+  wget -N http://hands.com/d-i/udebs/dashslashdash_0.2_all.udeb -O /mnt/tmp/dashslashdash_0.2_all.udeb
 
 then chroot into the initrd:
 
   chroot /mnt /bin/sh
 
-then install the udeb, and discard the udeb itself, and exit the chroot:
+then unpack the udeb, and discard the udeb itself, and exit the chroot:
 
-  udpkg -i /tmp/dashslashdash_0.1_all.udeb
-  rm /tmp/dashslashdash_0.1_all.udeb
+  udpkg --unpack /tmp/dashslashdash_0.2_all.udeb
+  rm /tmp/dashslashdash_0.2_all.udeb
   exit
 
-You might want to edit the /mnt/dashslashdash.cfg preseed file so that
+You might want to edit the /mnt/dashslashdash.sh preseed file so that
 it defults to your local server rather than http://hands.com, that way
 you can audit the files and be sure that I don't subsequently change
 them. (Paranoia is your friend).
