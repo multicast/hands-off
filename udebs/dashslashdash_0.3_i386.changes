@@ -1,0 +1,32 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+
+Format: 1.7
+Date: Mon,  9 Jan 2006 02:33:08 +0000
+Source: dashslashdash
+Binary: dashslashdash
+Architecture: source all
+Version: 0.3
+Distribution: unstable
+Urgency: low
+Maintainer: Philip Hands <phil@hands.com>
+Changed-By: Philip Hands <phil@hands.com>
+Description: 
+ dashslashdash - Automated install helper (enhanced preseeding) (udeb)
+Changes: 
+ dashslashdash (0.3) unstable; urgency=low
+ .
+   * switch to using .../dsd/ paths (rather than the old .../dsd-subst/ ones)
+Files: 
+ 7fdf8e26fe4e106f925dcc4de650828b 497 debian-installer extra dashslashdash_0.3.dsc
+ 4630670cef800f59ffb78b606b7e8d47 3530 debian-installer extra dashslashdash_0.3.tar.gz
+ 2df218ac2c310469533aeb748ecfaebc 2730 debian-installer extra dashslashdash_0.3_all.udeb
+package-type: udeb
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.5 (GNU/Linux)
+
+iD8DBQFDwdEUYgOKS92bmRARAr3xAJ489mEembyQtnMrrAFfV0EIQGLTowCggbjq
+qUoNpsb/kXSQymXo0jVaXD0=
+=6LVE
+-----END PGP SIGNATURE-----
