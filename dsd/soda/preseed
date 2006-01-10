@@ -1,0 +1,20 @@
+#  http://hands.com/d-i/dsd/soda/preseed
+#
+# Copyright (c) 2005 Hands.com Ltd
+# distributed under the terms of the GNU GPL version 2 or (at your option) any later version
+# see the file "COPYING" for details
+
+d-i    partman/confirm_write_new_label boolean false
+d-i	partman-auto/choose_recipe	select All files in one partition (recommmended for new users)
+d-i	partman-auto/init_automatically_partition	select Use the largest continuous free space
+#d-i	partman-auto/disc		string 
+base-config	apt-setup/security-updates	boolean false
+
+# This first command is run as early as possible, just after
+# preseeding is read.
+
+# normally we wget this, but soda uses local files -- ought to use get_file here
+d-i preseed/early_command		string sh -x /hd-media/dsd/early_script > /var/log/early_script.out 2>&1
+
+# likewise
+d-i	preseed/late_command		string sh /hd-media/dsd/late_script > /var/log/late_script.out 2>&1

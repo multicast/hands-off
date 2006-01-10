@@ -27,5 +27,8 @@ d-i preseed/include     string class_setup.sh|
 # This line is currently only including second.cfg -- I'm hoping to work out
 # something interesting to allow for more flexible subclassing using the
 # subclass.sh files -- this needs some inspiration first
-d-i preseed/include_command     string ( echo "domain-$(debconf-get netcfg/get_domain)/subclass.sh|?"; IFS=';'; for cls in $(debconf-get local/classes); do [ "$cls" ] && echo "${cls}/subclass.sh|?"; done ; echo second.cfg )
+d-i preseed/include_command     string echo second.cfg
+
+### previous try ...
+#d-i preseed/include_command     string ( echo "domain-$(debconf-get netcfg/get_domain)/subclass.sh|?"; IFS=';'; for cls in $(debconf-get local/classes); do [ "$cls" ] && echo "${cls}/subclass.sh|?"; done ; echo second.cfg )
 !EOF!
