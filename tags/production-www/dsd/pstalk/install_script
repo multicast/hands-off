@@ -1,0 +1,45 @@
+#!/bin/bash
+#
+# Copyright (c) 2005 Hands.com Ltd
+# distributed under the terms of the GNU GPL version 2 or (at your option)
+# any later version -- see the file "COPYING" for details
+
+debconf-get() { echo GET $1 | debconf-communicate | cut -d ' ' -f 2 ; }
+
+# the value of the server URL is passed in as parameter #1
+DI_URL=$(debconf-get local/di-url)
+
+# use the proxy for wgets (should speed things up)
+export http_proxy=$(debconf-get mirror/http/proxy)
+
+log() {
+    logger -t pstalk/install_script "$@"
+}
+
+echo 'debian-installer post-install "pstalk/install_script" from http://hands.com/d-i/'
+log 'debug: running debian-installer post-install "pstalk/install_script" from http://hands.com/d-i/'
+
+# X-wonders setup
+#apt-get -y install xresprobe read-edid mdetect
+apt-get -y install x-window-system-core xdm xfs xterm evilwm ttf-freefont xpdf
+
+# add user pstalk
+adduser --disabled-password --gecos 'Philip Hands,,,' pstalk
+sed -i -e 's#^pstalk:[^:]*:#pstalk:$1$VQ9xfvyo$Dw1D/pv7YwtZWHvRwWsja/:#' /etc/shadow
+
+cat > /home/pstalk/.bash_history <<!EOF!
+xpdf -fullscreen preseeding.pdf
+!EOF!
+chown pstalk. /home/pstalk/.bash_history
+
+cat > /home/pstalk/.xsession <<!EOF!
+#!/bin/sh
+xpdf -fullscreen preseeding.pdf &
+exec evilwm
+!EOF!
+
+wget $(debconf-get local/di-url)/dsd/pstalk/preseeding.pdf -O /home/pstalk/preseeding.pdf
+
+log 'debug: exiting successfully'
+
+exit 0
