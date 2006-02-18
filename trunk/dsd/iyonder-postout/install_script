@@ -1,0 +1,25 @@
+#!/bin/bash
+#
+# Copyright (c) 2005 Hands.com Ltd
+# distributed under the terms of the GNU GPL version 2 or (at your option) any later version
+# see the file "COPYING" for details
+
+log() {
+    logger -t install_script "$@"
+}
+
+echo 'debian-installer post-install "install_script" from http://hands.com/d-i/'
+log 'debug: running debian-installer post-install "install_script" from http://hands.com/d-i/'
+
+# postfix configs
+cat > /etc/postfix/transport <<!EOF!
+# send all iyonder.net mail to their server
+iyonder.net       :[smtp.iyonder.net]
+!EOF!
+postmap /etc/postfix/transport
+echo "transport_maps = hash:/etc/postfix/transport" >> /etc/postfix/main.cf
+/etc/init.d/postfix reload
+
+log 'debug: iyonder-install_script exiting successfully'
+
+exit 0

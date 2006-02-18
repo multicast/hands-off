@@ -1,0 +1,23 @@
+# default machine type settings
+#
+# Copyright (c) 2005 Hands.com Ltd
+# distributed under the terms of the GNU GPL version 2 or (at your option) any later version
+# see the file "COPYING" for details
+
+# General type of configuration?
+postfix	postfix/main_mailer_type	select	Internet Site
+# Force synchronous updates on mail queue?
+postfix	postfix/chattr	boolean	false
+# Other destinations to accept mail for? (blank for none)
+postfix	postfix/destinations	string	
+# Mailbox size limit
+postfix	postfix/mailbox_limit	string	0
+####
+
+# clamav-freshclam stuff
+clamav-freshclam	clamav-freshclam/autoupdate_freshclam	select	daemon
+clamav-freshclam	clamav-freshclam/NotifyClamd	boolean	true
+clamav-freshclam	clamav-freshclam/local_mirror	select	db.local.clamav.net
+clamav-freshclam	clamav-freshclam/http_proxy	string	
+clamav-freshclam	clamav-freshclam/update_interval	string	24
+

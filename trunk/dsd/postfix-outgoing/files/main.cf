@@ -1,0 +1,22 @@
+# See /usr/share/postfix/main.cf.dist for a commented, more complete version
+
+smtpd_banner = $myhostname ESMTP $mail_name (Debian/GNU)
+biff = no
+
+# appending .domain is the MUA's job.
+append_dot_mydomain = no
+
+# Uncomment the next line to generate "delayed mail" warnings
+#delay_warning_time = 4h
+
+myhostname = localhost.localdomain
+alias_maps = hash:/etc/aliases
+alias_database = hash:/etc/aliases
+myorigin = /etc/mailname
+mydestination = localhost.localdomain, localhost.localdomain, localhost
+relayhost = smtp.iyonder.net
+mynetworks = 127.0.0.0/8 10.0.0.0/8
+mailbox_size_limit = 0
+recipient_delimiter = 
+inet_interfaces = loopback-only
+content_filter = smtp-amavis:[127.0.0.1]:10024
