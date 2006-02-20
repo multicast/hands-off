@@ -6,12 +6,6 @@
 
 debconf-get() { echo GET $1 | debconf-communicate | cut -d ' ' -f 2 ; }
 
-# the value of the server URL is passed in as parameter #1
-DI_URL=$(debconf-get local/di-url)
-
-# use the proxy for wgets (should speed things up)
-export http_proxy=$(debconf-get mirror/http/proxy)
-
 log() {
     logger -t install_script "$@"
 }
@@ -60,7 +54,7 @@ XEN_VER=3.0.0
 XEN_TGZ=xen-${XEN_VER}-install-x86_32.tgz
 cd /root
 #wget http://www.cl.cam.ac.uk/Research/SRG/netos/xen/downloads/${XEN_TGZ}
-wget --progress=bar:force ${DI_URL}/dsd/xen0/files/${XEN_TGZ}
+/var/tmp/dsd_fetch_file dsd/xen0/files/${XEN_TGZ}
 tar -xzvf ${XEN_TGZ}
 cd xen-*-install
 ./install.sh
@@ -96,12 +90,12 @@ update-rc.d xendomains start 99 4 . stop 10 0 6 .
 # EOF
 
 # get a kernel that lets us boot debian-installer under xen
-wget --progress=bar:force ${DI_URL}/dsd/xen0/files/kernel-xen0-2.6.11-xenu_10.00.Custom_i386.deb -O /root/kernel-xen0-2.6.11-xenu_10.00.Custom_i386.deb
+/var/tmp/dsd_fetch_file dsd/xen0/files/kernel-xen0-2.6.11-xenu_10.00.Custom_i386.deb /root/kernel-xen0-2.6.11-xenu_10.00.Custom_i386.deb
 dpkg -i /root/kernel-xen0-2.6.11-xenu_10.00.Custom_i386.deb
 
 # grab example xen configs
-wget --progress=bar:force ${DI_URL}/dsd/xen0/files/xm-debinst1 -O /etc/xen/xm-debinst1
-wget --progress=bar:force ${DI_URL}/dsd/xen0/files/xm-debinst1-install -O /etc/xen/xm-debinst1-install
+/var/tmp/dsd_fetch_file dsd/xen0/files/xm-debinst1 /etc/xen/xm-debinst1
+/var/tmp/dsd_fetch_file dsd/xen0/files/xm-debinst1-install /etc/xen/xm-debinst1-install
 
 # set up LVM on the spare partition
 apt-get -y install lvm2
@@ -111,11 +105,11 @@ lvcreate -L 2G -n vm1hda vg
 
 # make a directory for disk image files
 mkdir /home/xen-disks
-wget --progress=bar:force ${DI_URL}/d-i/dsd/xen0/files/netboot-initrd.gz -O /home/xen-disks/netboot-initrd.gz
+/var/tmp/dsd_fetch_file d-i/dsd/xen0/files/netboot-initrd.gz /home/xen-disks/netboot-initrd.gz
 
 # this allows local private stuff if needed
-#wget ${DI_URL}/local/$(debconf-get local/type)_install_script -O /var/tmp/$(debconf-get local/type)_install_script
-#bash /var/tmp/$(debconf-get local/type)_install_script
+#/var/tmp/dsd_fetch_file local/$(debconf-get dsd/type)_install_script /var/tmp/$(debconf-get dsd/type)_install_script
+#bash /var/tmp/$(debconf-get dsd/type)_install_script
 
 log 'debug: xen0-install_script exiting successfully'
 

@@ -6,12 +6,6 @@
 
 debconf-get() { echo GET $1 | debconf-communicate | cut -d ' ' -f 2 ; }
 
-# the value of the server URL is passed in as parameter #1
-DI_URL=$(debconf-get local/di-url)
-
-# use the proxy for wgets (should speed things up)
-export http_proxy=$(debconf-get mirror/http/proxy)
-
 log() {
     logger -t kde341/install_script "$@"
 }
@@ -32,7 +26,7 @@ apt-get update
 # alsaconf and then do an unattended install - modified alsaconf
 apt-get -y install alsa-utils
 
-wget $(debconf-get local/di-url)/dsd/kde341/alsaconf.unattend.sh -O /var/tmp/alsaconf.unattend.sh
+/var/tmp/dsd_fetch_file dsd/kde341/alsaconf.unattend.sh /var/tmp/alsaconf.unattend.sh
 [ -f /var/tmp/alsaconf.unattend.sh ] && bash /var/tmp/alsaconf.unattend.sh -U
 
 # X-wonders setup

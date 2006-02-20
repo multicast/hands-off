@@ -16,7 +16,7 @@ The first thing to do is install the Xen machine itself, which is done
 by following the instructions in the HOWTO for your chosen boot method,
 and then specifying the following at the boot prompt:
 
-  boot:  auto26 local/cfg=xen0
+  boot:  linux26 -/-=xen0
 
 This will install a minimal debian, grab the install tarball for xen,
 install it, apply various tweaks, and then (unless I work out an easy

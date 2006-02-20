@@ -8,20 +8,10 @@ log() {
     logger -t late_script "$@"
 }
 in_local_class() {
-    echo "$(debconf-get local/classes)" | sed -e 's/;/\n/g' | grep -q "^$1\$"
+    echo "$(debconf-get dsd/classes)" | sed -e 's/;/\n/g' | grep -q "^$1\$"
 }
 local_classes() {
-    echo "$(debconf-get local/classes)" | sed -e 's/;/\n/g'
-}
-
-DI_URL=$(debconf-get local/di-url)
-
-get_file() {
-  if [ -n "$DI_URL" ] ; then
-    wget ${DI_URL}/$1 -O $2
-  else
-    cp /hd-media/$1 $2
-  fi
+    echo "$(debconf-get dsd/classes)" | sed -e 's/;/\n/g'
 }
 
 log "debug: Running script from http://hands.com/d-i/dsd/late_script"
@@ -40,7 +30,7 @@ fi
 
 # stuff values we may need in the install script into the next stages's preseed data
 for i in classes di-url ; do
-  echo local local/$i string $(debconf-get local/$i) >> /var/log/debconf-seed
+  echo dsd dsd/$i string $(debconf-get dsd/$i) >> /var/log/debconf-seed
 done
 
 # let's see if we're running under xen
@@ -52,7 +42,8 @@ fi
 
 # get install script so  that it's ready for the first boot, and we don't
 # necisarilly need net access after the reboot (handy when changing IP addresses)
-get_file dsd/install_script /target/var/tmp/base-config.late_command
+cp /usr/bin/dsd_fetch_file /target/var/tmp
+dsd_fetch_file dsd/install_script /target/var/tmp/base-config.late_command
 chmod +x /target/var/tmp/base-config.late_command
 target_parts_d=/target/var/tmp/base-config.late_command.d
 mkdir ${target_parts_d}
@@ -61,7 +52,7 @@ mkdir ${target_parts_d}
 for class in $(local_classes); do
   : $((x++)) # increment x each time round the loop
   target=${target_parts_d}/$(printf "%03d-%s" $x ${class})
-  get_file dsd/${class}/install_script ${target}
+  dsd_fetch_file dsd/${class}/install_script ${target}
   chmod +x ${target}
 done
 
@@ -72,7 +63,7 @@ fi
 
 # chain onto class specific late_script(s) if any
 for class in $(local_classes); do
-  get_file dsd/${class}/late_script /tmp/late_script-${class}
+  dsd_fetch_file dsd/${class}/late_script /tmp/late_script-${class}
   sh /tmp/late_script-${class} > /var/log/late_script-${class}.out 2>&1
 done
 

@@ -1,6 +1,0 @@
-This isn't a real class
-
-defining it activates the sleeps in various other class scripts, so
-one can see what happens at each step through an install -- switch to
-a shell with Alt-F2, and kill the sleep to continue the install (to the
-next sleep)

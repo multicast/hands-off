@@ -16,16 +16,12 @@ log() {
     logger -t soda_early_script "$@"
 }
 in_local_class() {
-    echo "$(debconf-get local/classes)" | sed -e 's/;/\n/g' | grep -q "^$1\$"
+    echo "$(debconf-get dsd/classes)" | sed -e 's/;/\n/g' | grep -q "^$1\$"
 }
 local_classes() {
-    echo "$(debconf-get local/classes)" | sed -e 's/;/\n/g'
+    echo "$(debconf-get dsd/classes)" | sed -e 's/;/\n/g'
 }
 
-
-DI_URL=$(debconf-get local/di-url)
-
-log "debug: Running script from ${DI_URL}"
 
 set -x
 

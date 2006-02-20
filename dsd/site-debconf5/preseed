@@ -1,2 +1,0 @@
-d-i	mirror/http/hostname		string ftp.fi.debian.org
-base-config	apt-setup/hostname	string ftp.fi.debian.org

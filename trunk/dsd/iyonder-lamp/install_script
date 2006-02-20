@@ -9,9 +9,6 @@ sed -i -e 's/^FSCKFIX=no/FSCKFIX=yes/' /etc/default/rcS
 
 debconf-get() { echo GET $1 | debconf-communicate | cut -d ' ' -f 2 ; }
 
-# the value of the server URL is passed in as parameter #1
-DI_URL=$(debconf-get local/di-url)
-
 log() {
     logger -t install_script "$@"
 }

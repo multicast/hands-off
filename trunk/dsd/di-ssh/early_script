@@ -1,7 +1,7 @@
 #!/bin/sh
 
 in_local_class() {
-    echo "$(debconf-get local/classes)" | sed -e 's/;/\n/g' | grep -q "^$1\$"
+    echo "$(debconf-get dsd/classes)" | sed -e 's/;/\n/g' | grep -q "^$1\$"
 }
 
 # tell anna to install an extra udeb

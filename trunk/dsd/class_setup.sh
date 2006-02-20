@@ -5,9 +5,6 @@
 # depended on them, or at the end of the list, but until I see examples
 # where that extra complication is actually required, lets just do this
 #
-# BTW this uses the perhaps dodgy trick of relying on being run by something
-# that provides the function preseed_fetch, to grab the subclass files
-#
 
 set -x
 
@@ -20,9 +17,12 @@ join_semi() {
 }
 
 subclasses() {
-   preseed_fetch "$(dirname $last_location)/${1}/subclasses" /tmp/cls-$1 || return 0
-   join_semi < /tmp/cls-$1
-   rm /tmp/cls-$1
+   if [ -n "$1" ] ; then
+     dsd_fetch_file "dsd/$1/subclasses" /tmp/cls-$1 || return 0
+   fi
+   dsd_fetch_file "local/$1/subclasses" /tmp/cls-$1-local
+   cat /tmp/cls-$1 /tmp/cls-$1-local | join_semi
+   rm /tmp/cls-$1 /tmp/cls-$1-local
 }
 
 expandclasses() {
@@ -40,6 +40,6 @@ sieve() {
   sieve | grep -v "^$x$"
 }
 
-classes="$(debconf-get local/classes)"
+classes="$(subclasses "");$(debconf-get dsd/classes)"
 
-echo local local/classes string $(expandclasses "$classes" | sieve | join_semi)
+echo dsd dsd/classes string $(expandclasses "$classes" | sieve | join_semi)
