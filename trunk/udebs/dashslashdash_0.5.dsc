@@ -10,12 +10,12 @@ Architecture: all
 Standards-Version: 3.6.0
 Build-Depends: debhelper (>= 4.2)
 Files: 
- 10425fbc517f5a2de32a7199626a5739 4043 dashslashdash_0.5.tar.gz
+ 92fee5db5cfd5e73afc16e53115b677b 4039 dashslashdash_0.5.tar.gz
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.2.5 (GNU/Linux)
 
-iD8DBQFD+qAqYgOKS92bmRARAhn6AJ9Ptj5TAwBtT03G3PAeLmm8DXxkXwCaAwua
-G8j7KAQCgVFgsTrD3I76GZE=
-=X8oi
+iD8DBQFD+qXiYgOKS92bmRARAoWlAKCqfaDWtfrvmKAR3faL4sviuZ+GDgCeJuC0
+R5RSWNmpZudkQ7c4muRa8Wk=
+=f03F
 -----END PGP SIGNATURE-----

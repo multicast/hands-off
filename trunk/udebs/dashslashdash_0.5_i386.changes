@@ -21,15 +21,15 @@ Changes:
    * take account of new svn layout, and add support for local preseeds
    * add code to look for preseed files on debian-dsd-preseed.<local.domain>
 Files: 
- abcd9f610fef102c1d2d2471fff02b89 497 debian-installer extra dashslashdash_0.5.dsc
- 10425fbc517f5a2de32a7199626a5739 4043 debian-installer extra dashslashdash_0.5.tar.gz
- 7855f98def0ad6d876be43bc2478eb0a 3620 debian-installer extra dashslashdash_0.5_all.udeb
+ f073234b9f79e446cf9c13d398411bda 497 debian-installer extra dashslashdash_0.5.dsc
+ 92fee5db5cfd5e73afc16e53115b677b 4039 debian-installer extra dashslashdash_0.5.tar.gz
+ b47de9591d760e996962ebea694fe64a 3620 debian-installer extra dashslashdash_0.5_all.udeb
 package-type: udeb
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.2.5 (GNU/Linux)
 
-iD8DBQFD+qAxYgOKS92bmRARApI3AKCZeyP5E8MCj4hj6okBxRLr1xGLuwCeKe/f
-4woLeOF+ZEju4oSqeAX5Nfk=
-=F3X9
+iD8DBQFD+qXpYgOKS92bmRARAj/hAKCVJ1if4DPGvBSobVMjyxxCPjx+ggCdFfy0
+br/VTLsiXQS5oW7e9M5RPb4=
+=B1PQ
 -----END PGP SIGNATURE-----
