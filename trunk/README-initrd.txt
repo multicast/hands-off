@@ -19,6 +19,11 @@ and copy on the dashslashdash_0.1_all.udeb:
 
   wget -N http://hands.com/d-i/udebs/dashslashdash_0.5_all.udeb -O /mnt/tmp/dashslashdash_0.5_all.udeb
 
+In the case of CDs, we also need to pre-unpack netinst-preseed, otherwise
+the dashslashdash preseed.sh gets overwritten, so also copy that into place:
+
+  cp d-i-CD/new/pool/main/p/preseed/network-preseed_1.01_all.udeb /mnt/tmp/
+
 then chroot into the initrd:
 
   chroot /mnt /bin/sh
@@ -27,6 +32,9 @@ then unpack the udeb, and discard the udeb itself, and exit the chroot:
 
   udpkg --unpack /tmp/dashslashdash_0.5_all.udeb
   rm /tmp/dashslashdash_0.5_all.udeb
+
+  udpkg --unpack /tmp/network-preseed_1.01_all.udeb      [for CD initrds]
+  rm /tmp/network-preseed_1.01_all.udeb                  [for CD initrds]
   exit
 
 You might want to edit the /mnt/dashslashdash.sh preseed file so that
