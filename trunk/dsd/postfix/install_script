@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright (c) 2005 Hands.com Ltd
+# Copyright (c) 2005-2006 Hands.com Ltd
 # distributed under the terms of the GNU GPL version 2 or (at your option) any later version
 # see the file "COPYING" for details
 
@@ -12,8 +12,8 @@ log() {
     logger -t install_script "$@"
 }
 
-echo 'debian-installer post-install "install_script" from http://hands.com/d-i/'
-log 'debug: running debian-installer post-install "install_script" from http://hands.com/d-i/'
+echo 'debian-installer post-install "postfix/install_script" from http://hands.com/d-i/'
+log 'debug: running debian-installer post-install "postfix/install_script" from http://hands.com/d-i/'
 
 # have to use volatile, because of clamav.
 cat >> /etc/apt/sources.list <<'EOF'
@@ -58,6 +58,6 @@ apt-get -y install arc lha unarj unrar bzip2 lzop zoo
 /etc/init.d/mailscanner restart
 /etc/init.d/webmin restart
 
-log 'debug: postfix-incoming-install_script exiting successfully'
+log 'debug: postfix/install_script exiting successfully'
 
 exit 0

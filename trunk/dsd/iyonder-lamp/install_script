@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright (c) 2005 Hands.com Ltd
+# Copyright (c) 2005-2006 Hands.com Ltd
 # distributed under the terms of the GNU GPL version 2 or (at your option) any later version
 # see the file "COPYING" for details
 
@@ -13,8 +13,8 @@ log() {
     logger -t install_script "$@"
 }
 
-echo 'debian-installer post-install "install_script" from http://hands.com/d-i/'
-log 'debug: running debian-installer post-install "install_script" from http://hands.com/d-i/'
+echo 'debian-installer post-install "iyonder-lamp/install_script" from http://hands.com/d-i/'
+log 'debug: running debian-installer post-install "iyonder-lamp/install_script" from http://hands.com/d-i/'
 
 # apache.  hurrah.
 apt-get -y install apache dnsutils ssmtp cron at logcheck
@@ -32,5 +32,5 @@ apt-get -y install webmin-apache webmin-htaccess webmin-core webmin-mysql
 sed -i -e 's/^allow=127.0.0.1/allow=127.0.0.1 172.20.0.0\/255.255.255.0 10.0.0.0\/255.0.0.0/' /etc/webmin/miniserv.conf
 /etc/init.d/webmin restart
 
-log 'debug: hands-wf-install_script exiting successfully'
+log 'debug: iyonder-lamp/install_script exiting successfully'
 exit 0
