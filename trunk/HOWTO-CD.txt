@@ -81,7 +81,7 @@ and burn it with something like this:
 
 If you're feeling incredibly lazy (and trusting), here's one I made earlier:
 
-  http://hands.com/d-i/misc/debian-31r0a-i386-netinst-hands-preseed.iso
+  http://hands.com/d-i/misc/debian-31r1a-i386-netinst-hands-preseed.iso
 
 Once you've got a CD, boot from it, and read http://hands.com/d-i/ for
 hints on what to type at the boot prompt to kick things off.
