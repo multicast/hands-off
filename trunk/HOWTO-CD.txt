@@ -3,7 +3,7 @@ Creating -/- ready CD images
 
 loop mount the image you want to base your custom one on:
 
-  mount -o loop,ro debian-31r0a-i386-netinst.iso /mnt
+  mount -o loop,ro debian-31r1a-i386-netinst.iso /mnt
 
 create a working directory, and copy the contents there, and make the
 copy writable:
