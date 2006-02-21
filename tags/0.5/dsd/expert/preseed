@@ -1,0 +1,1 @@
+d-i     debconf/priority        string low

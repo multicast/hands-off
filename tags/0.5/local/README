@@ -1,0 +1,14 @@
+This directory is reserved for local site admin use.
+
+The idea is that you can have both generic and class based preseed and
+subclasses files, as well as thing like local ssh authorized_keys files
+
+I'd envisage a layout like this:
+
+  local/preseed  -- preseed file comon across the site
+  local/subclasses -- subclasses that should be on all site machines
+  local/foo/*      -- preseed/subclass files that override the ones
+                      from the main directory tree
+  local/files/     -- a place to dump local, possibly security sensitive files
+
+no files here should be submitted to the central svn other than this README.
