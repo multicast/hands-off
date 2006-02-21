@@ -15,7 +15,7 @@ debconf-get() {
 echo 'debian-installer post-install "install_script" from http://hands.com/d-i/'
 log 'debug: running debian-installer post-install "install_script" from http://hands.com/d-i/'
 
-# I'm lazy -- this lets me retry an install, by typing up-arrow return
+# I'm lazy -- this lets me retry an install, by typing up-arrow C-a C-d return
 echo "#dd if=/dev/zero of=/dev/hda count=1 ; sync ; reboot -f" > /root/.bash_history
 chmod 600 /root/.bash_history
 
@@ -28,9 +28,10 @@ sed -i -e 's/^PermitRootLogin *yes/PermitRootLogin without-password/' /etc/ssh/s
 # If you've not managed to install an authorized_keys file by this point
 # and if root's password is locked (i.e. set to "!") then get rid of the root
 # password so that you can log in at the console with no password
-# This isn't the security risk it might seem, since we should have set sshd_config
-# to have PermitRootLogin without-password by this point, so the login won't be allowed remotely
-# sshd_config should also have PermitEmptyPasswords no set, so we should be safe even if the 
+# This isn't the security risk it might seem, since we should have set
+# sshd_config to have PermitRootLogin without-password by this point,
+# so the login won't be allowed remotely.  sshd_config should also have
+# PermitEmptyPasswords no set, so we should be safe even if the 
 # PermitRootLogin without-password edit failed for some reason.
 #[ -f /root/.ssh/authorized_keys ] ||
 # FIXME --- temporary edit for testing purposes, now always clearing root password
@@ -46,10 +47,6 @@ DPkg::Post-Invoke {
 
 # nice stuff, even on a minmal box
 apt-get -y install debconf-utils less udev sudo rsync debsums
-
-# set LESSPIPE as I prefer
-sed -i -e '/^  if \[ "$BASH" ]; then$/a\    . /etc/bash.bashrc' /etc/profile
-echo "export LESSOPEN=\"|lesspipe '%s'\"" >> /etc/bash.bashrc
 
 # run any class specific install_scripts
 run-parts --report /var/tmp/base-config.late_command.d

@@ -1,0 +1,101 @@
+<title>"Hands-off" Debian Installation</title>
+<h1>"Hands-off" Debian Installation</h1>
+
+<h2>New dashslashdash.udeb based setup</h2>
+<p>This now uses the idea of classes (largely ripped off from FAI) with each class having a directory under the dsd directory.
+
+<p>The initrd preseed file in the new setup is called dashslashdash.sh, it loads dsd/0-first.sh (from where you tell it, or this web site) which then bootstraps the rest of the preseed setup.  This only works because dashslashdash contains a patched preseed.sh that allows for the execution of scripts and using their output as the preseed values.
+
+<p>The idea is that this will become part of the official Debian media
+in which case if you don't specify anything weird on the command line,
+all will appear normal, but if you add a -/- option it will be interpreted
+as a class list, and will kick off an auto install.  For example:
+
+<pre>
+  boot: linux26 -/-=kde341;site-hands -/url=http://intra.hands.com/d-i/
+</pre>
+would set both the <tt>kde341</tt> and the <tt>site-hands</tt> classes, and would download the
+rest of the configuration settings from the specified server. If either the -/- or the -/url settings are set, the auto install is triggered.  If you just want a default minimal install that can be achieved with:
+<pre>
+  boot: linux26 -/-=;
+</pre> 
+
+<p>In the new setup, I've not yet got round to fully reimplementing the 
+site detection part of what was possible in the previous revision, but that
+will be coming soon, although there is a hook to make it look for domain-<yourdomain> as an extra class in 0-first.sh, although it still needs some work.
+
+<p> <b>UPDATE(2006-01-09): The optional includes, as well as executable includes that generate preseed files as STDOUT, are now working.  I've not yet used them to implement site detection using this, and it's possible that I've not tested some of the older classes in their new home.
+
+<p>Be aware that I have moved the old structure to dsd-old and replaced it with one that only works with dashslashdash-0.3 or later.  This breaks backwards compatibility. Such changes may occur again.  If you're basing significant effort on the current setup, please mirror all the files so you're not dependant on me maintaining backwards compatibility (which I could provide, but it would make the directory structure messy, so I probably won't bother -- this is BETA software, after all -- you have been warned ;-)</b>
+
+<p>If you find this useful, and have ideas about how to improve it, or would like to contribute your recipes, please get in touch with <a
+href="mailto:&#112;&#104;&#105;&#108;&#064;&#104;&#097;&#110;&#100;&#115;&#046;&#099;&#111;&#109;">Philip
+Hands</a>
+
+<p>As it stands, if you boot this on some random site, typing:
+
+  linux -/-=;
+or
+  linux26 -/-=;
+
+at the boot prompt of appropriately tweaked boot media (see the HOWTOs)
+you'll install the default machine setup, which results in a minimal
+Debian install (with exim and at excluded, so you can decide what MTA
+you like without having to download exim, or answer questions about your
+preferred exim setup).
+
+<p>If it all works correctly, you'll end up with a system that has no
+root password --- of course, for my sites, I install ssh keys, and for
+some of my clients, I install predetermined passwords, but I don't
+suppose you want me to be able to log into your systems, so setting no
+password so you can set one yourself seemed like a fair choice.
+
+<p>Read the relevant HOWTO-*.txt to see how to set up boot media as
+you require.
+
+<p>If you care about security, or if you want to customise this
+without reference to me, you should be able to copy the contents of
+this directory to a local server, and either tweak the preseed.cfg
+file used to point at your server rather than mine, or specify the
+server to use as a -/url command-line parameter, thus:
+
+boot:  linux -/url=http://intra.example.com/d-i
+
+
+<h2>-/parameters</h2>
+
+<p>the -/ parameters are used to activate an automatic install.  If you
+have the dashslashdash.udeb on the initrd of your boot media then setting
+either -/- or -/url on the kernel command line will provoke an automatic
+install.
+
+<p><b>-/-</b> is used to specify a semi-colon (;) separated
+list of classes that you wish to be active when installing the
+system. <b>-/url</b> is used to tell the system to get its preseed files
+from somewhere other than http://hands.com/d-i/
+
+<h3>boot prompt examples:</h3>
+
+<b>WARNING:</b> I'm afraid I've not tested all of the classes since the move to the latest dashslashdash version, so I wouldn't necessarily expect all of them to work.  The iyonder ones are recent, so should be fine -- the site-hands one definitely works, and the uk one works.
+
+<p>Specify an alternate source for the rest of the configuration (which
+you'll need to have mirrored to make this work)
+<pre>
+  boot: linux -/url=http://intranet.example.com/d-i
+</pre>
+
+<p>Install a Xen based setup (pretty basic at present):
+<pre>
+  boot: linux26 -/-=xen0
+</pre>
+
+Force the install to act as though it was happening on my home network
+(not very useful for anyone else, until more sites get added, but here
+to show the technique):
+<pre>
+  boot: linux26 -/-=site-hands
+</pre>
+
+<p>Have Fun!
+
+<p>Cheers, Phil.

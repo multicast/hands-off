@@ -30,5 +30,5 @@ d-i preseed/include     string _class_setup.sh|
 d-i preseed/include_command     string echo 0-second.cfg
 
 ### previous try ...
-#d-i preseed/include_command     string ( echo "domain-$(debconf-get netcfg/get_domain)/subclass.sh|?"; IFS=';'; for cls in $(debconf-get dsd/classes); do [ "$cls" ] && echo "${cls}/subclass.sh|?"; done ; echo second.cfg )
+#d-i preseed/include_command     string ( IFS=';'; for cls in $(debconf-get dsd/classes); do [ "$cls" ] && echo "${cls}/subclass.sh|?"; done ; echo second.cfg )
 !EOF!
