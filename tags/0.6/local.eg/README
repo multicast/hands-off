@@ -1,0 +1,44 @@
+Note: the local.eg directory is not an active part of the install system
+
+You will however find that a local directory is refered to by the
+dashslashdash scripts.  The idea is that you can use this local.eg
+directory as a template for what you might actually put in there.
+
+Of course, the whole point of the local directory is that it stays
+local to the site where it was created, becasue that the place to put
+things that are either meningless elsewhere, or are security sensitive.
+
+Examples of what the local directory might be used for should be put
+here in local.eg (after paswwords, and the like have been replaced, of
+course) to provide inspiration for others.
+
+The rest of this README assumes that you've copied the local.eg directory
+into place as local:
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+This directory is reserved for local site admin use.
+
+The idea is that you can have both generic and class based preseed and
+subclasses files, as well as things like local ssh authorized_keys files
+
+I'd envisage a layout like this:
+
+  local/preseed  -- preseed file comon across the site
+  local/subclasses -- subclasses that should be on all site machines
+  local/foo/*      -- preseed/subclass files that override the ones
+                      from the main directory tree
+  local/files/     -- a place to dump local, possibly security sensitive files
+
+no files here should be submitted to the central svn.
+
+I intend to make dsd_fetch_file support some form of variable substitution
+so that one might ask it to retrive a file:
+
+   local/files/authorised_keys/%H
+
+and it actually downloads the one names after the hostname, say.  It would be
+good to be able to have it attempt to grab a file for each class a machine
+was in, although dealing with the resulting files in a sane manner will
+need some thought -- perhaps a similar expansion on the target, and some
+tools based on the runnparts approach would do the trick.
+

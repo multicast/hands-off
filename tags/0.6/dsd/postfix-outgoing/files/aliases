@@ -1,0 +1,4 @@
+# See man 5 aliases for format
+postmaster:    postmaster@iyonder.net
+clamav: postmaster
+infected: /var/spool/mail/infected
