@@ -31,11 +31,14 @@ sed -i -e 's/^PermitRootLogin *yes/PermitRootLogin without-password/' /etc/ssh/s
 # This isn't the security risk it might seem, since we should have set
 # sshd_config to have PermitRootLogin without-password by this point,
 # so the login won't be allowed remotely.  sshd_config should also have
-# PermitEmptyPasswords no set, so we should be safe even if the 
+# "PermitEmptyPasswords no", so we should be safe even if the 
 # PermitRootLogin without-password edit failed for some reason.
-#[ -f /root/.ssh/authorized_keys ] ||
-# FIXME --- temporary edit for testing purposes, now always clearing root password
+[ -f /root/.ssh/authorized_keys ] ||
   sed -i -e 's#^root:!:#root::#' /etc/shadow
+
+# If you want a blank root password regardless, set the password to the
+# string "BLANK" and we'll replace it here
+sed -i -e 's#^root:BLANK:#root::#' /etc/shadow
 
 # make sure we have md5sums for all packages we install
 apt-get -y install debsums

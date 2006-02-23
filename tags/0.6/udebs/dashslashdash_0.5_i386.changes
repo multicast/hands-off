@@ -1,0 +1,35 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+
+Format: 1.7
+Date: Tue, 10 Jan 2006 03:17:05 +0000
+Source: dashslashdash
+Binary: dashslashdash
+Architecture: source all
+Version: 0.5
+Distribution: unstable
+Urgency: low
+Maintainer: Philip Hands <phil@hands.com>
+Changed-By: Philip Hands <phil@hands.com>
+Description: 
+ dashslashdash - Automated install helper (enhanced preseeding) (udeb)
+Changes: 
+ dashslashdash (0.5) unstable; urgency=low
+ .
+   * remove unneeded chmod from dashslashdash-preseed.sh
+   * change all local/* variable names to be dsd/* instead
+   * take account of new svn layout, and add support for local preseeds
+   * add code to look for preseed files on debian-dsd-preseed.<local.domain>
+Files: 
+ f073234b9f79e446cf9c13d398411bda 497 debian-installer extra dashslashdash_0.5.dsc
+ 92fee5db5cfd5e73afc16e53115b677b 4039 debian-installer extra dashslashdash_0.5.tar.gz
+ b47de9591d760e996962ebea694fe64a 3620 debian-installer extra dashslashdash_0.5_all.udeb
+package-type: udeb
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.5 (GNU/Linux)
+
+iD8DBQFD+qXpYgOKS92bmRARAj/hAKCVJ1if4DPGvBSobVMjyxxCPjx+ggCdFfy0
+br/VTLsiXQS5oW7e9M5RPb4=
+=B1PQ
+-----END PGP SIGNATURE-----
