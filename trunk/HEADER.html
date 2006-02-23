@@ -1,7 +1,13 @@
 <title>"Hands-off" Debian Installation</title>
 <h1>"Hands-off" Debian Installation</h1>
 
-<h2>New dashslashdash.udeb based setup</h2>
+<h2>dashslashdash.udeb 0.6 -- major changes</h2>
+
+<p>This is no longer built in a way that allows one to take the released official boot images and apply a single package to the relevant initrd in order to enable the new features.  The documentation for the <a href="old-docs/HEADER.html">old approach</a> is preserved for historical interest.
+
+<p>The new approach is to build initrd images using the same method as is used to build the released images themselves
+
+
 <p>This now uses the idea of classes (largely ripped off from FAI) with each class having a directory under the dsd directory.
 
 <p>The initrd preseed file in the new setup is called dashslashdash.sh, it loads dsd/0-first.sh (from where you tell it, or from a host called debian-dsd-preseed.<yourdomain> if it exists, or from http://svn.hands.com/d-/ as a last resort) which then bootstraps the rest of the preseed setup.  This only works because dashslashdash contains a patched preseed.sh that allows for the execution of scripts and using their output as the preseed values.
