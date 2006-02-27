@@ -51,7 +51,7 @@ mkdir ${target_parts_d}
 # get all the classes install_scripts
 for class in $(local_classes); do
   : $((x++)) # increment x each time round the loop
-  target=${target_parts_d}/$(printf "%03d-%s" $x ${class})
+  target=${target_parts_d}/$(printf "%03d-%s" $x $(echo ${class}|sed 's/\([^-a-zA-Z0-9]\)/_/g'))
   dsd_fetch_file dsd/${class}/install_script ${target}
   chmod +x ${target}
 done
