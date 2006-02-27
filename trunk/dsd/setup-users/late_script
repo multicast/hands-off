@@ -33,6 +33,7 @@ cat > /target/tmp/setup-users.pl <<'!EOF!'
 #!/usr/bin/perl -w
 
 while (<>) {
+  chomp ;
   next if /^\s*(#|$)/ ;
   my ($user,$crypt,$sudoer,$gecos,$sshkeys) = split(':') ;
 
@@ -50,7 +51,7 @@ while (<>) {
   
   system("mkdir ~$user/.ssh") ;
   foreach my $key (split(',',$sshkeys)) {
-    system("cat /tmp/sshkeys.$key' >> ~$user/.ssh/authorized_keys") ;
+    system("cat /tmp/sshkeys.$key >> ~$user/.ssh/authorized_keys") ;
   }
   system("chown -R $user: ~$user/.ssh") ;
 }
