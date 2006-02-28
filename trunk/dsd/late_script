@@ -42,7 +42,6 @@ fi
 
 # get install script so  that it's ready for the first boot, and we don't
 # necisarilly need net access after the reboot (handy when changing IP addresses)
-cp /usr/bin/dsd_fetch_file /target/var/tmp
 dsd_fetch_file dsd/install_script /target/var/tmp/base-config.late_command
 chmod +x /target/var/tmp/base-config.late_command
 target_parts_d=/target/var/tmp/base-config.late_command.d
@@ -51,9 +50,9 @@ mkdir ${target_parts_d}
 # get all the classes install_scripts
 for class in $(local_classes); do
   : $((x++)) # increment x each time round the loop
-  target=${target_parts_d}/$(printf "%03d-%s" $x $(echo ${class}|sed 's/\([^-a-zA-Z0-9]\)/_/g'))
-  dsd_fetch_file dsd/${class}/install_script ${target}
-  chmod +x ${target}
+  target="${target_parts_d}/$(printf "%03d-%s" "$x" "$(echo ${class}|sed 's/\([^-a-zA-Z0-9]\)/_/g')")"
+  dsd_fetch_file "dsd/${class}/install_script" "${target}" && \
+    chmod +x "${target}"
 done
 
 ### this is for debugging --- kill the sleep to continue
@@ -64,7 +63,9 @@ fi
 # chain onto class specific late_script(s) if any
 for class in $(local_classes); do
   dsd_fetch_file dsd/${class}/late_script /tmp/late_script-${class}
-  sh /tmp/late_script-${class} > /var/log/late_script-${class}.out 2>&1
+  if [ -s /tmp/late_script-${class} ] ; then
+    sh /tmp/late_script-${class} > /var/log/late_script-${class}.out 2>&1
+  fi
 done
 
 log "debug: ended successfully"
