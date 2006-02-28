@@ -1,3 +1,0 @@
-# point things at the local mirror
-d-i     mirror/http/hostname            string 192.168.0.129
-base-config     apt-setup/hostname      string 192.168.0.129

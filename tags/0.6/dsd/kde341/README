@@ -1,7 +1,0 @@
-This installs a KDE system to Luke Leighton's preferences, using
-xorg and recent kde from debian-desktop.org
-
-It should probably be exploded into smaller subclasses
-
-It sets the root password to "debian" so that it is possible to log in via
-wdm (which doesn't accept empty passwords)
