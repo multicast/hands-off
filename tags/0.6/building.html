@@ -1,0 +1,142 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+  <HEAD>
+<BASE HREF="http://www.hands.com/d-i/">
+
+    <TITLE>Hands-Off auto-installer --- building images</TITLE>
+    <LINK REL="stylesheet" HREF="/styles/site.css">
+    <link rel="shortcut icon" href="favicon.ico" />
+    <META NAME="Author" CONTENT="phil@hands.com (Philip Hands)">
+      <META NAME="Description" CONTENT="The Hands-Off auto-installer provides a method for installing Debian GNU/Linux without user interaction, with the configuration being obtained from a variety of sources, and supporting all the boot methods that Debian itself supports.">
+	<meta name=keywords content="Debian GNU Linux iautomatic installation">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+
+  </HEAD>
+  <BODY bgcolor="#ffffff">
+  <h1>Hands-Off auto-installer --- building images</h1>
+
+  <p>In order to build the relevant initrd images for your prefered
+  boot medium, you need to do the following:
+
+  <p>Check out my modifications from the Debian subversion repository,
+  using subversion:
+<pre>
+$ svn co svn+ssh://svn.debian.org/svn/d-i/people/philh/sarge dsd-di-build-area
+</pre>
+
+then change into the relevant directories, and build the .udebs needed
+for the images:
+
+<pre>
+$ cd dsd-di-build-area/packages/preseed
+$ debuild
+$ cd ../dashslashdash
+$ debuild
+</pre>
+
+Don't worry about warnings that "running debsign failed".  You may
+need to install devscripts and some build dependencies in order to get
+those steps to work.  Then we change to the debian-installer build
+directory:
+
+<pre>
+$ cd ../../installer/build/
+</pre>
+
+and follow the instructions in the README found there (the short version being that you need to do something like):
+
+<pre>
+$ ( cd .. ; dpkg-checkbuilddeps )
+#### and install the packages it asks for
+
+$ echo deb http://debian.hands.com/debian stable main/debian-installer > sources.list.udeb.local
+#### choosing a mirror close to you
+
+$ cp ../../packages/*.udeb localudebs/
+$ ls localudebs/
+dashslashdash_0.6_all.udeb
+file-preseed_1.01.1-0.hands.1_all.udeb
+network-preseed_1.01.1-0.hands.1_all.udeb
+
+$ make
+#### to get a list of possible targets
+$ fakeroot make build_netboot build_netboot26
+#### for example "all_build" is also a useful target
+</pre>
+
+Once done, the resulting images should turn up in dest, and you should
+then be able to drop them into place on the relevant boot medium.
+
+<h2>Creating -/- ready CD images</h2>
+
+<p>loop mount the image you want to base your custom one on:
+<pre>
+$ mount -o loop,ro debian-31r1a-i386-netinst.iso /mnt
+</pre>
+create a working directory, and copy the contents there, and make the
+copy writable:
+<pre>  
+$ mkdir d-i-CD
+$ cp -a /mnt d-i-CD/new
+$ chmod -R +w d-i-CD/new
+</pre>
+and unmount the cd image:
+<pre>
+$ umount /mnt
+</pre>
+now copy the initrd images you created above into these locations in the unpacked CD directory tree:
+<pre>
+    d-i-CD/new/install/2.6/initrd.gz
+    d-i-CD/new/install/initrd.gz
+</pre>
+To save typing, you could also add targets to d-i-CD/new/isolinux/isolinux.cfg, something like this:
+<pre>
+   LABEL postfix
+     kernel /install/vmlinuz
+     append vga=normal initrd=/install/initrd.gz ramdisk_size=10240 root=/dev/rd/0 devfs=mount,dall rw -/-=postfix;site-mysite -/url=http://intranet.example.com/d-i --
+</pre>
+Also edit d-i-CD/new/isolinux/isolinux.txt, adding something above the boot
+prompt so it's clear that you've tweaked the image. I use this, please
+come up with your own:
+<pre>
+   splash.rle
+
+   Phil Hands' preseed tweaked netinst --- see http://hands.com/d-i/ for details
+   add -/-=<class>;... and/or -/url=http://... parameter for an automatic install
+
+   Press F1-control ...
+</pre>
+<b>Note:</b> that that file contains control characters, and ends without a
+newline, so you'll need to edit it with something that will leave that
+intact (I use emacs).
+
+Now make the new iso image:
+<pre>
+$ mkisofs -o d-i-CD/new.iso -r -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table d-i-CD/new
+</pre>  
+and burn it with something like this:
+<pre>
+$ cdrecord -v speed=16 dev=/dev/cdroms/cdrom0 -eject driveropts=burnproof d-i-CD/new.iso
+</pre>
+
+<p>Once you've got a CD, boot from it, and read http://hands.com/d-i/ for
+hints on what to type at the boot prompt to kick things off.
+
+<p>Have Fun!
+
+<pre>
+TODO:
+
+  Make a CD with all the preseed files, all the associated scripts,
+  and all the packages that get downloaded, so that you can preseed a
+  machine with no NIC -- if anyone does this, please tell me about it.
+
+  It should be easier these days, with the /dashslashdash.sh approach,
+  you just need to make it look for the relevant start file in the
+  conditional bit near the end (like the /hd-media cases)
+</pre>
+</small>
+<address><a href="mailto:&#112;&#104;&#105;&#108;&#064;&#104;&#097;&#110;&#100;&#115;&#046;&#099;&#111;&#109;">Philip Hands</a></address>
+  </body>
+</html>

@@ -1,0 +1,64 @@
+#!/bin/sh
+#
+# Copyright (c) 2005-2006 Hands.com Ltd
+# distributed under the terms of the GNU GPL version 2 or (at your option) any later version
+# see the file "COPYING" for details
+
+log() {
+    logger -t install_script "$@"
+}
+in_local_class() {
+    echo "$(debconf-get dsd/classes)" | sed -e 's/;/\n/g' | grep -q "^$1\$"
+}
+local_classes() {
+    echo "$(debconf-get dsd/classes)" | sed -e 's/;/\n/g'
+}
+
+log "debug: Running script from http://hands.com/d-i/dsd/setup-users/late_script"
+set -x
+
+# get all the classes users, and use the one that's left at the end
+for class in default $(local_classes); do
+  dsd_fetch_file "local/users/$class" /tmp/setup-users.users
+  [ -e /tmp/setup-users.users ] && mv /tmp/setup-users.users /target/tmp
+done
+
+# grab all the mentioned ssh keys, ready for installation
+for keyname in $(sed -ne '/^#/!s/^.*:\([^:]*\)$/\1/p' /target/tmp/setup-users.users | tr "," "\n" | sort -u)
+do
+  dsd_fetch_file "local/users/sshkeys.$keyname" "/target/tmp/sshkeys.$keyname"
+done
+
+cat > /target/tmp/setup-users.pl <<'!EOF!'
+#!/usr/bin/perl -w
+
+while (<>) {
+  chomp ;
+  next if /^\s*(#|$)/ ;
+  my ($user,$crypt,$sudoer,$gecos,$sshkeys) = split(':') ;
+
+  if ("root" ne "$user") {
+    system("adduser --disabled-login --gecos \"$gecos\" $user") ;
+  }
+
+  system("sed -i -e 's#^${user}:!:#${user}:${crypt}:#' /etc/passwd") ;
+
+  if ($sudoer) {
+    open(SUDOERS,">>/etc/sudoers") ;
+    printf SUDOERS "%s\tALL=(ALL) ALL\n", $user ;
+    close(SUDOERS) ;
+  }
+  
+  system("mkdir ~$user/.ssh") ;
+  foreach my $key (split(',',$sshkeys)) {
+    system("cat /tmp/sshkeys.$key >> ~$user/.ssh/authorized_keys") ;
+  }
+  system("chown -R $user: ~$user/.ssh") ;
+}
+!EOF!
+
+chmod +x /target/tmp/setup-users.pl
+chroot /target /tmp/setup-users.pl /tmp/setup-users.users
+rm /target/tmp/setup-users.* /target/tmp/sshkeys.*
+
+log "debug: ended successfully"

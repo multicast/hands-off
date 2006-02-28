@@ -1,0 +1,16 @@
+Explanation: see http://www.argon.org/~roderick/apt-pinning.html
+Package: *
+Pin: release o=Debian,a=stable
+Pin-Priority: 900
+
+Package: *
+Pin: release o=Debian,a=testing
+Pin-Priority: 400
+
+Package: *
+Pin: release o=Debian,a=unstable
+Pin-Priority: 300
+
+Package: *
+Pin: release o=Debian
+Pin-Priority: -1
