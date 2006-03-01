@@ -29,13 +29,23 @@ do
   dsd_fetch_file "local/users/sshkeys.$keyname" "/target/tmp/sshkeys.$keyname"
 done
 
+
+# set up apt ready for installing packages in the chrooted script below
+echo "deb http://$(debconf-get mirror/http/hostname)/debian stable main" > /target/etc/apt/sources.list
+echo "Acquire::http::Proxy \"$(debconf-get mirror/http/proxy)\";" > /target/etc/apt/apt.conf
+
 cat > /target/tmp/setup-users.pl <<'!EOF!'
 #!/usr/bin/perl -w
+
+system("apt-get update") ;
+system("apt-get -y install sudo") ;
 
 while (<>) {
   chomp ;
   next if /^\s*(#|$)/ ;
   my ($user,$crypt,$sudoer,$gecos,$sshkeys) = split(':') ;
+
+  open(APTCFG,">/etc/apt/apt.conf") || die;
 
   if ("root" ne "$user") {
     system("adduser --disabled-login --gecos \"$gecos\" $user") ;
