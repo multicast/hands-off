@@ -9,3 +9,6 @@ d-i     countrychooser/shortlist        string GB
 d-i     console-keymaps-at/keymap       string uk
 d-i	mirror/http/hostname		string ftp.uk.debian.org
 base-config     apt-setup/hostname      string ftp.uk.debian.org
+timezoneconf    timezoneconf/toplevel   select Europe
+timezoneconf    timezoneconf/zone       select London
+
