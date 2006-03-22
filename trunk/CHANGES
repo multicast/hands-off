@@ -1,3 +1,8 @@
+0.7
+=-=-=-=-
+Switched to using the etch version of d-i
+
+
 0.6
 =-=-=-=-
 Now we're building the images using the debian-installer method
