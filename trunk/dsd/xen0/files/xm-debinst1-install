@@ -5,7 +5,7 @@ name = "DebianInstall1"
 disk = [ 'phy:vg/vm1hda,hda,w' ]
 dhcp="dhcp"
 root = "/dev/ram0 rw"
-extra = "ramdisk_size=10934 devfs=mount,dall DEBIAN_FRONTEND=text anna/no_kernel_modules=true -/-=uk"
+extra = "ramdisk_size=10934 devfs=mount,dall DEBIAN_FRONTEND=text anna/no_kernel_modules=true -/-=loc/uk"
 restart = 'never'
 
 # the "anna/no_kernel_modules=true" bit above is a kludge
