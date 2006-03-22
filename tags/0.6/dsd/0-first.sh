@@ -42,7 +42,4 @@ d-i preseed/include     string _class_setup.sh|
 # something interesting to allow for more flexible subclassing using the
 # subclass.sh files -- this needs some inspiration first
 d-i preseed/include_command     string echo 0-second.cfg
-
-### previous try ...
-#d-i preseed/include_command     string ( IFS=';'; for cls in $(debconf-get dsd/classes); do [ "$cls" ] && echo "${cls}/subclass.sh|?"; done ; echo second.cfg )
 !EOF!

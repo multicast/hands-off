@@ -4,7 +4,7 @@
 # distributed under the terms of the GNU GPL version 2 or (at your option) any later version
 # see the file "COPYING" for details
 
-MYNAME="spdx-firewall/install_script"
+MYNAME="spdx/firewall/install_script"
 
 log() {
     logger -t $MYNAME "$@"
