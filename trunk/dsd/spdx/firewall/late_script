@@ -22,12 +22,6 @@ local_classes() {
 echo 'd-i post-install "'$MYNAME'" from http://hands.com/d-i/'
 log 'debug: running d-i post-install from http://hands.com/d-i/'
 
-# KLUDGE -- shouldn't need this, since it's also in setup-users, but ...
-# set up apt ready for installing packages in the chrooted script below
-echo "deb http://debian-dsd-preseed.$localdom/debian local-packages/" > /target/etc/apt/sources.list
-echo "deb http://$(debconf-get mirror/http/hostname)/debian stable main" >> /target/etc/apt/sources.list
-echo "Acquire::http::Proxy \"$(debconf-get mirror/http/proxy)\";" > /target/etc/apt/apt.conf
-
 # allow fwadmin to execute local .fw script
 echo "fwadmin $(debconf-get netcfg/get_hostname) = NOPASSWD: /etc/fwbuilder/$(debconf-get netcfg/get_hostname).fw" >> /target/etc/sudoers
 mkdir /target/etc/fwbuilder
@@ -48,10 +42,10 @@ CHROOT_SCRIPT=/tmp/spdx-firewall-setup.sh
 cat > /target/$CHROOT_SCRIPT <<'!EOF!'
 #!/bin/sh
 
-apt-get update
-apt-get -y install kernel-image-2.6.8-tbird barnyard openntpd iptables iproute
+#apt-get update
+#apt-get -y install kernel-image-2.6.8-tbird barnyard openntpd iptables iproute
 # QUERY -- would be nice to have our preseed values at this point -- do we?
-apt-get -y --download-only install snort
+#apt-get -y --download-only install snort
 
 # setup for fwbuilder
 chown -R fwadmin: /etc/fwbuilder

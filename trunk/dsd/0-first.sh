@@ -55,12 +55,14 @@ join_semi() {
 }
 
 subclasses() {
-   if [ -n "$1" ] ; then
-     dsd_fetch_file "dsd/$1/subclasses" /tmp/cls-$1 || return 0
+   class=$1
+   cl_a_ss=$(echo ${class}|sed 's/\([^-a-zA-Z0-9]\)/_/g')
+   if [ -n "$class" ] ; then
+     dsd_fetch_file "dsd/$class/subclasses" /tmp/cls-$cl_a_ss || return 0
    fi
-   dsd_fetch_file "local/$1/subclasses" /tmp/cls-$1-local
-   cat /tmp/cls-$1 /tmp/cls-$1-local | join_semi
-   rm /tmp/cls-$1 /tmp/cls-$1-local
+   dsd_fetch_file "local/$class/subclasses" /tmp/cls-$cl_a_ss-local
+   cat /tmp/cls-$cl_a_ss /tmp/cls-$cl_a_ss-local | join_semi
+   rm /tmp/cls-$cl_a_ss /tmp/cls-$cl_a_ss-local
 }
 
 expandclasses() {

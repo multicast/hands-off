@@ -55,6 +55,16 @@ for class in $(local_classes); do
     chmod +x "${target}"
 done
 
+# collect all class extra_pkgs files, and then apt-get the listed packages
+# into the target
+for class in $(local_classes); do
+  dsd_fetch_file dsd/${class}/extra_pkgs /tmp/extra_pkgs && \
+    EXTRAPKGS="$EXTRAPKGS $(grep -v '^[ 	]*#' /tmp/extra_pkgs)"
+  rm /tmp/extra_pkgs
+done
+chroot /target apt-get update
+chroot /target apt-get -y $EXTRAPKGS
+
 ### this is for debugging --- kill the sleep to continue
 if in_local_class "sleeps" ; then
   sleep 10000 || true
@@ -62,8 +72,9 @@ fi
 
 # chain onto class specific late_script(s) if any
 for class in $(local_classes); do
-  dsd_fetch_file dsd/${class}/late_script /tmp/late_script-${class} && \
-    sh /tmp/late_script-${class} > /var/log/late_script-${class}.out 2>&1
+  cl_a_ss=$(echo ${class}|sed 's/\([^-a-zA-Z0-9]\)/_/g')
+  dsd_fetch_file dsd/${class}/late_script /tmp/late_script-${cl_a_ss} && \
+    sh /tmp/late_script-${cl_a_ss} > /var/log/late_script-${cl_a_ss}.out 2>&1
 done
 
 log "debug: ended successfully"

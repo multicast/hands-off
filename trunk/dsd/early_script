@@ -46,12 +46,13 @@ done
 # chain onto class specific late_script(s) if any
 for class in $(local_classes); do
   CLASS_EARLY_URL="dsd/${class}/early_script"
-  dsd_fetch_file ${CLASS_EARLY_URL} /tmp/early_script-${class} || \
+  cl_a_ss=$(echo ${class}|sed 's/\([^-a-zA-Z0-9]\)/_/g')
+  dsd_fetch_file ${CLASS_EARLY_URL} /tmp/early_script-${cl_a_ss} || \
     log "warning: .../${CLASS_EARLY_URL} not found"
 
-  if [ -e /tmp/early_script-${class} ] ; then
-    chmod +x /tmp/early_script-${class}
-    /tmp/early_script-${class} > /var/log/early_script-${class}.out 2>&1
+  if [ -e /tmp/early_script-${cl_a_ss} ] ; then
+    chmod +x /tmp/early_script-${cl_a_ss}
+    /tmp/early_script-${cl_a_ss} > /var/log/early_script-${cl_a_ss}.out 2>&1
   fi
 done
 
