@@ -6,17 +6,11 @@
 
 set -e
 
-log() {
-    logger -t early_script "$@"
-}
-in_local_class() {
-    echo "$(debconf-get dsd/classes)" | sed -e 's/;/\n/g' | grep -q "^$1\$"
-}
-local_classes() {
-    echo "$(debconf-get dsd/classes)" | sed -e 's/;/\n/g'
-}
+MYNAME="dsd/early_script"
 
-log "debug: Running script from $location"
+. /lib/share/dashslashdash/functions.sh
+
+log "debug: Running..."
 
 set -x
 

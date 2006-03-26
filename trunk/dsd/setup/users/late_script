@@ -4,17 +4,11 @@
 # distributed under the terms of the GNU GPL version 2 or (at your option) any later version
 # see the file "COPYING" for details
 
-log() {
-    logger -t install_script "$@"
-}
-in_local_class() {
-    echo "$(debconf-get dsd/classes)" | sed -e 's/;/\n/g' | grep -q "^$1\$"
-}
-local_classes() {
-    echo "$(debconf-get dsd/classes)" | sed -e 's/;/\n/g'
-}
+MYNAME="dsd/setup/users/late_script"
 
-log "debug: Running script from http://hands.com/d-i/dsd/setup-users/late_script"
+. /lib/share/dashslashdash/functions.sh
+
+log "debug: Running..."
 set -x
 
 # get all the classes users, and use the one that's left at the end
@@ -31,8 +25,10 @@ done
 
 
 # set up apt ready for installing packages in the chrooted script below
-echo "deb http://$(debconf-get mirror/http/hostname)/debian stable main" > /target/etc/apt/sources.list
-echo "Acquire::http::Proxy \"$(debconf-get mirror/http/proxy)\";" > /target/etc/apt/apt.conf
+db_get mirror/http/hostname &&
+  echo "deb http://$RET/debian stable main" > /target/etc/apt/sources.list
+db_get mirror/http/proxy && \
+  echo "Acquire::http::Proxy \"$RET\";" > /target/etc/apt/apt.conf
 
 cat > /target/tmp/setup-users.pl <<'!EOF!'
 #!/usr/bin/perl -w

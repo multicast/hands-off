@@ -18,3 +18,7 @@ postfix postfix/root_address    string postmaster@example.com
 postfix postfix/mynetworks      string 127.0.0.0/8 10.195.34.0/8
 # Other destinations to accept mail for? (blank for none)
 postfix postfix/destinations    string
+
+# if you need to be doing scripting for local preseeding,
+# just add a preseed.sh and uncomment the following line:
+#d-i    preseed/include         string preseed.sh|

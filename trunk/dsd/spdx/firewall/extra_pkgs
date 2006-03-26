@@ -4,4 +4,4 @@ openntpd
 iptables
 iproute
 # I'm not convinced that we have our preseed values in the target early enough for this
-snort
+#snort

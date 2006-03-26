@@ -4,34 +4,26 @@
 # distributed under the terms of the GNU GPL version 2 or (at your option) any later version
 # see the file "COPYING" for details
 
-MYNAME="spdx/firewall/late_script"
+MYNAME="dsd/spdx/firewall/late_script"
+
+. /lib/share/dashslashdash/functions.sh
+
+log "debug: Running..."
 
 # local/domain hardwired in .../local/preseed
-localdom=$(debconf-get local/domain)
-
-log() {
-    logger -t $MYNAME "$@"
-}
-in_local_class() {
-    echo "$(debconf-get dsd/classes)" | sed -e 's/;/\n/g' | grep -q "^$1\$"
-}
-local_classes() {
-    echo "$(debconf-get dsd/classes)" | sed -e 's/;/\n/g'
-}
-
-echo 'd-i post-install "'$MYNAME'" from http://hands.com/d-i/'
-log 'debug: running d-i post-install from http://hands.com/d-i/'
+db_get local/domain && localdom=$RET
 
 # allow fwadmin to execute local .fw script
-echo "fwadmin $(debconf-get netcfg/get_hostname) = NOPASSWD: /etc/fwbuilder/$(debconf-get netcfg/get_hostname).fw" >> /target/etc/sudoers
+db_get netcfg/get_hostname && host=$RET
+echo "fwadmin $host = NOPASSWD: /etc/fwbuilder/$host.fw" >> /target/etc/sudoers
 mkdir /target/etc/fwbuilder
-dsd_fetch_file local/fwadmin/$(debconf-get netcfg/get_hostname).fw /target/etc/fwbuilder/$(debconf-get netcfg/get_hostname).fw
-chmod +x /target/etc/fwbuilder/$(debconf-get netcfg/get_hostname).fw
+dsd_fetch_file local/fwadmin/$host.fw /target/etc/fwbuilder/$host.fw
+chmod +x /target/etc/fwbuilder/$host.fw
 
 cat > /target/etc/init.d/fwbuilder-local <<!EOF!
 #!/bin/sh
 
-/etc/fwbuiler/$(debconf-get netcfg/get_hostname).fw
+/etc/fwbuiler/$host.fw
 /usr/local/sbin/tc-local
 
 exit 0
@@ -57,44 +49,5 @@ chroot /target $CHROOT_SCRIPT
 #sleep 100000 || true
 rm /target/$CHROOT_SCRIPT
 
-
-#==== /etc/hosts
-sed -ie 's#^127\.0\.0\.1.*#127.0.0.1 localhost.localdomain localhost\n10.200.0.13 '$(debconf-get netcfg/get_hostname)'.'$localdom' '$(debconf-get netcfg/get_hostname)'#' /target/etc/hosts
-
-#==== network/interfaces (needs to be more general)
-# currently only works for thunderbird3
-cat > /target/etc/network/interfaces <<!EOF!
-# We always want the loopback interface. Whether we want ifup/ifdown to
-# know about is another matter, perhaps.
-#
-auto lo
-iface lo inet loopback
-
-#
-auto eth0
-iface eth0 inet static
-     address 10.200.0.13
-     network 10.200.0.0
-     netmask 255.255.0.0
-     broadcast 10.200.255.255
-     gateway 10.200.0.1
-
-auto eth1
-iface eth1 inet static
-     address 10.201.0.1
-     network 10.201.0.0
-     netmask 255.255.0.0
-     broadcast 10.201.0.0
-
-auto eth2
-iface eth2 inet static
-     address 10.202.0.1
-     network 10.202.0.0
-     netmask 255.255.0.0
-     broadcast 10.202.0.0
-# --- EOF ---
-!EOF!
-
-
-log 'debug: '$MYNAME': exiting successfully'
+log 'debug: exiting successfully'
 exit 0

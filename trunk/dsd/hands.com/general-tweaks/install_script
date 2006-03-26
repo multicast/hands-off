@@ -4,7 +4,7 @@
 # distributed under the terms of the GNU GPL version 2 or (at your option) any later version
 # see the file "COPYING" for details
 
-MYNAME="hands.com/general-tweaks/install_script"
+MYNAME="dsd/hands.com/general-tweaks/install_script"
 
 log() {
     logger -t install_script "$@"

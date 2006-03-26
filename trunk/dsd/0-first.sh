@@ -11,14 +11,18 @@
 # it is apart from making this one executable for later flexibility
 #
 
+. /lib/share/dashslashdash/functions.sh
+
 # this is a bit of a kludge -- it lets us set the host and domain back to
 # what we set on the kernel command line, but only if this script is being
 # run after the network came up -- this needs more work
-dsd_host="$(debconf-get -/host || true)"
+db_get -/host && dsd_host="$RET"
 dsd_name="$(expr "$dsd_host" : "\([^:.]*\)")"
 dsd_domain="$(expr "$dsd_host" : "[^:.]*\.\([^:]*\)")"
-hostname="${dsd_name:-$(debconf-get netcfg/get_hostname || true)}"
-domain="${dsd_domain:-$(debconf-get netcfg/get_domain || true)}"
+db_get netcfg/get_hostname || RET=ERROR-hostname-unset
+hostname="${dsd_name:-$RET}"
+db_get netcfg/get_domain || RET=ERROR-domain-unset
+domain="${dsd_domain:-$RET}"
 cat <<!EOF!
 d-i     netcfg/get_hostname          string ${hostname}
 d-i     netcfg/get_domain            string ${domain}
@@ -80,7 +84,8 @@ sieve() {
   sieve | grep -v "^$x$"
 }
 
-classes="$(subclasses "");$(debconf-get dsd/classes)"
+db_get dsd/classes && classes=$RET
+classes="$(subclasses "");$classes"
 
 # now that we've worked out the class list, store it for later use
 echo dsd dsd/classes string $(expandclasses "$classes" | sieve | join_semi)

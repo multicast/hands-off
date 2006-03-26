@@ -12,17 +12,11 @@
 
 set -e
 
-log() {
-    logger -t soda_early_script "$@"
-}
-in_local_class() {
-    echo "$(debconf-get dsd/classes)" | sed -e 's/;/\n/g' | grep -q "^$1\$"
-}
-local_classes() {
-    echo "$(debconf-get dsd/classes)" | sed -e 's/;/\n/g'
-}
+MYNAME="dsd/soda/early_script"
 
+. /lib/share/dashslashdash/functions.sh
 
+log "debug: Running..."
 set -x
 
 mkdir -p /lib/partman/commit.d
@@ -32,11 +26,12 @@ cat > /lib/partman/commit.d/29unmount-hda3 <<!EOF!
 umount /cdrom
 umount /hd-media
 !EOF!
+db_get iso-scan/filename && isoname=$RET
 cat > /lib/partman/commit.d/31mount-hda3 <<!EOF!
 #!/bin/sh
 
 mount -r /dev/discs/disc0/part3 /hd-media
-mount -o loop,ro /hd-media/$(debconf-get iso-scan/filename) /cdrom
+mount -o loop,ro /hd-media/$isoname /cdrom
 !EOF!
 chmod +x /lib/partman/commit.d/*mount-hda3
 
