@@ -1,0 +1,37 @@
+As recommended in http://d-i.alioth.debian.org/manual/en.i386/ch04s02.html grab a copy of the boot.img.gz:
+
+  http://http.us.debian.org/debian/dists/sarge/main/installer-i386/current/images/hd-media/boot.img.gz
+
+put it on the stick (i.e.  zcat boot.img.gz > /dev/sda)
+
+Mount it  (i.e. mount /dev/sda /mnt)
+
+grab a copy of the netinst .iso from here:
+
+  http://cdimage.debian.org/pub/cdimage-testing/sarge_d-i/i386/rc3/sarge-i386-netinst.iso
+
+and copy it to /mnt (or wherever the stick is mounted)
+
+also copy this file to the stick:  http://hands.com/d-i/preseed.cfg
+
+and add a section like this to the syslinux.cfg on the stick:
+
+   label auto
+        kernel linux26
+        append vga=normal initrd=initrd26.gz ramdisk_size=10414 root=/dev/rd/0 rw preseed/file=/hd-media/preseed.cfg languagechooser/language-name=English countrychooser/shortlist=GB console-keymaps-at/keymap=uk  --
+
+And maybe one like:
+
+   label debug
+        kernel linux26
+        append vga=normal initrd=initrd26.gz ramdisk_size=10414 root=/dev/rd/0 rw preseed/file=/hd-media/preseed.cfg languagechooser/language-name=English countrychooser/shortlist=GB console-keymaps-at/keymap=uk -- preseed/override=debug.cfg
+
+
+Unmount the stick and your done.
+
+To install, boot from the stick, type auto at the boot prompt, go make a cup of tea, and come back to a newly installed machine.
+
+Of course, at this point "All Your Base are belong to us!" unless you took the precaution of not using the bit that sticks my ssh ID in your root's authorised_keys
+
+
+Cheers, Phil.

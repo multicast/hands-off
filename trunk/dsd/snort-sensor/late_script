@@ -6,7 +6,7 @@
 
 MYNAME="dsd/snort-sensor/late_script"
 
-. /lib/share/dashslashdash/functions.sh
+. /usr/share/dashslashdash/functions.sh
 
 log "debug: Running..."
 

@@ -1,0 +1,30 @@
+#!/bin/sh
+
+log() {
+    logger -t preseed_late_script "$@"
+}
+
+log "debug: Running script from http://hands.com/d-i/site-files/default/preseed_late_script"
+set -x
+
+# let's see what was installed by the end of the run (copied to /var/log/debian-installer/ along with the other log files)
+cp /var/lib/dpkg/status /var/log/dpkg-status
+
+# lock the root login (has the side effect of shutting up the root password prompt)
+sed -i -e 's#^root:[^:]*:#root:!:#' /target/etc/passwd
+
+# stuff values we may need in the install script into the next stages's preseed data
+for i in type site di-url ; do
+  echo local local/$i string $(debconf-get local/$i) >> /var/log/debconf-seed
+done
+
+# get install script so  that it's ready for the first boot, and we don't
+# necisarilly need net access after the reboot (handy when changing IP addresses)
+wget $(debconf-get local/di-url)/site-files/$(debconf-get local/site)/install_script -O /target/var/tmp/base-config.site_install_script 
+
+### this is for debugging --- kill the sleep to continue
+if [ "$ADDSLEEP" = "1" ] ; then
+  set +e ; sleep 10000 ; true
+fi
+
+log "debug: ended successfully"

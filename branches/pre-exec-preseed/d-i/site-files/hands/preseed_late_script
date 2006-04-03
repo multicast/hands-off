@@ -1,0 +1,17 @@
+#!/bin/sh
+
+log() {
+    logger -t preseed_late_script "$@"
+}
+
+log "debug: Running script from http://hands.com/d-i/site-files/hands/preseed_late_script"
+set -x
+
+# ensure that ssh will allow root to log in, once it's installed by the install_script
+mkdir /target/root/.ssh
+echo "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAIEA3oV8gTQeJG4ut4BQhFuKyCYJ+SAhnMTAtwL9aozrI7HP2DcOSJmNYsbzt6ZKsgQ9Mlb/IOOmm79RTt0ECaq+6Pxuo0RCXADxsG3yl2ChFz9HSOsZ1zZJRxQ2Zlcum1z0GQkwJJXMXzeoUSLjFQXLUkl5YrcfxgNkjP3mtE8YGqs= phil@hands.com (key for autoinstall root logins)" > /target/root/.ssh/authorized_keys
+
+wget $(debconf-get local/di-url)/site-files/default/preseed_late_script -O /tmp/preseed_late_script-default
+exec sh /tmp/preseed_late_script-default
+
+log "error: failed to execute /tmp/preseed_late_script-default"

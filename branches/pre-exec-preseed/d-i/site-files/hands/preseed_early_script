@@ -1,0 +1,37 @@
+#!/bin/sh
+
+set -e
+
+log() {
+    logger -t preseed_early_script "$@"
+}
+
+DI_URL=$(debconf-get local/di-url)
+
+log "debug: Running script from ${DI_URL}"
+
+set -x
+
+# script to restart the install -- handy for testing
+# only tested with 2.6 kernels
+{
+  echo "#!/bin/sh"
+  echo "dd if=/dev/zero of=/dev/discs/disc0/disc count=1 && sync && reboot"
+} > /usr/bin/zapme
+chmod +x /usr/bin/zapme
+
+# package to allow packages to be excluded from the base install
+wget ${DI_URL}/udebs/bootstrapwrap_0.1_all.udeb -O /tmp/bootstrapwrap_0.1_all.udeb &&
+  udpkg -i /tmp/bootstrapwrap_0.1_all.udeb &&
+  rm /tmp/bootstrapwrap_0.1_all.udeb
+# get the base_in/exclude stuff in place for bootstrapwrap
+for f in base_include base_exclude ; do
+  if [ -f /hd-media/$f ] ; then
+    cp /hd-media/$f /
+  else
+    SITE_TYPE_URL="${DI_URL}/site-files/$(debconf-get local/site)/type-files/$(debconf-get local/type)/$f"
+    wget ${SITE_TYPE_URL} -O /$f || log "warning: ${SITE_TYPE_URL} not found"
+  fi
+done
+
+log "debug: ends successfully"

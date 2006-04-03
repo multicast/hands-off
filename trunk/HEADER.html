@@ -21,7 +21,10 @@ In the simplest case, you can specify this at the boot prompt:
 <pre>
   boot: linux -/-=;
 </pre>
-and it will do a minimal installation for you.
+and it will do a minimal installation for you.  This assumes that you've
+made a local copy of the d-i area from my server -- if you want to give it
+a try without going to that small amount of effort, just add -/url=hands as
+an additional option.
 
 <h2>-/ parameters</h2>
 
@@ -36,16 +39,38 @@ provoke an automatic install.
 <dt><tt><b>-/-</b></tt></dt>
 <dd>this variable specifies the classes that should be installed on the system, separated by semi-colons (;).  If you want the default minimal install you can set it to ; (i.e. <b><tt>-/-=;</tt></b> ) which ends up invoking the auto-install without actually setting any classes</dd>
 <dt><tt><b>-/url</b></tt></dt>
-<dd>set an alternative source for the configuration files. (e.g. -/url=http://local.web.server/d-i)  Without this the boot will try to find a machine called debian-dsd-preseed.<em>DHCP-derived-domain</em>.  Failing that, it will get the files from svn.hands.com.</dd>
+<dd>set an alternative source for the configuration files. (e.g. -/url=http://local.web.server/d-i)  Without this the boot will try to find a machine called debian-dsd-preseed.<em>DHCP-derived-domain</em>.  There are a couple of majic values you can use here: -/url=hands will get the files from svn.hands.com, and -/url=debian will at some point get the files from a debian server somewhere -- in both cases the inclusion of classes from the local directory is disabled when you use these.</dd>
 <dt><tt><b>-/rel</b></tt></dt>
-<dd>This allows you to set the release protion of the URL where the dsd config will be found.  Here are some examples of what it does (assuming you don't have a local server, and that the current version of the dashslashdash package is 0.6):<pre>
+<dd>This allows you to set the release portion of the URL where the dsd config will be found.  Here are some examples of what it does (assuming you don't have a local server, and that the current version of the dashslashdash package is 0.6):<pre>
    -/rel=     --> http://svn.hands.com/d-i/tags/0.6/
    -/rel=T    --> http://svn.hands.com/d-i/trunk/
-   -/rel=foo  --> http://svn.hands.com/d-i/branch/foo/
+   -/rel=foo  --> http://svn.hands.com/d-i/branches/foo/
 </pre>
 </dd>
 <dt><tt><b>-/host</b></tt>
-<dd>set the hostname and/or domain of the server.  This isn't quite working as yet.  I'm also going to allow the IP address, subnet etc. to be set via this.
+<dd>set the hostname and/or domain of the server.
+The intent is that it will accept a paramter that can be described thus:
+
+  [host][.dom.ain][:ip.add.re.ss][/n.et.ma.sk][,ga.te.wa.y]
+
+At present only the host & domain bits of that are actually implemented,
+but I want people to be able to do any of:
+
+  -/host=foo.example.com:10.20.30.100/255.255.255.0,10.20.30.1
+  -/host=foo
+  -/host=.example.com
+  -/host=:10.20.30.100
+  -/host=:10.20.30.100/255.255.255.0
+  -/host=foo,10.20.30.1
+
+and have it do what one might expect in each case.
+
+I may decide that it is more intuitive to have a semi-colon separated list
+of options after the initial bit, so that it actually ends up looking like:
+
+  -/host=foo.example.com;ip=10.20.30.100;nm=255.255.255.0;gw=10.20.30.1
+
+This is implemented in dsd/0-early-dsd-setup.sh
 </dl>
 
 <h3>examples:</h3>

@@ -32,3 +32,17 @@
 
  o  work out how to prompt the user, so I can add a "hit return to continue"
     when trying to debug scripts
+
+ o  perhaps make dsd_fetch_file support some form of variable substitution
+    so that one might ask it to retrive a file:
+
+       local/files/authorised_keys/%H
+
+    and it actually downloads the one named after the hostname, say.
+
+    It might be good to be able to have it attempt to grab a file for each
+    class a machine was in, although dealing with the resulting files in
+    a sane manner will need some thought -- perhaps a similar expansion
+    on the target, and some tools based on the runnparts approach would
+    do the trick.
+

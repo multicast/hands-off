@@ -10,7 +10,7 @@ set -e
 
 . /usr/share/debconf/confmodule
 
-# local/domain is set in .../local/preseed to avoid publishing it here
+# local/domain is set in local/preseed to avoid publishing it here
 # this allows us to hardwire the domain independent of dhcp shinanegans
 if db_get local/domain ; then
   domain=$RET

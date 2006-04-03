@@ -6,13 +6,13 @@
 
 MYNAME="dsd/setup/users/late_script"
 
-. /lib/share/dashslashdash/functions.sh
+. /usr/share/dashslashdash/functions.sh
 
 log "debug: Running..."
 set -x
 
 # get all the classes users, and use the one that's left at the end
-for class in default $(local_classes); do
+for class in default $(dsd_classes); do
   dsd_fetch_file "local/users/$class" /tmp/setup-users.users
   [ -e /tmp/setup-users.users ] && mv /tmp/setup-users.users /target/tmp
 done

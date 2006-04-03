@@ -1,5 +1,5 @@
 #!/bin/sh
-# 0-first.sh preseed from http://hands.com/d-i/dsd/0-first.cfg
+# 0-early-dsd-setup.sh preseed from http://hands.com/d-i/dsd/0-early-dsd-setup.sh
 #
 # Copyright (c) 2005-2006 Hands.com Ltd
 # distributed under the terms of the GNU GPL version 2 or (at your option) any later version
@@ -11,7 +11,7 @@
 # it is apart from making this one executable for later flexibility
 #
 
-. /lib/share/dashslashdash/functions.sh
+. /usr/share/dashslashdash/functions.sh
 
 # this is a bit of a kludge -- it lets us set the host and domain back to
 # what we set on the kernel command line, but only if this script is being
@@ -23,23 +23,10 @@ db_get netcfg/get_hostname || RET=ERROR-hostname-unset
 hostname="${dsd_name:-$RET}"
 db_get netcfg/get_domain || RET=ERROR-domain-unset
 domain="${dsd_domain:-$RET}"
-cat <<!EOF!
-d-i     netcfg/get_hostname          string ${hostname}
-d-i     netcfg/get_domain            string ${domain}
-d-i     base-config/get-hostname     string ${hostname}
-!EOF!
 
-cat <<'!EOF!'
-# here we put stuff that we expect to override
-d-i     languagechooser/language-name   string English
-d-i     countrychooser/shortlist        string US
-d-i     console-keymaps-at/keymap       string us
-d-i     mirror/country                  string enter information manually
-d-i     mirror/http/hostname            string ftp.debian.org
-d-i     mirror/http/directory           string /debian
-base-config     apt-setup/hostname      string ftp.debian.org
-base-config     apt-setup/directory     string /debian
-!EOF!
+db_set netcfg/get_hostname ${hostname}
+db_set netcfg/get_domain ${domain}
+db_set base-config/get-hostname ${hostname}
 
 # === recursive class subclass processing
 # This needs some work.
@@ -88,12 +75,15 @@ db_get dsd/classes && classes=$RET
 classes="$(subclasses "");$classes"
 
 # now that we've worked out the class list, store it for later use
-echo dsd dsd/classes string $(expandclasses "$classes" | sieve | join_semi)
+db_set dsd/classes "$(expandclasses "$classes" | sieve | join_semi)"
+
+db_get dsd/use_local && use_local=true
+[ "true" = "$use_local" ] && includelcl="../local/preseed"
 
 # generate class preseed inclusion list
 for cls in $(split_semi $classes) ; do
-  include="$include ${cls}/preseed"
-  includelcl="$includelcl ../local/${cls}/preseed?"
+  include="$include${cls}/preseed "
+  [ "true" = "$use_local" ] && includelcl="$includelcl ../local/${cls}/preseed"
 done
 # ... and get it included next
-echo "d-i preseed/include string _common.cfg$include ../local/preseed?$includelcl"
+db_set preseed/include "$include$includelcl"

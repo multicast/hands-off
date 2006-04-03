@@ -6,11 +6,11 @@
 
 MYNAME="dsd/spdx/firewall/late_script"
 
-. /lib/share/dashslashdash/functions.sh
+. /usr/share/dashslashdash/functions.sh
 
 log "debug: Running..."
 
-# local/domain hardwired in .../local/preseed
+# local/domain hardwired in local/preseed
 db_get local/domain && localdom=$RET
 
 # allow fwadmin to execute local .fw script

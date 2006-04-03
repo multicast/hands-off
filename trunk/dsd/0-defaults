@@ -1,9 +1,22 @@
-#  http://hands.com/d-i/dsd/_common.cfg
+#!/bin/sh
+# 0-defaults preseed from http://hands.com/d-i/dsd/0-defaults
 #
 # Copyright (c) 2005-2006 Hands.com Ltd
 # distributed under the terms of the GNU GPL version 2 or (at your option) any later version
 # see the file "COPYING" for details
+#
 
+# here we put stuff that we often expect to override
+d-i     languagechooser/language-name   string English
+d-i     countrychooser/shortlist        string US
+d-i     console-keymaps-at/keymap       string us
+d-i     mirror/country                  string enter information manually
+d-i     mirror/http/hostname            string ftp.debian.org
+d-i     mirror/http/directory           string /debian
+base-config     apt-setup/hostname      string ftp.debian.org
+base-config     apt-setup/directory     string /debian
+
+#=-=-=-=- bits that were once _common.cfg
 # some basic configs, may be overridden by other files
 d-i	mirror/suite			string stable
 d-i	mirror/http/proxy		string
@@ -32,12 +45,15 @@ base-config	apt-setup/another	boolean false
 base-config	apt-setup/security-updates	boolean true
 tasksel		tasksel/first		multiselect
 # need a different approach to get values out of debconf after the reboot
-d-i base-config/late_command string bash /var/tmp/base-config.late_command 2>&1 | tee /var/log/debian-installer/base-config.late_command.out
+d-i base-config/late_command string bash /var/tmp/base-config.late_command 2>&1 | tee /var/log/installer/base-config.late_command.out
 
 ssh	ssh/protocol2_only	boolean true
 ssh	ssh/run_sshd		boolean true
 ssh	ssh/SUID_client		boolean false
 
-# Joey says: For some reason this question is asked on hppa and a few other arches
-# (due to serial console install?)
+# Joey says: For some reason this question is asked on hppa and a few other
+# archs (due to serial console install?)
 console-data console-data/keymap/policy select Don't touch keymap
+#=-=-=-=-
+
+d-i	preseed/run			string 0-early-dsd-setup.sh

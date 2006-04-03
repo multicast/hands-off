@@ -14,7 +14,7 @@ set -e
 
 MYNAME="dsd/soda/early_script"
 
-. /lib/share/dashslashdash/functions.sh
+. /usr/share/dashslashdash/functions.sh
 
 log "debug: Running..."
 set -x

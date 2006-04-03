@@ -1,7 +1,16 @@
 0.7
 =-=-=-=-
-Switched to using the etch version of d-i
+Switched to using the etch version of d-i now that sarge-support.udeb
+allows it to install sarge systems
 
+Stop relying on the dsd:// urls and the optional? and substitution| flags
+and instead use the newly added preseed/run program download feature
+
+Move to doing as much as possible in the late_script, if possible removing
+any install_script, since that should fit in better with the one pass install
+from etch
+
+Use /usr/share/dashslashdash/functions.sh to avoid duplication in scripts
 
 0.6
 =-=-=-=-
