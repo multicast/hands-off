@@ -1,0 +1,53 @@
+#!/bin/bash
+#
+# Copyright (c) 2005-2006 Hands.com Ltd
+# distributed under the terms of the GNU GPL version 2 or (at your option) any later version
+# see the file "COPYING" for details
+
+MYNAME="dsd/spdx/firewall/late_script"
+
+. /usr/share/dashslashdash/functions.sh
+
+log "debug: Running..."
+
+# local/domain hardwired in local/preseed
+db_get local/domain && localdom=$RET
+
+# allow fwadmin to execute local .fw script
+db_get netcfg/get_hostname && host=$RET
+echo "fwadmin $host = NOPASSWD: /etc/fwbuilder/$host.fw" >> /target/etc/sudoers
+mkdir /target/etc/fwbuilder
+dsd_fetch_file local/fwadmin/$host.fw /target/etc/fwbuilder/$host.fw
+chmod +x /target/etc/fwbuilder/$host.fw
+
+cat > /target/etc/init.d/fwbuilder-local <<!EOF!
+#!/bin/sh
+
+/etc/fwbuiler/$host.fw
+/usr/local/sbin/tc-local
+
+exit 0
+!EOF!
+chmod +x /target/etc/init.d/fwbuilder-local
+
+CHROOT_SCRIPT=/tmp/spdx-firewall-setup.sh
+cat > /target/$CHROOT_SCRIPT <<'!EOF!'
+#!/bin/sh
+
+#apt-get update
+#apt-get -y install kernel-image-2.6.8-tbird barnyard openntpd iptables iproute
+# QUERY -- would be nice to have our preseed values at this point -- do we?
+#apt-get -y --download-only install snort
+
+# setup for fwbuilder
+chown -R fwadmin: /etc/fwbuilder
+update-rc.d fwbuilder-local defaults
+!EOF!
+
+chmod +x /target/$CHROOT_SCRIPT
+chroot /target $CHROOT_SCRIPT
+#sleep 100000 || true
+rm /target/$CHROOT_SCRIPT
+
+log 'debug: exiting successfully'
+exit 0

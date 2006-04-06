@@ -1,0 +1,42 @@
+#!/bin/bash
+#
+# Copyright (c) 2005-2006 Hands.com Ltd
+# distributed under the terms of the GNU GPL version 2 or (at your option) any later version
+# see the file "COPYING" for details
+
+MYNAME="dsd/snort-sensor/late_script"
+
+. /usr/share/dashslashdash/functions.sh
+
+log "debug: Running..."
+
+mkdir -p /target/var/lib/cfengine2/ppkeys
+dsd_fetch_file local/cfengine/root-169.43.131.210.pub /target/var/lib/cfengine2/ppkeys/root-169.43.131.210.pub
+mkdir -p /target/etc/cfengine
+dsd_fetch_file local/cfengine/update.conf /target/etc/cfengine/update.conf
+
+# KLUDGE -- shouldn't need this, since it's also in setup-users, but ...
+# set up apt ready for installing packages in the chrooted script below
+echo "deb http://169.43.158.96/debian local-packages/" > /target/etc/apt/sources.list
+db_get mirror/http/hostname &&
+  echo "deb http://$RET/debian stable main" >> /target/etc/apt/sources.list
+dh_get mirror/http/proxy && \
+  echo "Acquire::http::Proxy \"$RET\";" > /target/etc/apt/apt.conf
+
+CHROOT_SCRIPT=/tmp/snort-sensor-setup.sh
+cat > /target/$CHROOT_SCRIPT <<'!EOF!'
+#!/bin/sh
+
+apt-get update
+apt-get -y --download-only install kernel-image-2.4.26-csam-snsr barnyard openntpd
+# QUERY -- would be nice to have our preseed values at this point -- do we?
+apt-get -y --download-only install cfengine2 snort
+!EOF!
+
+chmod +x /target/$CHROOT_SCRIPT
+chroot /target $CHROOT_SCRIPT
+#sleep 100000 || true
+rm /target/$CHROOT_SCRIPT
+
+log 'debug: exiting successfully'
+exit 0

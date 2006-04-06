@@ -1,0 +1,36 @@
+As recommended in
+
+  http://d-i.alioth.debian.org/manual/en.i386/ch04s02.html
+
+grab a copy of the boot.img.gz:
+
+  http://http.us.debian.org/debian/dists/sarge/main/installer-i386/current/images/hd-media/boot.img.gz
+
+put it on the stick (i.e. zcat boot.img.gz > /dev/sda)
+
+Mount it (i.e. mount /dev/sda /mnt),
+
+Read http://hands.com/d-i/HOWTO-CD.txt, and generate or grab an image.
+and copy  the resulting image to /mnt (or wherever the stick is mounted).
+
+Unmount the stick and you're done.
+
+To install, boot from the stick, type a kernel command line with one or more
+classes set in the -/- variable, or set the -/url variable, e.g.:
+
+  boot:  linux -/-=loc/uk;site-hands
+or 
+  boot:  linux26 -/-=kde341 -/url=http://intranet.example.com/d-i
+
+go and make a cup of tea, and come back to a newly installed machine.
+
+Take note -- the default install sets your root password to nothing,
+so anyone who gets access to the console while you're away making your
+tea owns the machine.  Various other configurations either install a
+password, or install an ssh key, so don't just blindly use them unless
+you don't mind me owning your machine :-)
+
+You might also want to refer to http://hands.com/d-i/ for hints on
+what you should type at the boot prompt.
+
+Cheers, Phil.

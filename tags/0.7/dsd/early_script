@@ -1,0 +1,53 @@
+#!/bin/sh
+#
+# Copyright (c) 2005-2006 Hands.com Ltd
+# distributed under the terms of the GNU GPL version 2 or (at your option) any later version
+# see the file "COPYING" for details
+
+set -e
+
+MYNAME="dsd/early_script"
+
+. /usr/share/dashslashdash/functions.sh
+
+log "debug: Running..."
+
+set -x
+
+# script to restart the install -- handy for testing
+{
+  echo "#!/bin/sh"
+  echo "dd if=/dev/zero of=/dev/discs/disc0/disc count=1 && sync && reboot"
+} > /usr/bin/zapme
+chmod +x /usr/bin/zapme
+
+# package to allow packages to be excluded from the base install
+BSW_VER=0.2
+dsd_fetch_file udebs/bootstrapwrap_${BSW_VER}_all.udeb /tmp/bootstrapwrap_${BSW_VER}_all.udeb &&
+  udpkg -i /tmp/bootstrapwrap_${BSW_VER}_all.udeb &&
+  rm /tmp/bootstrapwrap_${BSW_VER}_all.udeb
+# get the base_in/exclude stuff in place for bootstrapwrap
+for f in base_include base_exclude ; do
+  # provide backward compatibility on USB sticks -- probably best ignored
+  if [ -f /hd-media/$f ] ; then
+    cp /hd-media/$f /
+  else
+    INEXCLUDE_URL="dsd/$f"
+    dsd_fetch_file ${INEXCLUDE_URL} /$f || log "warning: .../${INEXCLUDE_URL} not found"
+  fi
+done
+
+# chain onto class specific late_script(s) if any
+for class in $(dsd_classes); do
+  CLASS_EARLY_URL="dsd/${class}/early_script"
+  cl_a_ss=$(echo ${class}|sed 's/\([^-a-zA-Z0-9]\)/_/g')
+  dsd_fetch_file ${CLASS_EARLY_URL} /tmp/early_script-${cl_a_ss} || \
+    log "warning: .../${CLASS_EARLY_URL} not found"
+
+  if [ -e /tmp/early_script-${cl_a_ss} ] ; then
+    chmod +x /tmp/early_script-${cl_a_ss}
+    /tmp/early_script-${cl_a_ss} > /var/log/early_script-${cl_a_ss}.out 2>&1
+  fi
+done
+
+log "debug: ends successfully"

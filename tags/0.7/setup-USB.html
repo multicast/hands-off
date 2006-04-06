@@ -1,0 +1,52 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+  <HEAD>
+
+    <TITLE>Hands-Off auto-installer --- USB setup</TITLE>
+    <LINK REL="stylesheet" HREF="/styles/site.css">
+    <link rel="shortcut icon" href="favicon.ico" />
+    <META NAME="Author" CONTENT="phil@hands.com (Philip Hands)">
+	<meta name=keywords content="Debian GNU Linux automatic installation">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+
+  </HEAD>
+  <BODY bgcolor="#ffffff">
+  <h1>Hands-Off auto-installer --- USB setup</h1>
+
+As <a
+href="http://d-i.alioth.debian.org/manual/en.i386/ch04s02.html">recommended
+in the manual</a> grab a copy of the
+<a href="http://http.us.debian.org/debian/dists/sarge/main/installer-i386/current/images/hd-media/boot.img.gz">boot.img.gz</a>
+and put it on the stick (i.e. <tt>zcat boot.img.gz > /dev/sda</tt>).
+
+Mount it (i.e. <tt>mount /dev/sda /mnt</tt>),
+
+<p>Then you need to <a href="create-CD.html">create a CD image</a>,
+and copy the resulting image to /mnt (or wherever the stick is
+mounted).
+
+<p>Unmount the stick and you're done.
+
+<p>To install, boot from the stick, type a kernel command line with one or more
+classes set in the -/- variable, or set the -/url variable, e.g.:
+<pre>
+  boot:  linux -/-=loc/uk;hands.com/general-tweaks
+or 
+  boot:  linux26 -/-=kde341 -/url=http://intranet.example.com/d-i
+</pre>
+go and make a cup of tea, and come back to a newly installed machine.
+
+<p>Take note -- the default install sets your root password to nothing,
+so anyone who gets access to the console (while you're away making your
+tea) owns the machine.  Various other configurations either install a
+password, or install an ssh key, so don't just blindly use them unless
+you don't mind me owning your machine :-)
+
+<p>You might also want to refer to http://hands.com/d-i/ for hints on
+what you should type at the boot prompt.
+
+</small>
+<address><a href="mailto:&#112;&#104;&#105;&#108;&#064;&#104;&#097;&#110;&#100;&#115;&#046;&#099;&#111;&#109;">Philip Hands</a></address>
+  </body>
+</html>

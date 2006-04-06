@@ -1,0 +1,19 @@
+#!/bin/bash
+#
+# Copyright (c) 2005-2006 Hands.com Ltd
+# distributed under the terms of the GNU GPL version 2 or (at your option) any later version
+# see the file "COPYING" for details
+
+MYNAME="dsd/snort-sensor/install_script"
+
+log() {
+    logger -t $MYNAME "$@"
+}
+
+echo 'd-i post-install "'$MYNAME'" from http://hands.com/d-i/'
+log 'debug: running d-i post-install from http://hands.com/d-i/'
+
+apt-get -y install cfengine2 snort
+
+log 'debug: exiting successfully'
+exit 0

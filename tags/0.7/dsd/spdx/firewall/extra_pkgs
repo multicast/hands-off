@@ -1,0 +1,9 @@
+kernel-image-2.6.8-tbird
+barnyard
+openntpd
+iptables
+iproute
+# let's see if we can keep this from being removed
+base-config
+# I'm not convinced that we have our preseed values in the target early enough for this
+#snort
