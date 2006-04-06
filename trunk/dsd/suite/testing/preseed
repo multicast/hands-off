@@ -1,0 +1,3 @@
+# set the suite to testing, rather than the default stable
+d-i mirror/suite string testing
+

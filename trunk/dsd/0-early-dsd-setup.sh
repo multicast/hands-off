@@ -16,9 +16,12 @@
 # this is a bit of a kludge -- it lets us set the host and domain back to
 # what we set on the kernel command line, but only if this script is being
 # run after the network came up -- this needs more work
-db_get -/host && dsd_host="$RET"
-dsd_name="$(expr "$dsd_host" : "\([^:.]*\)")"
-dsd_domain="$(expr "$dsd_host" : "[^:.]*\.\([^:]*\)")"
+if db_get -/host
+then
+  dsd_host="$RET"
+  dsd_name="$(expr "$dsd_host" : "\([^:.]*\)")"
+  dsd_domain="$(expr "$dsd_host" : "[^:.]*\.\([^:]*\)")"
+fi
 db_get netcfg/get_hostname || RET=ERROR-hostname-unset
 hostname="${dsd_name:-$RET}"
 db_get netcfg/get_domain || RET=ERROR-domain-unset
@@ -48,7 +51,7 @@ join_semi() {
 subclasses() {
    class=$1
    cl_a_ss=$(echo ${class}|sed 's/\([^-a-zA-Z0-9]\)/_/g')
-   if [ -n "$class" ] ; then
+   if [ -n "$class" ] && ! expr "$class" : local/ >/dev/null  ; then
      dsd_fetch_file "dsd/$class/subclasses" /tmp/cls-$cl_a_ss || return 0
    fi
    dsd_fetch_file "local/$class/subclasses" /tmp/cls-$cl_a_ss-local
@@ -82,7 +85,7 @@ db_get dsd/use_local && use_local=true
 
 # generate class preseed inclusion list
 for cls in $(split_semi $classes) ; do
-  include="$include${cls}/preseed "
+  expr "$class" : local/ >/dev/null || include="$include${cls}/preseed "
   [ "true" = "$use_local" ] && includelcl="$includelcl ../local/${cls}/preseed"
 done
 # ... and get it included next

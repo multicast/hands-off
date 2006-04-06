@@ -56,4 +56,4 @@ ssh	ssh/SUID_client		boolean false
 console-data console-data/keymap/policy select Don't touch keymap
 #=-=-=-=-
 
-d-i	preseed/run			string 0-early-dsd-setup.sh
+d-i	preseed/run_command	string [ "true" = "$(debconf-get dsd/use_local)" ] && echo ../local/0-early-dsd-setup.sh ; echo 0-early-dsd-setup.sh
