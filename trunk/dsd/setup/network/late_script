@@ -45,7 +45,7 @@ for iface in $ifaces ; do
 	     netmask $nmask
 	     broadcast $bcast
 	!EOF!
-  db_get local/net/eth$i/gw && [ -n "$RET" ] && \
+  db_get local/net/eth$/gw && [ -n "$RET" ] && \
     echo "     gateway $RET" >> /target/etc/network/interfaces
 done
 
