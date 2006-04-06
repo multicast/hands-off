@@ -58,8 +58,8 @@ for class in $(dsd_classes); do
   rm /tmp/extra_pkgs
 done
 udpkg --configure apt-setup-udeb
-chroot /target aptitude update
-DEBIAN_FRONTEND=noninteractive chroot /target aptitude -y -R install $EXTRAPKGS
+chroot /target apt-get update
+DEBIAN_FRONTEND=noninteractive chroot /target apt-get -y install $EXTRAPKGS
 
 ### this is for debugging --- kill the sleep to continue
 if in_dsd_class "dbg/late" ; then
