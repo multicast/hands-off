@@ -1,0 +1,77 @@
+#!/bin/sh
+#
+# Copyright (c) 2005-2006 Hands.com Ltd
+# distributed under the terms of the GNU GPL version 2 or (at your option) any later version
+# see the file "COPYING" for details
+
+MYNAME="dsd/late_script"
+
+. /usr/share/dashslashdash/functions.sh
+
+log "debug: Running..."
+
+set -x
+
+# let's see what was installed by the end of the run (copied to /var/log/debian-installer/ along with the other log files)
+cp /var/lib/dpkg/status /var/log/dpkg-status
+
+# lock the root login if there's no password to set
+# (has the side effect of shutting up the root password prompt)
+if db_get passwd/root-password && [ -n "$RET" ]; then
+  db_set passwd/root-password-again $RET
+else
+  sed -i -e 's#^root:[^:]*:#root:!:#' /target/etc/passwd
+fi
+
+# preserve values we may need in the install_script(s)
+debconf-copydb -p "^dsd/(classes|di-url)$" configdb target_configdb
+
+# let's see if we're running under xen
+if [ -e /proc/xen ] ; then
+  mv /target/lib/tls /target/lib/tls.disabled
+  # nasty hack, as we should probably install the kernel package
+  cp -a /lib/modules/2.6.11-xenu /target/lib/modules/2.6.11-xenu
+fi
+
+# get install script so  that it's ready for the first boot, and we don't
+# necisarilly need net access after the reboot (handy when changing IP addresses)
+dsd_fetch_file dsd/install_script /target/var/tmp/base-config.late_command
+chmod +x /target/var/tmp/base-config.late_command
+target_parts_d=/target/var/tmp/base-config.late_command.d
+mkdir ${target_parts_d}
+
+# get all the classes install_scripts
+for class in $(dsd_classes); do
+  : $((x++)) # increment x each time round the loop
+  target="${target_parts_d}/$(printf "%03d-%s" "$x" "$(echo ${class}|sed 's/\([^-a-zA-Z0-9]\)/_/g')")"
+  prefix=dsd/ ; expr "$class" : local/ >/dev/null && prefix=
+  dsd_fetch_file "${prefix}${class}/install_script" "${target}" && \
+    chmod +x "${target}"
+done
+
+# collect all class extra_pkgs files, and then apt-get the listed packages
+# into the target
+for class in $(dsd_classes); do
+  prefix=dsd/ ; expr "$class" : local/ >/dev/null && prefix=
+  dsd_fetch_file ${prefix}${class}/extra_pkgs /tmp/extra_pkgs && \
+    EXTRAPKGS="$EXTRAPKGS $(grep -v '^[ 	]*#' /tmp/extra_pkgs)"
+  rm /tmp/extra_pkgs
+done
+udpkg --configure apt-setup-udeb
+chroot /target apt-get update
+DEBIAN_FRONTEND=noninteractive chroot /target apt-get -y install $EXTRAPKGS
+
+### this is for debugging --- kill the sleep to continue
+if in_dsd_class "dbg/late" ; then
+  sleep 10000 || true
+fi
+
+# chain onto class specific late_script(s) if any
+for class in $(dsd_classes); do
+  cl_a_ss=$(echo ${class}|sed 's/\([^-a-zA-Z0-9]\)/_/g')
+  prefix=dsd/ ; expr "$class" : local/ >/dev/null && prefix=
+  dsd_fetch_file ${prefix}${class}/late_script /tmp/late_script-${cl_a_ss} && \
+    sh /tmp/late_script-${cl_a_ss} > /var/log/late_script-${cl_a_ss}.out 2>&1
+done
+
+log "debug: ended successfully"

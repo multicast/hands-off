@@ -1,0 +1,2 @@
+d-i apt-setup/local0/comment string Xen3 packages
+d-i apt-setup/local0/repository string deb http://packages.debianbase.de/sarge/i386/xen3 ./

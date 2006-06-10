@@ -1,0 +1,15 @@
+kernel = "/boot/xen-linux-2.6.11-xenu"
+ramdisk = "/home/xen-disks/netboot-initrd.gz"
+memory = 64
+name = "DebianInstall1"
+disk = [ 'phy:vg/vm1hda,hda,w' ]
+dhcp="dhcp"
+root = "/dev/ram0 rw"
+extra = "ramdisk_size=10934 devfs=mount,dall DEBIAN_FRONTEND=text anna/no_kernel_modules=true -/-=loc/uk"
+restart = 'never'
+
+# the "anna/no_kernel_modules=true" bit above is a kludge
+# to avoid being asked about the fact that the kernel we're
+# booting doesn't have coresponding modules in the archive
+#
+# That would also be the place to add something like -/-=dnsserver or whatever
