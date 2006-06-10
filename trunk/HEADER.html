@@ -1,142 +1,76 @@
 <title>"Hands-off" Debian Installation</title>
 <h1>"Hands-off" Debian Installation</h1>
 
-<h2>Major changes: see dashslashdash-0.7 section below</h2>
+<h2>All change again: now incorporated into debian-installer proper</h2>
 
-<p>This page describes some enhancements to the debian-installer
-system that allows one to build installation media (<a href="create-CD.html">CD</a> <a href="setup-USB.html">USB</a> <a href="building-PXE.html">PXE</a>) that
-behave normally, but also have the ability to do automated,
-non-interactive installs.
+<p>With luck that will be the major rewrite of this stuff, since
+I'd like to start using it, rather than constantly rewriting it.  I'm
+pretty hopeful on this front, since it's now being integrated into d-i
+itself, and so does not have to flit around the periphery of a
+constantly changing centre.
 
-<p>having booted from one of the modified images, one simply needs to
-specify one or more of the -/* parameters described below to provoke
-such an installation.
+<p>Since this is now based on Etch debian-installer, with only minor
+extensions, the build procedure is pretty much exactly the same as
+building vanilla d-i.
+
+<h3>dashslashdash is no more<h3>
+
+<p>It's no longer needed, and we've come up with some rather more
+meaningful variable names to provide the same functionality
+
+<hr>
+
+<p>This page describes some new features of debian-installer system
+that allows automated installation.  If you obtain media that supports
+this, you will find that you can (for example) type something like:
+
+<pre>
+  boot: auto url=intrnet cls=xen3;loc/uk
+</pre>
+
+and get a Xen3 machine installed, with a UK keyboard and timezone.
 
 <p><b>WARNING:</b> <em>don't just blithely try this on a
 machine you care about -- it will cheerfully re-partition the hard
 disk, and overwrite your data, without asking for permission once
 you've launched it.</em>
 
-<h1>How to use this:</h2>
+<h2>Parameters</h2>
 
-In the simplest case, you can specify this at the boot prompt:
-<pre>
-  boot: linux -/-=;
-</pre>
-and it will do a minimal installation for you.  This assumes that you've
-made a local copy of the d-i area from my server -- if you want to give it
-a try without going to that small amount of effort, just add -/url=hands as
-an additional option.
-
-<h2>-/ parameters</h2>
-
-<p>the <tt>-/</tt> parameters are used to activate an automatic
-install.  If you have the dashslashdash.udeb on the initrd of your
-boot media then setting either <tt>-/-</tt>, <tt>-/rel</tt>,
-<tt>-/url</tt> or <tt>-/host</tt> on the kernel command line will
-provoke an automatic install.
-
-<h3>variables:</h3>
-<dl>
-<dt><tt><b>-/-</b></tt></dt>
-<dd>this variable specifies the classes that should be installed on the system, separated by semi-colons (;).  If you want the default minimal install you can set it to ; (i.e. <b><tt>-/-=;</tt></b> ) which ends up invoking the auto-install without actually setting any classes</dd>
-<dt><tt><b>-/url</b></tt></dt>
-<dd>set an alternative source for the configuration files. (e.g. -/url=http://local.web.server/d-i)  Without this the boot will try to find a machine called debian-dsd-preseed.<em>DHCP-derived-domain</em>.  There are a couple of magic values you can use here: -/url=hands will get the files from svn.hands.com, and -/url=debian will at some point get the files from a debian server somewhere -- in both cases the inclusion of classes from the local directory is disabled when you use these.</dd>
-<dt><tt><b>-/rel</b></tt></dt>
-<dd>This allows you to set the release portion of the URL where the dsd config will be found.  Here are some examples of what it does (assuming you don't have a local server, and that the current version of the dashslashdash package is 0.6):<pre>
-   -/rel=     --> http://svn.hands.com/d-i/tags/0.6/
-   -/rel=T    --> http://svn.hands.com/d-i/trunk/
-   -/rel=foo  --> http://svn.hands.com/d-i/branches/foo/
-</pre>
-</dd>
-<dt><tt><b>-/host</b></tt>
-<dd>set the hostname and/or domain of the server.
-The intent is that it will accept a parameter that can be described thus:
-
-  [host][.dom.ain][:ip.add.re.ss][/n.et.ma.sk][,ga.te.wa.y]
-
-At present only the host & domain bits of that are actually implemented,
-but I want people to be able to do any of:
-
-  -/host=foo.example.com:10.20.30.100/255.255.255.0,10.20.30.1
-  -/host=foo
-  -/host=.example.com
-  -/host=:10.20.30.100
-  -/host=:10.20.30.100/255.255.255.0
-  -/host=foo,10.20.30.1
-
-and have it do what one might expect in each case.
-
-I may decide that it is more intuitive to have a semi-colon separated list
-of options after the initial bit, so that it actually ends up looking like:
-
-  -/host=foo.example.com;ip=10.20.30.100;nm=255.255.255.0;gw=10.20.30.1
-
-This is implemented in dsd/0-early-dsd-setup.sh
-</dl>
-
-<h3>examples:</h3>
+<p>The slash-free parameters (like <pre>url</pre>) are actually just
+aliases for normal debconf variables.  So fare the following aliases
+have been defined:
 
 <pre>
-  boot: linux26 -/-=kde341;loc/uk -/url=http://intra.hands.com/d-i/
+auto            preseed/auto
+cls             preseed/auto/classes
+priority        debconf/priority
+url             preseed/url
+hostname        netcfg/get_hostname
+domain          netcfg/get_domain
+file            preseed/file
+locale          debian-installer/locale
+interface       netcfg/choose_interface
+fb              debian-installer/framebuffer
+suite		mirror/suite
 </pre>
-would set both the <tt>kde341</tt> and the <tt>loc/uk</tt> classes, and
-would download the rest of the configuration settings from the
-specified server. If any of the -/* settings are set, the
-auto install is triggered.
 
-<p>If it all works correctly, you'll end up with a system that has no
-root password --- of course, for my sites, I install ssh keys, and for
-some of my clients, I install predetermined passwords, but I don't
-suppose you want me to be able to log into your systems, so setting no
-password so you can set one yourself seemed like a fair default choice.
+<p>by invoking the auto (or auto24) targets, you're just ensuring that
+auto=true is added to the kernel command line.
 
-<p>If you care about security, or if you want to customise this
-without reference to me, you should be able to copy the contents of
-this directory to a local server (or use svn to grab a copy from
-http://svn.hands.com/d-i/), and either tweak the preseed.cfg file used
-to point at your server rather than mine, or set up a
-debian-dsd-preseed CNAME, or specify the server to use as a <tt>-/url</tt>
-command-line parameter.
+<p>As mentioned above, if the url parameter is set to "intranet" some
+magic is invoked to construct a URL for you.
 
-<h2>dashslashdash.udeb 0.7 -- all change again</h2>
+<p><em>Boot images should appear over the next couple of days, as I test them.</em> 
 
-<p>At Joey Hess's request, I've got rid of the executable and optional includes
-functionality, and replaced it with the use of a new preseed/run option that
-causes scripts to be downloaded and run.  Any debconf variables that need
-to be set are set with db_set, rather than echoing to STDOUT.
+<hr>
 
-<p>Now that the "etch" version of debian-installer is able to install "sarge"
-systems, I've switched to using that, rather than further modifying the "sarge"
-version -- hopefully this will pave the way to including my changes into the
-standard version.
-
-<p>The instructions on how to build this stuff are therefore all out of date.
-I'll upload a tweaked set of install media in the near future, once I've done a little more testing, but the short version is:
-
-<ul>
-<li>Grab d-i from subversion (the bit under trunk)
-<li>Also grab the bit under people/philh/etch and people/phil/packages
-<li>Build all the packages under the philh tree.
-<li>Also build cdebconf & sarge-support out of the trunk
-<li>place all the resulting udebs in trunk/installer/build/localudebs/
-<li>create trunk/installer/build/pkg-lists/local listing dashslashdash, dsd-set-preseedurl,dsd-chooser-stub,network-preseed & sarge-support (one per line)
-<li>follow the instructions for building d-i
-</ul>
-
-I'd imagine I've forgotten something -- feel free to mail me if you try and fail -- I'll be rewriting the HOWTOs in a day or so, if I get the time.
-
-<p>The idea is that this will become part of the official Debian media
-in which case if you don't specify anything weird on the command line,
-all will appear normal, but if you add a -/- option it will be interpreted
-as a class list, and will kick off an auto install.  For example:
-
-<p>Be aware that the scripts here depend on dashslashdash-0.7 or
-later.  This breaks backwards compatibility.  Such changes may occur
-again.  If you're basing significant effort on the current setup,
-please mirror all the files (probably with a subversion check-out) so
-you're not dependant on me maintaining backwards compatibility (which
-I could provide, but it would make the directory structure messy, so I
+<p>Be aware that the scripts here depend on customised versions of d-i.
+This breaks backwards compatibility.  Such changes may occur again.
+If you're basing significant effort on the current setup, please
+mirror all the files (probably with a subversion check-out) so you're
+not dependant on me maintaining backwards compatibility (which I could
+provide, but it would make the directory structure messy, so I
 probably won't bother until version 1.0 and beyond -- this is BETA
 software, after all -- you have been warned ;-)</b>
 
