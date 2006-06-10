@@ -9,7 +9,7 @@ set -e
 MYNAME="classes/early_script"
 
 . /usr/share/debconf/confmodule
-. /var/tmp/HandsOff-fn.sh
+. /tmp/HandsOff-fn.sh
 
 log "debug: Running..."
 
@@ -39,7 +39,7 @@ for f in base_include base_exclude ; do
 done
 
 # chain onto class specific late_script(s) if any
-for class in $(HandsOff_classes); do
+for class in $(classes); do
   CLASS_EARLY_URL="/classes/${class}/early_script"
   cl_a_ss=$(echo ${class}|sed 's/\([^-a-zA-Z0-9]\)/_/g')
   ps_fetch_file ${CLASS_EARLY_URL} /tmp/early_script-${cl_a_ss} || \

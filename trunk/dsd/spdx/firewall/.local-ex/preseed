@@ -1,8 +1,0 @@
-# Spdx specific settings
-#
-# Copyright (c) 2005 Hands.com Ltd
-# distributed under the terms of the GNU GPL version 2 or (at your option) any later version
-# see the file "COPYING" for details
-
-local   local/domain	string example.com
-d-i	preseed/include	string echo host-$(debconf-get netcfg/get_hostname)

@@ -1,7 +1,0 @@
-This installs a machine ready to present my Preseeding talk
-(with a bit of luck ;-)
-
-Currently includes a load of overly specific X setup that
-should really be split out to an IBMThinkPad class, say.
-
-Phil Hands

@@ -1,0 +1,71 @@
+#!/bin/sh
+#
+# Copyright (c) 2005-2006 Hands.com Ltd
+# distributed under the terms of the GNU GPL version 2 or (at your option) any later version
+# see the file "COPYING" for details
+
+MYNAME="classes/setup/users/late_script"
+
+. /usr/share/debconf/confmodule
+. /tmp/HandsOff-fn.sh
+
+log "debug: Running..."
+set -x
+
+# get all the classes users, and use the one that's left at the end
+for class in default $(classes); do
+  ps_fetch_file "local/users/$class" /tmp/setup-users.users
+  [ -e /tmp/setup-users.users ] && mv /tmp/setup-users.users /target/tmp
+done
+
+# grab all the mentioned ssh keys, ready for installation
+for keyname in $(sed -ne '/^#/!s/^.*:\([^:]*\)$/\1/p' /target/tmp/setup-users.users | tr "," "\n" | sort -u)
+do
+  ps_fetch_file "local/users/sshkeys.$keyname" "/target/tmp/sshkeys.$keyname"
+done
+
+
+# set up apt ready for installing packages in the chrooted script below
+db_get mirror/http/hostname &&
+  echo "deb http://$RET/debian stable main" > /target/etc/apt/sources.list
+db_get mirror/http/proxy && \
+  echo "Acquire::http::Proxy \"$RET\";" > /target/etc/apt/apt.conf
+
+cat > /target/tmp/setup-users.pl <<'!EOF!'
+#!/usr/bin/perl -w
+
+system("apt-get update") ;
+system("apt-get -y install sudo") ;
+
+while (<>) {
+  chomp ;
+  next if /^\s*(#|$)/ ;
+  my ($user,$crypt,$sudoer,$gecos,$sshkeys) = split(':') ;
+
+  open(APTCFG,">/etc/apt/apt.conf") || die;
+
+  if ("root" ne "$user") {
+    system("adduser --disabled-login --gecos \"$gecos\" $user") ;
+  }
+
+  system("sed -i -e 's#^${user}:!:#${user}:${crypt}:#' /etc/passwd") ;
+
+  if ($sudoer) {
+    open(SUDOERS,">>/etc/sudoers") ;
+    printf SUDOERS "%s\tALL=(ALL) ALL\n", $user ;
+    close(SUDOERS) ;
+  }
+  
+  system("mkdir ~$user/.ssh") ;
+  foreach my $key (split(',',$sshkeys)) {
+    system("cat /tmp/sshkeys.$key >> ~$user/.ssh/authorized_keys") ;
+  }
+  system("chown -R $user: ~$user/.ssh") ;
+}
+!EOF!
+
+chmod +x /target/tmp/setup-users.pl
+chroot /target /tmp/setup-users.pl /tmp/setup-users.users
+rm /target/tmp/setup-users.* /target/tmp/sshkeys.*
+
+log "debug: ended successfully"
