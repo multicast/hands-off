@@ -1,3 +1,17 @@
+1.0
+=-=-=-=-
+dashslashdash is no more.
+
+All it's features are now built into the relevant debian-installer udebs
+
+ -/-     -->  auto-install/classes
+ -/url   -->  job now done by preseed/url
+ -/host  -->  not really available in the same form.  Might come back.
+
+ dsd/classes --> auto-install/classes
+
+
+
 0.7
 =-=-=-=-
 Switched to using the etch version of d-i now that sarge-support.udeb

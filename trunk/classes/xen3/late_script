@@ -1,0 +1,53 @@
+#!/bin/sh
+#
+# Copyright (c) 2005 Hands.com Ltd
+# distributed under the terms of the GNU GPL version 2 or (at your option) any later version
+# see the file "COPYING" for details
+
+MYNAME="classes/xen3/late_script"
+
+. /usr/share/debconf/confmodule
+. /tmp/HandsOff-fn.sh
+
+log "debug: Running..."
+set -x
+
+echo 'APT::Default-Release "stable";' >> /target/etc/apt/apt.conf
+
+apt-install xen-hypervisor-3.0-i386 xen-utils-3.0 xen-docs-3.0 linux-image-xen-686
+
+XEN_KERNEL=$(echo /target/boot/vmlinuz-2.6.16-2-xen-686)
+XEN_VER=${XEN_KERNEL#*vmlinuz-}
+in-target mkinitramfs -o /boot/initrd.img-$XEN_VER $XEN_VER
+
+# put Xen into grub
+ROOTDEV=$(sed -ne 's#^\([^	 ]*\)[	 ]*/[	 ].*$#\1#p' /target/etc/fstab)
+sed -ie '/### BEGIN AUTOMAGIC KERNELS LIST/i\
+title Xen 3\
+  kernel /boot/xen.gz dom0_mem=64000\
+  module  /boot/vmlinuz-'"$XEN_VER"' root='"$ROOTDEV"' ro\
+  module  /boot/initrd.img-'"$XEN_VER"'\
+' /target/boot/grub/menu.lst
+
+# Xen doesn't play nice with TLS
+in-target mv /lib/tls /lib/tls.disabled
+
+# make a directory for disk image files
+mkdir /target/home/xen-disks
+ai_fetch_file /classes/xen3/files/initrd-2.6.12.6-xen.gz /target/home/xen-disks/initrd-2.6.12.6-xen.gz
+
+db_subst ai/meta/note1 NOTE "Xen late_script debug"
+db_subst ai/meta/note1 LONGNOTE "Xen late_script debug. Xen late_script debug. Xen late_script debug. Xen late_script debug. Xen late_script debug. Xen late_script debug. Xen late_script debug. Xen late_script debug. Xen late_script debug. Xen late_script debug. Xen late_script debug. Xen late_script debug. Xen late_script debug. Xen late_script debug. Xen late_script debug. Xen late_script debug. Xen late_script debug. Xen late_script debug. "
+db_set ai/meta/note1 seen false
+db_input critical ai/meta/note1
+#db_go
+
+# prepopulate root's history with commands needed to install a new xen domain
+cat > /target/root/.bash_history <<EOF
+#dd if=/dev/zero of=/dev/hda count=1 ; sync ; reboot -f
+xm create -c xm-debinst1-install
+xm create -c xm-debinst1
+EOF
+chmod 600 /target/root/.bash_history
+
+log "debug: script ended successfully"

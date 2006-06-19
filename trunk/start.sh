@@ -21,9 +21,9 @@ log() {
     logger -t $MYNAME "$@"
 }
 in_class() {
-    echo "$(debconf-get dsd/classes)" | sed -e 's/;/\n/g' | grep -q "^$1\$"
+    echo "$(debconf-get auto-install/classes)" | sed -e 's/;/\n/g' | grep -q "^$1\$"
 }
 classes() {
-    echo "$(debconf-get dsd/classes)" | sed -e 's/;/\n/g'
+    echo "$(debconf-get auto-install/classes)" | sed -e 's/;/\n/g'
 }
 !EOF!

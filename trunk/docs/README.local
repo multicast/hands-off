@@ -1,12 +1,12 @@
 For the system to work properly when you've copied the preseed directories
 to your local server, you need a local heirachy that matches the one under
-dsd (at least, you need similar paths for any classes you actually use)
-becasue as well as loading dsd/<class_name>/preseed the system will also
+classes (at least, you need similar paths for any classes you actually use)
+becasue as well as loading classes/<class_name>/preseed the system will also
 attempt to load local/<class_name>/preseed.
 
-There is a script in this directory:
+There is a script:
 
-  populate_local_tree
+  utils/populate_local_tree
 
 that perfoms this task for you, and populates the local directory
 with examples.

@@ -14,28 +14,29 @@ set -x
 
 # get all the classes users, and use the one that's left at the end
 for class in default $(classes); do
-  ps_fetch_file "local/users/$class" /tmp/setup-users.users
+  ai_fetch_file "/local/users/$class" /tmp/setup-users.users
   [ -e /tmp/setup-users.users ] && mv /tmp/setup-users.users /target/tmp
 done
 
 # grab all the mentioned ssh keys, ready for installation
 for keyname in $(sed -ne '/^#/!s/^.*:\([^:]*\)$/\1/p' /target/tmp/setup-users.users | tr "," "\n" | sort -u)
 do
-  ps_fetch_file "local/users/sshkeys.$keyname" "/target/tmp/sshkeys.$keyname"
+  ai_fetch_file "/local/users/sshkeys.$keyname" "/target/tmp/sshkeys.$keyname"
 done
 
+apt-install sudo
 
 # set up apt ready for installing packages in the chrooted script below
-db_get mirror/http/hostname &&
-  echo "deb http://$RET/debian stable main" > /target/etc/apt/sources.list
-db_get mirror/http/proxy && \
-  echo "Acquire::http::Proxy \"$RET\";" > /target/etc/apt/apt.conf
+#db_get mirror/http/hostname &&
+#  echo "deb http://$RET/debian stable main" > /target/etc/apt/sources.list
+#db_get mirror/http/proxy && \
+#  echo "Acquire::http::Proxy \"$RET\";" > /target/etc/apt/apt.conf
 
 cat > /target/tmp/setup-users.pl <<'!EOF!'
 #!/usr/bin/perl -w
 
-system("apt-get update") ;
-system("apt-get -y install sudo") ;
+#system("apt-get update") ;
+#system("apt-get -y install sudo") ;
 
 while (<>) {
   chomp ;
@@ -65,7 +66,7 @@ while (<>) {
 !EOF!
 
 chmod +x /target/tmp/setup-users.pl
-chroot /target /tmp/setup-users.pl /tmp/setup-users.users
+in-target /tmp/setup-users.pl /tmp/setup-users.users
 rm /target/tmp/setup-users.* /target/tmp/sshkeys.*
 
 log "debug: ended successfully"

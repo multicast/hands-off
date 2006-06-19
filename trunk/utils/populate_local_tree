@@ -9,15 +9,15 @@ local=${1:-local}
 [ -d "$local" ] || mkdir -p $local
 
 # copy examples from .local-ex directories
-for localexdir in $( cd dsd ; find . -type d -name .local-ex ) ; do
+for localexdir in $( cd classes ; find . -type d -name .local-ex ) ; do
   dir=$(dirname $localexdir)
   [ -d "$local/$dir" ] || mkdir -p $local/$dir
-  tar -C dsd/$localexdir --exclude='\.svn' -cf - . | \
+  tar -C classes/$localexdir --exclude='\.svn' -cf - . | \
     tar -C $local/$dir -xf -
 done
 
-# ensure that there are preseed files for all the dsd classes
-for preseed in $( cd dsd ; find . -name .local-ex -prune -o -name preseed -print ) ; do
+# ensure that there are local preseed files for all the classes
+for preseed in $( cd classes ; find . -name .local-ex -prune -o -name preseed -print ) ; do
   dir=$(dirname $preseed)
   [ -d "$local/$dir" ] || mkdir -p $local/$dir
   [ -f "$local/$preseed" ] || touch $local/$preseed

@@ -29,9 +29,9 @@ subclasses() {
    class=$1
    cl_a_ss=$(echo ${class}|sed 's/\([^-a-zA-Z0-9]\)/_/g')
    if [ -n "$class" ] && ! expr "$class" : local/ >/dev/null  ; then
-     ps_fetch_file "/classes/$class/subclasses" /tmp/cls-$cl_a_ss || return 0
+     ai_fetch_file "/classes/$class/subclasses" /tmp/cls-$cl_a_ss || return 0
    fi
-   ps_fetch_file "/local/$class/subclasses" /tmp/cls-$cl_a_ss-local
+   ai_fetch_file "/local/$class/subclasses" /tmp/cls-$cl_a_ss-local
    cat /tmp/cls-$cl_a_ss /tmp/cls-$cl_a_ss-local | join_semi
    rm /tmp/cls-$cl_a_ss /tmp/cls-$cl_a_ss-local
 }
@@ -51,11 +51,11 @@ sieve() {
   sieve | grep -v "^$x$"
 }
 
-db_get preseed/auto/classes && classes=$RET
-classes="$(subclasses "");$classes"
+db_get auto-install/classes && classes=$RET
+classes="$(expandclasses "$(subclasses "");$classes" | sieve | join_semi)"
 
 # now that we've worked out the class list, store it for later use
-db_set preseed/auto/classes "$(expandclasses "$classes" | sieve | join_semi)"
+db_set auto-install/classes "$classes"
 
 db_get local/use_local_directory && use_local=true
 [ "true" = "$use_local" ] && includelcl="local/preseed"
@@ -66,4 +66,5 @@ for cls in $(split_semi $classes) ; do
   [ "true" = "$use_local" ] && includelcl="$includelcl local/${cls}/preseed"
 done
 # ... and get it included next
+
 db_set preseed/include "$include$includelcl"
