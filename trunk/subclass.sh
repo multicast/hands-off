@@ -55,7 +55,11 @@ db_get auto-install/classes && classes=$RET
 classes="$(expandclasses "$(subclasses "");$classes" | sieve | join_semi)"
 
 # now that we've worked out the class list, store it for later use
-db_set auto-install/classes "$classes"
+# if no classes were previously defined, we'll have to register the question
+if ! db_set auto-install/classes "$classes"; then
+	db_register preseed/meta/string auto-install/classes
+	db_set auto-install/classes "$classes"
+fi
 
 db_get local/use_local_directory && use_local=true
 [ "true" = "$use_local" ] && includelcl="local/preseed"

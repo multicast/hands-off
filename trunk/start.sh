@@ -26,4 +26,18 @@ in_class() {
 classes() {
     echo "$(debconf-get auto-install/classes)" | sed -e 's/;/\n/g'
 }
+dbg_pause() {
+
+echo "$(debconf-get dbg/pauses)" | sed -e 's/;/\n/g' | grep -q "^$1\$" || return 0
+
+db_register preseed/meta/text hands-off/pause/title
+db_subst hands-off/pause/title DESC "Conditional Debugging Pause"
+db_settitle hands-off/pause/title
+
+db_register preseed/meta/text hands-off/pause
+db_subst hands-off/pause DESCRIPTION "$2"
+db_input critical hands-off/pause
+db_unregister hands-off/pause
+db_unregister hands-off/pause/title
+}
 !EOF!
