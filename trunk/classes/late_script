@@ -14,10 +14,12 @@ log "debug: Running..."
 # this is only needed for sarge installs, and not all of them
 udpkg --configure apt-setup-udeb
 
-db_subst ai/meta/text1 TEXT "Preseed late_script(s)"
-db_progress START 0 $({ echo myself; classes; } | wc -w) ai/meta/text1
+db_register preseed/meta/text hands-off/title                                   db_register preseed/meta/text hands-off/item
 
-db_subst ai/meta/text2 TEXT "Running top level script"
+db_subst hands-off/title DESC "Preseed late_script(s)"
+db_progress START 0 $({ echo myself; classes; } | wc -w) hands-off/title
+
+db_subst hands-off/item DESC "Running top level script"
 db_progress INFO ai/meta/text2
 
 # let's see what was installed by the end of the run (copied to /var/log/debian-installer/ along with the other log files)
@@ -42,7 +44,7 @@ fi
 # into the target
 for class in $(classes); do
   prefix=classes/ ; expr "$class" : local/ >/dev/null && prefix=
-  ai_fetch_file "/${prefix}${class}/extra_pkgs" /tmp/extra_pkgs && \
+  preseed_fetch "/${prefix}${class}/extra_pkgs" /tmp/extra_pkgs && \
     EXTRAPKGS="$EXTRAPKGS $(grep -v '^[ 	]*#' /tmp/extra_pkgs)"
   rm /tmp/extra_pkgs
 done
@@ -63,16 +65,19 @@ db_progress STEP 1
 
 # chain onto class specific late_script(s) if any
 for class in $(classes); do
-  db_subst ai/meta/text2 TEXT "Running script for class '$class'"
-  db_progress INFO ai/meta/text2
+  db_subst hands-off/item DESC "Running script for class '$class'"
+  db_progress INFO hands-off/item
 
   cl_a_ss=$(echo ${class}|sed 's/\([^-a-zA-Z0-9]\)/_/g')
   prefix=classes/ ; expr "$class" : local/ >/dev/null && prefix=
-  ai_fetch_file /${prefix}${class}/late_script /tmp/late_script-${cl_a_ss} && \
+  preseed_fetch /${prefix}${class}/late_script /tmp/late_script-${cl_a_ss} && \
     sh /tmp/late_script-${cl_a_ss} > /var/log/late_script-${cl_a_ss}.out 2>&1
   db_progress STEP 1
 done
 
 db_progress STOP
+
+db_unregister hands-off/title
+db_unregister hands-off/item
 
 log "debug: ended successfully"

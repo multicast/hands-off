@@ -29,9 +29,9 @@ subclasses() {
    class=$1
    cl_a_ss=$(echo ${class}|sed 's/\([^-a-zA-Z0-9]\)/_/g')
    if [ -n "$class" ] && ! expr "$class" : local/ >/dev/null  ; then
-     ai_fetch_file "/classes/$class/subclasses" /tmp/cls-$cl_a_ss || return 0
+     preseed_fetch "/classes/$class/subclasses" /tmp/cls-$cl_a_ss || return 0
    fi
-   ai_fetch_file "/local/$class/subclasses" /tmp/cls-$cl_a_ss-local
+   preseed_fetch "/local/$class/subclasses" /tmp/cls-$cl_a_ss-local
    cat /tmp/cls-$cl_a_ss /tmp/cls-$cl_a_ss-local | join_semi
    rm /tmp/cls-$cl_a_ss /tmp/cls-$cl_a_ss-local
 }

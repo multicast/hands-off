@@ -10,7 +10,6 @@ MYNAME="classes/xen3/late_script"
 . /tmp/HandsOff-fn.sh
 
 log "debug: Running..."
-set -x
 
 echo 'APT::Default-Release "stable";' >> /target/etc/apt/apt.conf
 
@@ -34,13 +33,15 @@ in-target mv /lib/tls /lib/tls.disabled
 
 # make a directory for disk image files
 mkdir /target/home/xen-disks
-ai_fetch_file /classes/xen3/files/initrd-2.6.12.6-xen.gz /target/home/xen-disks/initrd-2.6.12.6-xen.gz
+preseed_fetch /classes/xen3/files/initrd-2.6.12.6-xen.gz /target/home/xen-disks/initrd-2.6.12.6-xen.gz
 
-db_subst ai/meta/note1 NOTE "Xen late_script debug"
-db_subst ai/meta/note1 LONGNOTE "Xen late_script debug. Xen late_script debug. Xen late_script debug. Xen late_script debug. Xen late_script debug. Xen late_script debug. Xen late_script debug. Xen late_script debug. Xen late_script debug. Xen late_script debug. Xen late_script debug. Xen late_script debug. Xen late_script debug. Xen late_script debug. Xen late_script debug. Xen late_script debug. Xen late_script debug. Xen late_script debug. "
-db_set ai/meta/note1 seen false
-db_input critical ai/meta/note1
-#db_go
+
+db_register preseed/meta/boolean hands-off/test_message
+db_subst hands-off/test_message DESC "Xen late_script debug"
+db_subst hands-off/test_message DESCRIPTION "Xen late_script debug. Xen late_script debug. Xen late_script debug. Xen late_script debug. Xen late_script debug. Xen late_script debug. Xen late_script debug. Xen late_script debug. Xen late_script debug. Xen late_script debug. Xen late_script debug. Xen late_script debug. Xen late_script debug. Xen late_script debug. Xen late_script debug. Xen late_script debug. Xen late_script debug. Xen late_script debug. "
+#db_set hands-off/test_message seen false
+db_input critical hands-off/test_message
+db_go
 
 # prepopulate root's history with commands needed to install a new xen domain
 cat > /target/root/.bash_history <<EOF

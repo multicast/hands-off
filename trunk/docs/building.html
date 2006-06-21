@@ -22,29 +22,34 @@
   <p>Check out my modifications from the Debian subversion repository,
   using subversion:
 <pre>
-$ svn co svn+ssh://svn.debian.org/svn/d-i/people/philh/sarge dsd-di-build-area
+$ mkdir -p ~/di-build-area/packages
+$ svn co svn://svn.debian.org/svn/d-i/people/philh/etch/packages/kbd-chooser ~/di-build-area/packages
+$ svn co svn://svn.debian.org/svn/d-i/people/philh/etch/packages/localechooser ~/di-build-area/packages
+$ svn co svn://svn.debian.org/svn/d-i/people/philh/packages/auto-install ~/di-build-area/packages
 </pre>
-
-then change into the relevant directories, and build the .udebs needed
-for the images:
-
+as well as the bits of d-i you need:
 <pre>
-$ cd dsd-di-build-area/packages/preseed
-$ debuild
-$ cd ../dashslashdash
-$ debuild
+$ svn co svn://svn.debian.org/svn/d-i/trunk/packages/preseed ~/di-build-area/packages/preseed
+$ svn co svn://svn.debian.org/svn/d-i/trunk/installer ~/di-build-area/installer
 </pre>
+then change into each directory under the ~/di-build-area/packages
+directory, and build the .udebs needed for the images by running
+debuild in each.
 
-Don't worry about warnings that "running debsign failed".  You may
+<p>Don't worry about warnings that "running debsign failed".  You may
 need to install devscripts and some build dependencies in order to get
 those steps to work.  Then we change to the debian-installer build
 directory:
 
 <pre>
-$ cd ../../installer/build/
+$ cd ~/di-build-area/installer/build/
 </pre>
 
-and follow the instructions in the README found there (the short version being that you need to do something like):
+and follow the instructions in the README found there, after copying
+your locally built udebs into the localudebs directory and add
+ai-chooser and auto-install to the files in pkg-lists/ that mention
+localechooser (the short version being that you need to do something
+like):
 
 <pre>
 $ ( cd .. ; dpkg-checkbuilddeps )
@@ -53,11 +58,7 @@ $ ( cd .. ; dpkg-checkbuilddeps )
 $ echo deb http://debian.hands.com/debian stable main/debian-installer > sources.list.udeb.local
 #### choosing a mirror close to you
 
-$ cp ../../packages/*.udeb localudebs/
-$ ls localudebs/
-dashslashdash_0.6_all.udeb
-file-preseed_1.01.1-0.hands.1_all.udeb
-network-preseed_1.01.1-0.hands.1_all.udeb
+$ cp ~/di-build-area/packages/*.udeb localudebs/
 
 $ make
 #### to get a list of possible targets
@@ -68,7 +69,7 @@ $ fakeroot make build_netboot build_netboot26
 Once done, the resulting images should turn up in dest, and you should
 then be able to drop them into place on the relevant boot medium.
 
-<h2>Creating -/- ready CD images</h2>
+<h2>Creating CD images</h2>
 
 <p>loop mount the image you want to base your custom one on:
 <pre>

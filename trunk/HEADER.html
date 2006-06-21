@@ -1,17 +1,19 @@
 <title>"Hands-off" Debian Installation</title>
 <h1>"Hands-off" Debian Installation</h1>
 
-<h2>All change again: now (mostly) incorporated into debian-installer proper</h2>
+If you've been here before, things have changed.
 
-<p>With luck that will be the last major rewrite of this stuff, since
-I'd like to start using it, rather than constantly rewriting it.  I'm
-pretty hopeful on this front, since it's now being integrated into d-i
-itself, and so does not have to flit around the periphery of a
-constantly changing centre.
+<p>This site contains a framework for automatically installing Debian
+systems, based on recent (i.e. post-<em>sarge</em>, from svn) versions of
+debian-installer.
 
-<p>Since this is now based on Etch debian-installer, with only minor
+<p>It relies on a new udeb called auto-install, which is activated by setting the debconf variable auto-install/enabled to true.  This delays the kdb-chooser and localechooser udebs until after network-preseed, allowing them to be presseded via the network.  Another feature of auto-install is to expand preseed/url from a hostname to a full URL, if only a hostname was provided.
+
+<p>Since this is now based on debian-installer, with only minor
 extensions, the build procedure is pretty much exactly the same as
-building vanilla d-i.
+building vanilla d-i from svn, <a
+href="http://deasil.hands.com/d-i/trunk/docs/building.html">with a
+couple of tweaks</a>.
 
 <h3>dashslashdash is no more</h3>
 
