@@ -21,21 +21,26 @@ log() {
     logger -t $MYNAME "$@"
 }
 in_class() {
-    echo "$(debconf-get auto-install/classes)" | sed -e 's/;/\n/g' | grep -q "^$1\$"
+    echo ";$(debconf-get auto-install/classes);" | grep -q ";$1;"
 }
 classes() {
     echo "$(debconf-get auto-install/classes)" | sed -e 's/;/\n/g'
 }
 dbg_pause() {
+desc=$1 ; shift
 
-echo "$(debconf-get dbg/pauses)" | sed -e 's/;/\n/g' | grep -q "^$1\$" || return 0
+match=false
+for i in $@; do
+  echo ";$(debconf-get dbg/pauses);" | grep -q ";$1;" && match=true
+done
+[ true = $match ] || return 0
 
 db_register preseed/meta/text hands-off/pause/title
 db_subst hands-off/pause/title DESC "Conditional Debugging Pause"
 db_settitle hands-off/pause/title
 
 db_register preseed/meta/text hands-off/pause
-db_subst hands-off/pause DESCRIPTION "$2"
+db_subst hands-off/pause DESCRIPTION "$desc"
 db_input critical hands-off/pause
 db_unregister hands-off/pause
 db_unregister hands-off/pause/title

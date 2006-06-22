@@ -13,7 +13,7 @@ MYNAME="classes/early_script"
 
 log "debug: Running..."
 
-dbg_pause early "Early Script 1"
+dbg_pause "Early Script 1" all early
 
 db_register preseed/meta/text hands-off/title
 db_register preseed/meta/text hands-off/item

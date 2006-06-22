@@ -20,10 +20,11 @@ XEN_VER=${XEN_KERNEL#*vmlinuz-}
 in-target mkinitramfs -o /boot/initrd.img-$XEN_VER $XEN_VER
 
 # put Xen into grub
+XEN=$(cd /target/boot; ls xen*.gz|head -1)
 ROOTDEV=$(sed -ne 's#^\([^	 ]*\)[	 ]*/[	 ].*$#\1#p' /target/etc/fstab)
 sed -ie '/### BEGIN AUTOMAGIC KERNELS LIST/i\
 title Xen 3\
-  kernel /boot/xen.gz dom0_mem=64000\
+  kernel /boot/'"$XEN"' dom0_mem=64000\
   module  /boot/vmlinuz-'"$XEN_VER"' root='"$ROOTDEV"' ro\
   module  /boot/initrd.img-'"$XEN_VER"'\
 ' /target/boot/grub/menu.lst
@@ -31,17 +32,43 @@ title Xen 3\
 # Xen doesn't play nice with TLS
 in-target mv /lib/tls /lib/tls.disabled
 
-# make a directory for disk image files
+# make a directory for disk image files, and make image (see files/cobble-initrd)
 mkdir /target/home/xen-disks
-preseed_fetch /classes/xen3/files/initrd-2.6.12.6-xen.gz /target/home/xen-disks/initrd-2.6.12.6-xen.gz
+preseed_fetch /classes/xen3/files/cobble-initrd  /target/home/xen-disks/cobble-initrd
+preseed_fetch /classes/xen3/files/initrd.gz  /target/home/xen-disks/orig-netinst-initrd.gz
+in-target sh /home/xen-disks/cobble-initrd /home/xen-disks/orig-netinst-initrd.gz /home/xen-disks/xen-netinst-initrd.gz
 
+# set up config files
+preseed_fetch /classes/xen3/files/xend-config.sxp  /target/etc/xen/xend-config.sxp
+preseed_fetch /classes/xen3/files/xm-debinst1  /target/etc/xen/xm-debinst1
+preseed_fetch /classes/xen3/files/xm-debinst1-install  /target/etc/xen/xm-debinst1-install
 
-db_register preseed/meta/boolean hands-off/test_message
-db_subst hands-off/test_message DESC "Xen late_script debug"
-db_subst hands-off/test_message DESCRIPTION "Xen late_script debug. Xen late_script debug. Xen late_script debug. Xen late_script debug. Xen late_script debug. Xen late_script debug. Xen late_script debug. Xen late_script debug. Xen late_script debug. Xen late_script debug. Xen late_script debug. Xen late_script debug. Xen late_script debug. Xen late_script debug. Xen late_script debug. Xen late_script debug. Xen late_script debug. Xen late_script debug. "
-#db_set hands-off/test_message seen false
-db_input critical hands-off/test_message
-db_go
+# sort out the LVM partition
+# First, unmount the redundant partition
+umount /target/reserved-for-LVM
+# then change the big partition's type to LVM
+echo -e 't\n6\n8e\nw\nq' | fdisk /dev/discs/disc0/disc
+# then get rid of the offending line in the fstab, after remembering the device
+LVMDEV=$(sed -ne 's#^\([^	 ]*\)[	 ]*/reserved-for-LVM[	 ].*$#\1#p' /target/etc/fstab)
+sed -ie '/reserved-for-LVM/d' /target/etc/fstab
+# and discard the redundant mountpount
+rmdir /target/reserved-for-LVM
+# set up LVM
+apt-install lvm2
+in-target pvcreate $LVMDEV
+in-target vgcreate vg $LVMDEV
+in-target lvcreate -L 2G -n vm1hda vg
+
+# sort out a bridge setup for Xen
+apt-install bridge-utils
+sed -i 's/allow-hoplug eth0/auto br0/' /target/etc/network/interfaces
+sed -i 's/eth0/br0/' /target/etc/network/interfaces
+cat >> /target/etc/network/interfaces <<!EOF!
+        bridge_ports eth0
+	bridge_fd 1
+	bridge_hello 1
+	bridge_stp off
+!EOF!
 
 # prepopulate root's history with commands needed to install a new xen domain
 cat > /target/root/.bash_history <<EOF
@@ -51,4 +78,5 @@ xm create -c xm-debinst1
 EOF
 chmod 600 /target/root/.bash_history
 
+dbg_pause "End of Xen3 late_script" all xen3
 log "debug: script ended successfully"
