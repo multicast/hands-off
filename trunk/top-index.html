@@ -1,7 +1,12 @@
 <title>"Hands-off" Debian Installation</title>
 <h1>"Hands-off" Debian Installation</h1>
 
-If you've been here before, things have changed.
+<p><font size="+1"><b>WARNING:</b> <em>don't just blithely try this on a
+machine you care about -- it will cheerfully re-partition the hard
+disk, and overwrite your data, WITHOUT asking for permission once
+you've launched it -- you have been warned.</em></font>
+
+<hr>
 
 <p>This site contains a framework for automatically installing Debian
 systems, based on recent (i.e. post-<em>sarge</em>, from svn) versions of
@@ -32,15 +37,10 @@ that allows automated installation.  If you obtain media that supports
 this, you will find that you can (for example) type something like:
 
 <pre>
-  boot: auto url=myserver cls=xen3;loc/uk
+  boot: auto url=hands.com cls=xen3;loc/uk
 </pre>
 
 and get a Xen3 machine installed, with a UK keyboard and timezone.
-
-<p><b>WARNING:</b> <em>don't just blithely try this on a
-machine you care about -- it will cheerfully re-partition the hard
-disk, and overwrite your data, without asking for permission once
-you've launched it.</em>
 
 <h2>Parameters</h2>
 
