@@ -25,16 +25,13 @@ db_progress INFO ai/meta/text2
 # let's see what was installed by the end of the run (copied to /var/log/debian-installer/ along with the other log files)
 cp /var/lib/dpkg/status /var/log/dpkg-status
 
-# lock the root login if there's no password to set
-# (has the side effect of shutting up the root password prompt)
-#if db_get passwd/root-password && [ -n "$RET" ]; then
-#  db_set passwd/root-password-again $RET
-#else
-#  pwfile=shadow
-#  db_get mirror/suite && [ sarge = "$RET" ] && pwfile=passwd
-#
-#  sed -i -e 's#^root:[^:]*:#root:!:#' /target/etc/$pwfile
-#fi
+# clear the root login if this value has not been overridden in preseeding
+if db_get passwd/root-password-crypted && [ "!ERASEME!" = "$RET" ]; then
+  pwfile=shadow
+  db_get mirror/suite && [ sarge = "$RET" ] && pwfile=passwd
+
+  sed -i -e 's#^root:[^:]*:#root::#' /target/etc/$pwfile
+fi
 
 # let's see if we're running under xen
 if [ -e /proc/xen ] ; then
