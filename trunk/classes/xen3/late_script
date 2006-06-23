@@ -61,14 +61,14 @@ in-target lvcreate -L 2G -n vm1hda vg
 
 # sort out a bridge setup for Xen
 apt-install bridge-utils
-sed -i 's/allow-hoplug eth0/auto br0/' /target/etc/network/interfaces
-sed -i 's/eth0/br0/' /target/etc/network/interfaces
-cat >> /target/etc/network/interfaces <<!EOF!
-        bridge_ports eth0
-	bridge_fd 1
-	bridge_hello 1
-	bridge_stp off
-!EOF!
+#sed -i 's/allow-hotplug eth0/auto br0/' /target/etc/network/interfaces
+#sed -i 's/eth0/br0/' /target/etc/network/interfaces
+#cat >> /target/etc/network/interfaces <<!EOF!
+#        bridge_ports eth0
+#	bridge_fd 1
+#	bridge_hello 1
+#	bridge_stp off
+#!EOF!
 
 # prepopulate root's history with commands needed to install a new xen domain
 cat > /target/root/.bash_history <<EOF

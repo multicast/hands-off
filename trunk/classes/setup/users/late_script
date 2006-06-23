@@ -34,8 +34,7 @@ apt-install sudo
 cat > /target/tmp/setup-users.pl <<'!EOF!'
 #!/usr/bin/perl -w
 
-#system("apt-get update") ;
-#system("apt-get -y install sudo") ;
+$pwfile=shift;
 
 while (<>) {
   chomp ;
@@ -48,7 +47,7 @@ while (<>) {
     system("adduser --disabled-login --gecos \"$gecos\" $user") ;
   }
 
-  system("sed -i -e 's#^${user}:!:#${user}:${crypt}:#' /etc/passwd") ;
+  system("sed -i -e 's#^${user}:!:#${user}:${crypt}:#' $pwfile") ;
 
   if ($sudoer) {
     open(SUDOERS,">>/etc/sudoers") ;
@@ -64,8 +63,11 @@ while (<>) {
 }
 !EOF!
 
+pwfile=/etc/shadow
+db_get mirror/suite && [ sarge = "$RET" ] && pwfile=/etc/passwd
+
 chmod +x /target/tmp/setup-users.pl
-in-target /tmp/setup-users.pl /tmp/setup-users.users
+in-target /tmp/setup-users.pl $pwfile /tmp/setup-users.users
 rm /target/tmp/setup-users.* /target/tmp/sshkeys.*
 
 log "debug: ended successfully"
