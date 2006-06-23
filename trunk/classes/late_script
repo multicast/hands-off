@@ -26,12 +26,9 @@ db_progress INFO ai/meta/text2
 cp /var/lib/dpkg/status /var/log/dpkg-status
 
 # clear the root login if this value has not been overridden in preseeding
-if db_get passwd/root-password-crypted && [ "!ERASEME!" = "$RET" ]; then
-  pwfile=shadow
-  db_get mirror/suite && [ sarge = "$RET" ] && pwfile=passwd
-
-  sed -i -e 's#^root:[^:]*:#root::#' /target/etc/$pwfile
-fi
+pwfile=shadow
+db_get mirror/suite && [ sarge = "$RET" ] && pwfile=passwd
+sed -i -e 's#^root:!ERASEME!:#root::#' /target/etc/$pwfile
 
 # let's see if we're running under xen
 if [ -e /proc/xen ] ; then
