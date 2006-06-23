@@ -1,6 +1,6 @@
 # This file determines if the local/ area should be consulted for modifications
-# to class configurations.  Uncomment the next line if you want this:
+# to class configurations.  Comment the next line if you don't want this:
 
-#true
+true
 
 # can be overridden at boot time, thus:    hands-off/local=(true|false)
