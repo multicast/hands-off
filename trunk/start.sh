@@ -8,7 +8,11 @@
 
 . /usr/share/debconf/confmodule
 
-if db_get hands-off/use_local_directory && [ true = "$RET" ]
+preseed_fetch local_is_enabled /tmp/local_is_enabled
+local=$(grep -v '^#' /tmp/local_is_enabled)
+db_get hands-off/local && local="$RET"
+
+if [ "true" = "$local" ]
 then
   db_set preseed/run local/start.sh subclass.sh
 else
