@@ -5,6 +5,7 @@
 # distributed under the terms of the GNU GPL version 2 or (at your option) any later version
 # see the file "COPYING" for details
 #
+set -e
 
 . /usr/share/debconf/confmodule
 
@@ -17,6 +18,8 @@
 # where that extra complication is actually required, lets just do this
 #
 
+use_local=$(grep -v '^#' /var/run/hands-off.local)
+
 split_semi() {
   echo "$1" | sed -e 's/;/\n/g'
 }
@@ -28,12 +31,17 @@ join_semi() {
 subclasses() {
    class=$1
    cl_a_ss=$(echo ${class}|sed 's/\([^-a-zA-Z0-9]\)/_/g')
-   if [ -n "$class" ] && ! expr "$class" : local/ >/dev/null  ; then
-     preseed_fetch "/classes/$class/subclasses" /tmp/cls-$cl_a_ss || return 0
+   if [ -n "$class" ] && ! expr "$class" : local/ >/dev/null; then
+     preseed_fetch "/classes/$class/subclasses" /tmp/cls-$cl_a_ss
    fi
-   preseed_fetch "/local/$class/subclasses" /tmp/cls-$cl_a_ss-local
-   cat /tmp/cls-$cl_a_ss /tmp/cls-$cl_a_ss-local | join_semi
-   rm /tmp/cls-$cl_a_ss /tmp/cls-$cl_a_ss-local
+   if [ "true" = "$use_local" ]; then
+     preseed_fetch "/local/$class/subclasses" /tmp/cls-$cl_a_ss-local
+   fi
+   for cls in /tmp/cls-$cl_a_ss /tmp/cls-$cl_a_ss-local; do
+     [ -s "$cls" ] || continue
+     grep -v '^#' $cls
+     rm -f $cls
+   done | join_semi
 }
 
 expandclasses() {

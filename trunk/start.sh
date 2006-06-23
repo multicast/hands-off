@@ -5,12 +5,13 @@
 # distributed under the terms of the GNU GPL version 2 or (at your option) any later version
 # see the file "COPYING" for details
 #
+set -e
 
 . /usr/share/debconf/confmodule
 
-preseed_fetch local_enabled_flag /tmp/local_enabled_flag
-local=$(grep -v '^#' /tmp/local_enabled_flag)
-if [ "true" = "$local" ]
+preseed_fetch local_enabled_flag /var/run/hands-off.local
+use_local=$(grep -v '^#' /var/run/hands-off.local)
+if [ "true" = "$use_local" ]
 then
   db_set preseed/run local/start.sh subclass.sh
 else
