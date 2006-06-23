@@ -61,7 +61,7 @@ if ! db_set auto-install/classes "$classes"; then
 	db_set auto-install/classes "$classes"
 fi
 
-db_get local/use_local_directory && use_local=true
+db_get hands-off/use_local_directory && use_local=true
 [ "true" = "$use_local" ] && includelcl="local/preseed"
 
 # generate class preseed inclusion list

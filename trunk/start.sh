@@ -8,7 +8,7 @@
 
 . /usr/share/debconf/confmodule
 
-if db_get local/use_local_directory && [ true = "$RET" ]
+if db_get hands-off/use_local_directory && [ true = "$RET" ]
 then
   db_set preseed/run local/start.sh subclass.sh
 else
