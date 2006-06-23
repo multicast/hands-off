@@ -12,35 +12,38 @@ you've launched it -- you have been warned.</em></font>
 systems, based on recent (i.e. post-<em>sarge</em>, from svn) versions of
 debian-installer.
 
-<p>It relies on a new udeb called auto-install, which is activated by
-setting the debconf variable auto-install/enabled to true.  This
-delays the kdb-chooser and localechooser udebs until after
-network-preseed, allowing them to be presseded via the network.
-Another feature of auto-install is to expand preseed/url from a
-hostname to a full URL, if only a hostname was provided.
+<p>The software is available from the <a href="etch">published
+area</a> or you can look at the <a
+href="http://svn.hands.com/d-i/">bleeding edge version</a> in svn.
+
+<hr>
+
+<p>The features described depend on a new udeb called auto-install,
+which is activated by setting the debconf variable
+auto-install/enabled to true, which on the images available in the <a
+href="etch/media/">media</a> directory is set autmatically by
+selecting the <tt>auto</tt> image at the boot prompt. This delays the
+kdb-chooser and localechooser udebs until after network-preseed,
+allowing them to be presseded via the network.  Another feature of
+auto-install is to expand preseed/url from a hostname to a full URL,
+if only a hostname was provided.
 
 <p>Since this is now based on debian-installer, with only minor
 extensions, the build procedure is pretty much exactly the same as
 building vanilla d-i from svn, <a
-href="http://deasil.hands.com/d-i/trunk/docs/building.html">with a
+href="etch/docs/building.html">with a
 couple of tweaks</a>.
 
-<h3>dashslashdash is no more</h3>
-
-<p>It's no longer needed, and we've come up with some rather more
-meaningful variable names to provide the same functionality
-
-<hr>
-
-<p>This page describes some new features of debian-installer system
-that allows automated installation.  If you obtain media that supports
-this, you will find that you can (for example) type something like:
+<p>Once you have an appropriatly prepared boot medium, you are able to
+type something like the following at the boot prompt:
 
 <pre>
   boot: auto url=hands.com cls=xen3;loc/uk
 </pre>
 
-and get a Xen3 machine installed, with a UK keyboard and timezone.
+and get a Xen3 machine installed, with a UK keyboard and timezone,
+without having to type another keystroke until the login prompt pops
+up about 10 minutes later.
 
 <h2>Parameters</h2>
 
@@ -95,10 +98,6 @@ the only ones that have been properly tested -- bug reports welcome.
 d-i.  If you're basing significant effort on the current setup, please
 mirror all the files (probably with a subversion check-out) so you're
 not dependant on me maintaining backwards compatibility</b>
-
-<p>The software is available from the <a href="etch">published
-area</a> or you can look at the <a
-href="http://svn.hands.com/d-i/">bleeding edge version</a> in svn.
 
 <p>If you find this useful, and have ideas about how to improve it, or
 would like to contribute your recipes, please get in touch with <a
