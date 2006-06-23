@@ -8,10 +8,8 @@
 
 . /usr/share/debconf/confmodule
 
-preseed_fetch local_is_enabled /tmp/local_is_enabled
-local=$(grep -v '^#' /tmp/local_is_enabled)
-db_get hands-off/local && local="$RET"
-
+preseed_fetch local_enabled_flag /tmp/local_enabled_flag
+local=$(grep -v '^#' /tmp/local_enabled_flag)
 if [ "true" = "$local" ]
 then
   db_set preseed/run local/start.sh subclass.sh
