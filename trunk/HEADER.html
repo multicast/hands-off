@@ -7,7 +7,12 @@ If you've been here before, things have changed.
 systems, based on recent (i.e. post-<em>sarge</em>, from svn) versions of
 debian-installer.
 
-<p>It relies on a new udeb called auto-install, which is activated by setting the debconf variable auto-install/enabled to true.  This delays the kdb-chooser and localechooser udebs until after network-preseed, allowing them to be presseded via the network.  Another feature of auto-install is to expand preseed/url from a hostname to a full URL, if only a hostname was provided.
+<p>It relies on a new udeb called auto-install, which is activated by
+setting the debconf variable auto-install/enabled to true.  This
+delays the kdb-chooser and localechooser udebs until after
+network-preseed, allowing them to be presseded via the network.
+Another feature of auto-install is to expand preseed/url from a
+hostname to a full URL, if only a hostname was provided.
 
 <p>Since this is now based on debian-installer, with only minor
 extensions, the build procedure is pretty much exactly the same as
@@ -39,7 +44,7 @@ you've launched it.</em>
 
 <h2>Parameters</h2>
 
-<p>The slash-free parameters (like <pre>url</pre>) are actually just
+<p>The slash-free parameters (like <tt>url</tt>) are actually just
 aliases for normal debconf variables.  So far the following aliases
 have been defined:
 
@@ -67,25 +72,32 @@ preseed urls from either just a hostname or a fully qualified domain
 name.  If you provide a url that contains no slashes, auto-install's
 postinst (which is run before network-preseed) assumes that you have
 given it a hostname, and replaces it with a URL of the following form:
-<pre>http://<hostname>/d-i/tags/1.0/start</pre>.  The
-<pre><hostname></pre> section of that is whatever you provided as the
-URL, if it contained any dots, or, if it was without dots (i.e. it's
-just the hostname) then the domain is added to it (with that domain
-probably being found by netcfg, from a reverse lookup of your DHCP IP
-address).  The 1.0 bit of the path is a version number, which will be
-updated to distiguish between versions of d-i that are likely to break
-preseed scripts.
+<pre>
+	http://&lt;hostname&gt;/d-i/etch/./preseed.url
+</pre>
 
-<p><em>Boot images should appear over the next couple of days, as I test them.</em> 
+<p>The <tt>&lt;hostname&gt;</tt> section of that is whatever you
+provided as the URL, if it contained any dots, or, if it was without
+dots (i.e. it's just the hostname) then the domain is added to it
+(with that domain probably being found by netcfg, from a reverse
+lookup of your DHCP IP address).  The <tt>etch</tt> bit of the path
+matches the release the installer was part of.  The <tt>/./</tt> bit
+is used by preseed_fetch as the root of the preseed area, so this is
+where paths starting with <tt>/</tt> are anchored.
+
+<p>Boot images with the modifications required are available in the <a
+href="media">media</a> directory -- at present the netboot images are
+the only ones that have been properly tested -- bug reports welcome.
 
 <hr>
 
-<p>Be aware that the scripts here depend on customised versions of d-i.
-If you're basing significant effort on the current setup, please
+<p>Be aware that the scripts here depend on customised versions of
+d-i.  If you're basing significant effort on the current setup, please
 mirror all the files (probably with a subversion check-out) so you're
 not dependant on me maintaining backwards compatibility</b>
 
-<p>If you find this useful, and have ideas about how to improve it, or would like to contribute your recipes, please get in touch with <a
+<p>If you find this useful, and have ideas about how to improve it, or
+would like to contribute your recipes, please get in touch with <a
 href="mailto:&#112;&#104;&#105;&#108;&#064;&#104;&#097;&#110;&#100;&#115;&#046;&#099;&#111;&#109;">Philip
 Hands</a>
 
