@@ -30,7 +30,10 @@ cp /var/lib/dpkg/status /var/log/dpkg-status
 if db_get passwd/root-password && [ -n "$RET" ]; then
   db_set passwd/root-password-again $RET
 else
-  sed -i -e 's#^root:[^:]*:#root:!:#' /target/etc/passwd
+  pwfile=shadow
+  db_get mirror/suite && [ sarge = "$RET" ] && pwfile=passwd
+
+  sed -i -e 's#^root:[^:]*:#root:!:#' /target/etc/$pwfile
 fi
 
 # let's see if we're running under xen
