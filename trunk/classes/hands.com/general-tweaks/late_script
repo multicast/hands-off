@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 #
 # Copyright (c) 2005-2006 Hands.com Ltd
 # distributed under the terms of the GNU GPL version 2 or (at your option) any later version
@@ -7,10 +7,7 @@ set -e
 
 . /tmp/HandsOff-fn.sh
 
-MYNAME="classes/hands.com/general-tweaks/late_script"
-
-echo 'd-i post-install "'$MYNAME'" from http://hands.com/d-i/'
-log 'debug: running d-i post-install "'$MYNAME'" from http://hands.com/d-i/'
+echo 'debug: Running...'
 
 # make fsck automatically fix problems at boot time.
 sed -i -e 's/^FSCKFIX=no/FSCKFIX=yes/' /target/etc/default/rcS
@@ -19,7 +16,6 @@ sed -i -e 's/^FSCKFIX=no/FSCKFIX=yes/' /target/etc/default/rcS
 sed -i -e '/^  if \[ "$BASH" ]; then$/a\    . /etc/bash.bashrc' /target/etc/profile
 echo "export LESSOPEN=\"|lesspipe '%s'\"" >> /target/etc/bash.bashrc
 
-
-log 'debug: '$MYNAME': exiting successfully'
+echo 'debug: exiting successfully'
 
 exit 0

@@ -5,12 +5,10 @@
 # see the file "COPYING" for details
 set -e
 
-MYNAME="classes/early_script"
-
 . /usr/share/debconf/confmodule
 . /tmp/HandsOff-fn.sh
 
-log "debug: Running..."
+echo "debug: Running..."
 
 dbg_pause "Early Script 1" all early
 
@@ -39,11 +37,11 @@ for class in $(classes); do
   CLASS_EARLY_URL="/classes/${class}/early_script"
   cl_a_ss=$(echo ${class}|sed 's/\([^-a-zA-Z0-9]\)/_/g')
   preseed_fetch ${CLASS_EARLY_URL} /tmp/early_script-${cl_a_ss} || \
-    log "warning: .../${CLASS_EARLY_URL} not found"
+    echo "warning: .../${CLASS_EARLY_URL} not found"
 
   if [ -e /tmp/early_script-${cl_a_ss} ] ; then
     chmod +x /tmp/early_script-${cl_a_ss}
-    /tmp/early_script-${cl_a_ss} > /var/log/early_script-${cl_a_ss}.out 2>&1
+    log-output -t ${class}/early_script /tmp/early_script-${cl_a_ss}
   fi
   db_progress STEP 1
 done
@@ -52,4 +50,4 @@ db_progress STOP
 db_unregister hands-off/item
 db_unregister hands-off/title
 
-log "debug: ends successfully"
+echo "debug: ends successfully"

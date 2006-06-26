@@ -5,12 +5,10 @@
 # see the file "COPYING" for details
 set -e
 
-MYNAME="classes/setup/network/late_script"
-
 . /usr/share/debconf/confmodule
 . /tmp/HandsOff-fn.sh
 
-log 'debug: Running...'
+echo 'debug: Running...'
 
 #==== /etc/hosts
 db_get local/domain && localdom=$RET
@@ -53,5 +51,5 @@ done
 
 echo "# --- EOF ---" >> /target/etc/network/interfaces
 
-log 'debug: exiting successfully'
+echo 'debug: exiting successfully'
 exit 0

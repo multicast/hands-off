@@ -5,23 +5,24 @@
 # see the file "COPYING" for details
 set -e
 
-MYNAME="classes/late_script"
-
 . /usr/share/debconf/confmodule
 . /tmp/HandsOff-fn.sh
 
-log "debug: Running..."
+set -x
+
+echo "debug: Running..."
 
 # this is only needed for sarge installs, and not all of them
-udpkg --configure apt-setup-udeb
+udpkg --configure apt-setup-udeb || true
 
-db_register preseed/meta/text hands-off/title                                   db_register preseed/meta/text hands-off/item
+db_register preseed/meta/text hands-off/title
+db_register preseed/meta/text hands-off/item
 
 db_subst hands-off/title DESC "Preseed late_script(s)"
 db_progress START 0 $({ echo myself; classes; } | wc -w) hands-off/title
 
 db_subst hands-off/item DESC "Running top level script"
-db_progress INFO ai/meta/text2
+db_progress INFO hands-off/item
 
 # let's see what was installed by the end of the run (copied to /var/log/debian-installer/ along with the other log files)
 cp /var/lib/dpkg/status /var/log/dpkg-status
@@ -44,7 +45,7 @@ for class in $(classes); do
   prefix=classes/ ; expr "$class" : local/ >/dev/null && prefix=
   preseed_fetch "/${prefix}${class}/extra_pkgs" /tmp/extra_pkgs && \
     EXTRAPKGS="$EXTRAPKGS $(grep -v '^[ 	]*#' /tmp/extra_pkgs)"
-  rm /tmp/extra_pkgs
+  [ -e /tmp/extra_pkgs ] && rm /tmp/extra_pkgs
 done
 
 if [ "$EXTRAPKGS" ]; then
@@ -63,13 +64,17 @@ db_progress STEP 1
 
 # chain onto class specific late_script(s) if any
 for class in $(classes); do
+  dbg_pause "Late Script: $class"
   db_subst hands-off/item DESC "Running script for class '$class'"
   db_progress INFO hands-off/item
 
   cl_a_ss=$(echo ${class}|sed 's/\([^-a-zA-Z0-9]\)/_/g')
   prefix=classes/ ; expr "$class" : local/ >/dev/null && prefix=
-  preseed_fetch /${prefix}${class}/late_script /tmp/late_script-${cl_a_ss} && \
-    sh /tmp/late_script-${cl_a_ss} > /var/log/late_script-${cl_a_ss}.out 2>&1
+  preseed_fetch /${prefix}${class}/late_script /tmp/late_script-${cl_a_ss} && {
+    chmod +x /tmp/late_script-${cl_a_ss}
+    log-output -t ${prefix}${class}/late_script /tmp/late_script-${cl_a_ss}
+    set -x
+  }
   db_progress STEP 1
 done
 
@@ -78,4 +83,4 @@ db_progress STOP
 db_unregister hands-off/title
 db_unregister hands-off/item
 
-log "debug: ended successfully"
+echo "debug: ended successfully"

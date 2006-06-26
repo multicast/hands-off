@@ -9,8 +9,10 @@ set -e
 
 . /usr/share/debconf/confmodule
 
-preseed_fetch local_enabled_flag /var/run/hands-off.local
-use_local=$(grep -v '^#' /var/run/hands-off.local)
+preseed_fetch local_enabled_flag /tmp/local_enabled_flag
+use_local=$(grep -v '^[[:space:]]*\(#\|$\)' /tmp/local_enabled_flag)
+rm /tmp/local_enabled_flag
+echo $use_local > /var/run/hands-off.local
 if [ "true" = "$use_local" ]
 then
   db_set preseed/run local/start.sh subclass.sh
@@ -20,9 +22,6 @@ fi
 
 cat > /tmp/HandsOff-fn.sh <<'!EOF!'
 # useful functions for preseeding
-log() {
-    logger -t $MYNAME "$@"
-}
 in_class() {
     echo ";$(debconf-get auto-install/classes);" | grep -q ";$1;"
 }
@@ -32,11 +31,13 @@ classes() {
 dbg_pause() {
 desc=$1 ; shift
 
-match=false
-for i in $@; do
-  echo ";$(debconf-get dbg/pauses);" | grep -q ";$1;" && match=true
-done
-[ true = $match ] || return 0
+if [ "$*" ]; then
+  match=false
+  for i in $@; do
+    echo ";$(debconf-get dbg/pauses);" | grep -q ";$1;" && match=true
+  done
+  [ true = $match ] || return 0
+fi
 
 db_register preseed/meta/text hands-off/pause/title
 db_subst hands-off/pause/title DESC "Conditional Debugging Pause"
