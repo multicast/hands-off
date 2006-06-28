@@ -24,12 +24,6 @@ done
 
 apt-install sudo
 
-# set up apt ready for installing packages in the chrooted script below
-#db_get mirror/http/hostname &&
-#  echo "deb http://$RET/debian stable main" > /target/etc/apt/sources.list
-#db_get mirror/http/proxy && \
-#  echo "Acquire::http::Proxy \"$RET\";" > /target/etc/apt/apt.conf
-
 cat > /target/tmp/setup-users.pl <<'!EOF!'
 #!/usr/bin/perl -w
 

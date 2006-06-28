@@ -48,5 +48,6 @@ db_subst hands-off/pause DESCRIPTION "$desc"
 db_input critical hands-off/pause
 db_unregister hands-off/pause
 db_unregister hands-off/pause/title
+db_go
 }
 !EOF!
