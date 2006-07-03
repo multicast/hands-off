@@ -39,22 +39,6 @@ if [ -e /proc/xen ] ; then
   cp -a /lib/modules/2.6.11-xenu /target/lib/modules/2.6.11-xenu
 fi
 
-# collect all class extra_pkgs files, and then apt-get the listed packages
-# into the target
-for class in $(classes); do
-  prefix=classes/ ; expr "$class" : local/ >/dev/null && prefix=
-  preseed_fetch "/${prefix}${class}/extra_pkgs" /tmp/extra_pkgs && \
-    EXTRAPKGS="$EXTRAPKGS $(grep -v '^[ 	]*#' /tmp/extra_pkgs)"
-  [ -e /tmp/extra_pkgs ] && rm /tmp/extra_pkgs
-done
-
-if [ "$EXTRAPKGS" ]; then
-  # FIXME -- should use apt-install here
-  #chroot /target apt-get update
-  #DEBIAN_FRONTEND=noninteractive chroot /target apt-get -y install $EXTRAPKGS
-  apt-install $EXTRAPKGS
-fi
-
 ### for debugging --- reenable the pre-reboot prompt
 if in_class "dbg/late" ; then
   db_reset finish-install/reboot_in_progress

@@ -12,10 +12,19 @@ echo 'debug: Running...'
 # make fsck automatically fix problems at boot time.
 sed -i -e 's/^FSCKFIX=no/FSCKFIX=yes/' /target/etc/default/rcS
 
+# packages I like
+apt-install less ssh
+
 # set LESSPIPE as I prefer
 sed -i -e '/^  if \[ "$BASH" ]; then$/a\    . /etc/bash.bashrc' /target/etc/profile
 echo "export LESSOPEN=\"|lesspipe '%s'\"" >> /target/etc/bash.bashrc
 
 echo 'debug: exiting successfully'
+
+# prepopulate root's history with commands needed to install a new xen domain
+cat > /target/root/.bash_history <<!EOF!
+ #dd if=/dev/zero of=/dev/hda count=1 ; sync ; reboot -f
+!EOF!
+
 
 exit 0
