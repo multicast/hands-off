@@ -1,7 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
 <HTML>
   <HEAD>
-<BASE HREF="http://www.hands.com/d-i/">
 
     <TITLE>Hands-Off auto-installer --- building images</TITLE>
     <LINK REL="stylesheet" HREF="/styles/site.css">
@@ -52,8 +51,10 @@ $ cd ~/di-build-area/installer/build/
 and follow the instructions in the README found there, after copying
 your locally built udebs into the localudebs directory and add
 ai-choosers and auto-install to the files in pkg-lists/ that mention
-localechooser (the short version being that you need to do something
-like):
+localechooser, and tweak the boot.txt and syslinux.cfg files.  My
+tweaks for those can be found in this <a
+href="building-installer.diff">building-installer.diff</a>.  You should be able to
+just apply that diff, or at least use it as inspiration.  (the short version being that you need to do something like):
 
 <pre>
 $ ( cd .. ; dpkg-checkbuilddeps )
@@ -62,7 +63,10 @@ $ ( cd .. ; dpkg-checkbuilddeps )
 $ make reallyclean
 #### do this whenever anything slightly odd seems to be happening
 #### because the Makefile is not very bright when it comes to working
-#### out when it needs to re-do things, and sometimes it doesn't when it should 
+#### out when it needs to re-do things, and sometimes it doesn't when it should
+
+#### grab a copy of building-installer.diff mentioned above, and
+$ patch -s < /path/to/building-installer.diff
 
 $ cp ~/di-build-area/packages/*.udeb localudebs/
 

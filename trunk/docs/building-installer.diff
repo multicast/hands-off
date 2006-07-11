@@ -1,0 +1,200 @@
+Index: boot/x86/boot.txt
+===================================================================
+--- boot/x86/boot.txt	(revision 38444)
++++ boot/x86/boot.txt	(working copy)
+@@ -1,3 +1,4 @@
+ ${SYSDIR}splash.rle
+ 
++*** MODIFIED -- includes patches described here: http://hands.com/d-i/ ***
+ Press F1control and F then 1 for help, or ENTER to ${BOOTPROMPT}
+Index: boot/x86/syslinux.cfg
+===================================================================
+--- boot/x86/syslinux.cfg	(revision 38444)
++++ boot/x86/syslinux.cfg	(working copy)
+@@ -29,5 +29,9 @@
+ 	kernel ${KERNEL}
+ 	append ${VIDEO_MODE} initrd=${INITRD} ramdisk_size=${RAMDISK_SIZE} root=/dev/ram rw ${CONSOLE} rescue/enable=true --
+ 
++LABEL auto
++	kernel ${KERNEL}
++	append auto=true priority=critical ${VIDEO_MODE} initrd=${INITRD} ramdisk_size=${RAMDISK_SIZE} root=/dev/ram rw ${CONSOLE} --
++
+ PROMPT 1
+ TIMEOUT 0
+Index: boot/x86/syslinux.cfg.withgtk
+===================================================================
+--- boot/x86/syslinux.cfg.withgtk	(revision 38444)
++++ boot/x86/syslinux.cfg.withgtk	(working copy)
+@@ -38,5 +38,12 @@
+ 	kernel ${KERNEL}
+ 	append ${VIDEO_MODE_GTK} initrd=${INITRD_GTK} ramdisk_size=${RAMDISK_SIZE_GTK} root=/dev/ram rw ${CONSOLE} rescue/enable=true --
+ 
++LABEL auto
++	kernel ${KERNEL}
++	append auto=true priority=critical ${VIDEO_MODE} initrd=${INITRD} ramdisk_size=${RAMDISK_SIZE} root=/dev/ram rw ${CONSOLE} --
++LABEL autogui
++	kernel ${KERNEL}
++	append auto=true priority=critical ${VIDEO_MODE_GTK} initrd=${INITRD_GTK} ramdisk_size=${RAMDISK_SIZE_GTK} root=/dev/ram rw ${CONSOLE} --
++
+ PROMPT 1
+ TIMEOUT 0
+Index: boot/x86/syslinux.cfg.with26
+===================================================================
+--- boot/x86/syslinux.cfg.with26	(revision 38444)
++++ boot/x86/syslinux.cfg.with26	(working copy)
+@@ -52,5 +52,12 @@
+ 	kernel ${KERNEL_26}
+ 	append ${VIDEO_MODE} initrd=${INITRD_26} ramdisk_size=${RAMDISK_SIZE_26} root=/dev/ram rw ${CONSOLE} rescue/enable=true --
+ 
++LABEL auto
++	kernel ${KERNEL_26}
++	append auto=true priority=critical ${VIDEO_MODE} initrd=${INITRD_26} ramdisk_size=${RAMDISK_SIZE_26} root=/dev/ram rw ${CONSOLE} --
++LABEL auto24
++	kernel ${KERNEL}
++	append auto=true priority=critical ${VIDEO_MODE} initrd=${INITRD} ramdisk_size=${RAMDISK_SIZE} root=/dev/ram rw ${CONSOLE} --
++
+ PROMPT 1
+ TIMEOUT 0
+Index: pkg-lists/netboot-apus/common
+===================================================================
+--- pkg-lists/netboot-apus/common	(revision 38444)
++++ pkg-lists/netboot-apus/common	(working copy)
+@@ -3,6 +3,8 @@
+ 
+ # Other udebs that are needed for netboot install
+ localechooser
++auto-install
++ai-choosers
+ choose-mirror
+ net-retriever
+ download-installer
+Index: pkg-lists/netboot64/common
+===================================================================
+--- pkg-lists/netboot64/common	(revision 38444)
++++ pkg-lists/netboot64/common	(working copy)
+@@ -3,6 +3,8 @@
+ 
+ # Other udebs that are needed for netboot install
+ localechooser
++auto-install
++ai-choosers
+ choose-mirror
+ net-retriever
+ download-installer
+Index: pkg-lists/access/common
+===================================================================
+--- pkg-lists/access/common	(revision 38444)
++++ pkg-lists/access/common	(working copy)
+@@ -2,6 +2,8 @@
+ #include "kernel"
+ 
+ localechooser
++auto-install
++ai-choosers
+ load-floppy
+ floppy-retriever
+ di-utils-terminfo
+Index: pkg-lists/nativehd/common
+===================================================================
+--- pkg-lists/nativehd/common	(revision 38444)
++++ pkg-lists/nativehd/common	(working copy)
+@@ -4,6 +4,8 @@
+ 
+ # Other udebs that are needed for netboot install
+ localechooser
++auto-install
++ai-choosers
+ choose-mirror
+ net-retriever
+ download-installer
+Index: pkg-lists/cdrom/common
+===================================================================
+--- pkg-lists/cdrom/common	(revision 38444)
++++ pkg-lists/cdrom/common	(working copy)
+@@ -4,6 +4,8 @@
+ # Other udebs that are needed for CDROM install
+ installation-locale
+ localechooser
++auto-install
++ai-choosers
+ hw-detect
+ cdrom-detect
+ cdrom-retriever
+Index: pkg-lists/monolithic/common
+===================================================================
+--- pkg-lists/monolithic/common	(revision 38444)
++++ pkg-lists/monolithic/common	(working copy)
+@@ -13,6 +13,8 @@
+ # priotity udebs.
+ 
+ localechooser
++auto-install
++ai-choosers
+ rescue-mode
+ # Need to choose a mirror for debootstrap to download Debian from.
+ choose-mirror
+Index: pkg-lists/hd-media/common
+===================================================================
+--- pkg-lists/hd-media/common	(revision 38444)
++++ pkg-lists/hd-media/common	(working copy)
+@@ -3,6 +3,8 @@
+ 
+ installation-locale
+ localechooser
++auto-install
++ai-choosers
+ hw-detect
+ bogl-bterm-udeb
+ di-utils-terminfo
+Index: pkg-lists/floppy/common
+===================================================================
+--- pkg-lists/floppy/common	(revision 38444)
++++ pkg-lists/floppy/common	(working copy)
+@@ -12,6 +12,8 @@
+ #include "kernel"
+ 
+ localechooser
++auto-install
++ai-choosers
+ bogl-bterm-udeb
+ di-utils-terminfo
+ kbd-chooser
+Index: pkg-lists/cdrom-apus/common
+===================================================================
+--- pkg-lists/cdrom-apus/common	(revision 38444)
++++ pkg-lists/cdrom-apus/common	(working copy)
+@@ -4,6 +4,8 @@
+ # Other udebs that are needed for CDROM install
+ installation-locale
+ localechooser
++auto-install
++ai-choosers
+ hw-detect
+ cdrom-detect
+ cdrom-retriever
+Index: pkg-lists/netboot/common
+===================================================================
+--- pkg-lists/netboot/common	(revision 38444)
++++ pkg-lists/netboot/common	(working copy)
+@@ -3,6 +3,8 @@
+ 
+ # Other udebs that are needed for netboot install
+ localechooser
++auto-install
++ai-choosers
+ choose-mirror
+ net-retriever
+ download-installer
+Index: pkg-lists/cdrom64/common
+===================================================================
+--- pkg-lists/cdrom64/common	(revision 38444)
++++ pkg-lists/cdrom64/common	(working copy)
+@@ -4,6 +4,8 @@
+ # Other udebs that are needed for CDROM install
+ installation-locale
+ localechooser
++auto-install
++ai-choosers
+ hw-detect
+ cdrom-detect
+ cdrom-retriever
