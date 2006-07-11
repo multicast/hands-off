@@ -18,7 +18,7 @@ set -e
 # where that extra complication is actually required, lets just do this
 #
 
-use_local=$(grep -v '^#' /var/run/hands-off.local)
+use_local=$([ -r /var/run/hands-off.local ] && grep -v '^#' /var/run/hands-off.local)
 
 split_semi() {
   echo "$1" | sed -e 's/;/\n/g'
