@@ -31,17 +31,21 @@ join_semi() {
 subclasses() {
    class=$1
    cl_a_ss=$(echo ${class}|sed 's/\([^-a-zA-Z0-9]\)/_/g')
-   if [ -n "$class" ] && ! expr "$class" : local/ >/dev/null; then
-     preseed_fetch "/classes/$class/subclasses" /tmp/cls-$cl_a_ss
+   if [ -n "$class" ]; then
+     if expr "$class" : local/ >/dev/null; then
+       preseed_fetch "/$class/subclasses" /tmp/cls-$cl_a_ss-local
+     else
+       preseed_fetch "/classes/$class/subclasses" /tmp/cls-$cl_a_ss
+       if [ "true" = "$use_local" ]; then
+         preseed_fetch "/local/$class/subclasses" /tmp/cls-$cl_a_ss-local
+       fi
+     fi
+     for cls in /tmp/cls-$cl_a_ss /tmp/cls-$cl_a_ss-local; do
+       [ -s "$cls" ] || continue
+       grep -v '^[[:space:]]*#' $cls
+       rm -f $cls
+     done | join_semi
    fi
-   if [ "true" = "$use_local" ]; then
-     preseed_fetch "/local/$class/subclasses" /tmp/cls-$cl_a_ss-local
-   fi
-   for cls in /tmp/cls-$cl_a_ss /tmp/cls-$cl_a_ss-local; do
-     [ -s "$cls" ] || continue
-     grep -v '^#' $cls
-     rm -f $cls
-   done | join_semi
 }
 
 expandclasses() {
@@ -74,8 +78,12 @@ db_get hands-off/use_local_directory && use_local=true
 
 # generate class preseed inclusion list
 for cls in $(split_semi $classes) ; do
-  expr "$class" : local/ >/dev/null || include="${include}classes/${cls}/preseed "
-  [ "true" = "$use_local" ] && includelcl="$includelcl local/${cls}/preseed"
+  if expr "$cls" : local/ >/dev/null; then
+    includelcl="$includelcl /${cls}/preseed"
+  else
+    include="${include}classes/${cls}/preseed "
+    [ "true" = "$use_local" ] && includelcl="$includelcl local/${cls}/preseed"
+  fi
 done
 # ... and get it included next
 
