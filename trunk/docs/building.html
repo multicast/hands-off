@@ -28,11 +28,11 @@
 $ mkdir -p ~/di-build-area/packages
 $ svn co svn://svn.debian.org/svn/d-i/people/philh/etch/packages/kbd-chooser ~/di-build-area/packages
 $ svn co svn://svn.debian.org/svn/d-i/people/philh/etch/packages/localechooser ~/di-build-area/packages
+$ svn co svn://svn.debian.org/svn/d-i/people/philh/etch/packages/preseed ~/di-build-area/packages/preseed
 $ svn co svn://svn.debian.org/svn/d-i/people/philh/packages/auto-install ~/di-build-area/packages
 </pre>
 as well as the bits of d-i you need:
 <pre>
-$ svn co svn://svn.debian.org/svn/d-i/trunk/packages/preseed ~/di-build-area/packages/preseed
 $ svn co svn://svn.debian.org/svn/d-i/trunk/installer ~/di-build-area/installer
 </pre>
 then change into each directory under the ~/di-build-area/packages
@@ -115,13 +115,11 @@ To save typing, you could also add targets to d-i-CD/new/isolinux/isolinux.cfg, 
      append vga=normal initrd=/install/initrd.gz ramdisk_size=10240 root=/dev/rd/0 devfs=mount,dall rw -/-=postfix;site-mysite -/url=http://intranet.example.com/d-i --
 </pre>
 Also edit d-i-CD/new/isolinux/isolinux.txt, adding something above the boot
-prompt so it's clear that you've tweaked the image. I use this, please
-come up with your own:
+prompt so it's clear that you've tweaked the image. I use this:
 <pre>
    splash.rle
 
-   Phil Hands' preseed tweaked netinst --- see http://hands.com/d-i/ for details
-   add -/-=<class>;... and/or -/url=http://... parameter for an automatic install
+   *** MODIFIED ***       see http://hands.com/d-i/ for details
 
    Press F1-control ...
 </pre>
@@ -150,9 +148,6 @@ TODO:
   and all the packages that get downloaded, so that you can preseed a
   machine with no NIC -- if anyone does this, please tell me about it.
 
-  It should be easier these days, with the /dashslashdash.sh approach,
-  you just need to make it look for the relevant start file in the
-  conditional bit near the end (like the /hd-media cases)
 </pre>
 </small>
 <address><a href="mailto:&#112;&#104;&#105;&#108;&#064;&#104;&#097;&#110;&#100;&#115;&#046;&#099;&#111;&#109;">Philip Hands</a></address>
