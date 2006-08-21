@@ -18,7 +18,7 @@ set -e
 # where that extra complication is actually required, lets just do this
 #
 
-use_local=$([ -r /var/run/hands-off.local ] && grep -v '^#' /var/run/hands-off.local)
+use_local=$([ -r /var/run/hands-off.local ] && cat /var/run/hands-off.local)
 
 split_semi() {
   echo "$1" | sed -e 's/;/\n/g'
@@ -31,21 +31,21 @@ join_semi() {
 subclasses() {
    class=$1
    cl_a_ss=$(echo ${class}|sed 's/\([^-a-zA-Z0-9]\)/_/g')
-   if [ -n "$class" ]; then
-     if expr "$class" : local/ >/dev/null; then
-       preseed_fetch "/$class/subclasses" /tmp/cls-$cl_a_ss-local
-     else
+   if expr "$class" : local/ >/dev/null; then
+     preseed_fetch "/$class/subclasses" /tmp/cls-$cl_a_ss-local
+   else
+     [ -n "$class" ] &&
        preseed_fetch "/classes/$class/subclasses" /tmp/cls-$cl_a_ss
-       if [ "true" = "$use_local" ]; then
-         preseed_fetch "/local/$class/subclasses" /tmp/cls-$cl_a_ss-local
-       fi
+
+     if [ "true" = "$use_local" ]; then
+       preseed_fetch "/local/$class/subclasses" /tmp/cls-$cl_a_ss-local
      fi
-     for cls in /tmp/cls-$cl_a_ss /tmp/cls-$cl_a_ss-local; do
-       [ -s "$cls" ] || continue
-       grep -v '^[[:space:]]*#' $cls
-       rm -f $cls
-     done | join_semi
    fi
+   for cls in /tmp/cls-$cl_a_ss /tmp/cls-$cl_a_ss-local; do
+     [ -s "$cls" ] || continue
+     grep -v '^[[:space:]]*#' $cls
+     rm -f $cls
+   done | join_semi
 }
 
 expandclasses() {
@@ -73,16 +73,13 @@ if ! db_set auto-install/classes "$classes"; then
 	db_set auto-install/classes "$classes"
 fi
 
-db_get hands-off/use_local_directory && use_local=true
-[ "true" = "$use_local" ] && includelcl="local/preseed"
-
 # generate class preseed inclusion list
 for cls in $(split_semi $classes) ; do
   if expr "$cls" : local/ >/dev/null; then
     includelcl="$includelcl /${cls}/preseed"
   else
     include="${include}classes/${cls}/preseed "
-    [ "true" = "$use_local" ] && includelcl="$includelcl local/${cls}/preseed"
+    [ "true" = "$use_local" ] && includelcl="local/preseed local/${cls}/preseed"
   fi
 done
 # ... and get it included next

@@ -20,34 +20,42 @@ else
   db_set preseed/run subclass.sh
 fi
 
+# Make sure that auto-install/classes exists, even if it wasn't on the cmdline
+db_get auto-install/classes || {
+  db_register debian-installer/dummy auto-install/classes
+  db_subst auto-install/classes ID auto-install/classes
+}
+
 cat > /tmp/HandsOff-fn.sh <<'!EOF!'
 # useful functions for preseeding
 in_class() {
-    echo ";$(debconf-get auto-install/classes);" | grep -q ";$1;"
+	echo ";$(debconf-get auto-install/classes);" | grep -q ";$1;"
 }
 classes() {
-    echo "$(debconf-get auto-install/classes)" | sed -e 's/;/\n/g'
+	echo "$(debconf-get auto-install/classes)" | sed -e 's/;/\n/g'
 }
-dbg_pause() {
-desc=$1 ; shift
+checkflag() {
+	flagname=$1 ; shift
+	if db_get $flagname && [ "$RET" ]
+	then
+		for i in "$@"; do
+			echo ";$RET;" | grep -q ";$i;" && return 0
+		done
+	fi
+	return 1
+}
+pause() {
+	desc=$1 ; shift
 
-if [ "$*" ]; then
-  match=false
-  for i in $@; do
-    echo ";$(debconf-get dbg/pauses);" | grep -q ";$1;" && match=true
-  done
-  [ true = $match ] || return 0
-fi
+	db_register preseed/meta/text hands-off/pause/title
+	db_subst hands-off/pause/title DESC "Conditional Debugging Pause"
+	db_settitle hands-off/pause/title
 
-db_register preseed/meta/text hands-off/pause/title
-db_subst hands-off/pause/title DESC "Conditional Debugging Pause"
-db_settitle hands-off/pause/title
-
-db_register preseed/meta/text hands-off/pause
-db_subst hands-off/pause DESCRIPTION "$desc"
-db_input critical hands-off/pause
-db_unregister hands-off/pause
-db_unregister hands-off/pause/title
-db_go
+	db_register preseed/meta/text hands-off/pause
+	db_subst hands-off/pause DESCRIPTION "$desc"
+	db_input critical hands-off/pause
+	db_unregister hands-off/pause
+	db_unregister hands-off/pause/title
+	db_go
 }
 !EOF!

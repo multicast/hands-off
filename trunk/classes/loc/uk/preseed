@@ -5,6 +5,8 @@
 # see the file "COPYING" for details
 
 d-i     languagechooser/language-name   string English
+d-i     languagechooser/language-name-fb   string English
+d-i     languagechooser/language-name-ascii   string English
 d-i     countrychooser/shortlist        string GB
 d-i     console-keymaps-at/keymap       string uk
 d-i	mirror/http/hostname		string ftp.uk.debian.org

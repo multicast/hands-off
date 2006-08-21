@@ -10,7 +10,10 @@ set -e
 
 echo "debug: Running..."
 
-dbg_pause "Early Script 1" all early
+# enable -x by setting dbg/flags=early-x or dbg/flags=all-x
+checkflag dbg/flags all-x early-x && set -x
+
+checkflag dbg/pauses all early && pause "Early Script 1"
 
 db_register preseed/meta/text hands-off/title
 db_register preseed/meta/text hands-off/item
@@ -31,6 +34,7 @@ chmod +x /usr/bin/zapme
 db_progress STEP 1
 # chain onto class specific late_script(s) if any
 for class in $(classes); do
+  checkflag dbg/pauses all "$class/early" && pause "Early Script: $class"
   db_subst hands-off/item DESC "Running script for class '$class'"
   db_progress INFO hands-off/item
 
@@ -50,4 +54,5 @@ db_progress STOP
 db_unregister hands-off/item
 db_unregister hands-off/title
 
+checkflag dbg/flags all early && pause "Top Level Early Script"
 echo "debug: ends successfully"

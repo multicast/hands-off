@@ -9,6 +9,8 @@ set -e
 . /tmp/HandsOff-fn.sh
 
 set -x
+# enable -x by setting dbg/flags=late-x
+checkflag dbg/flags all-x late-x && set -x
 
 echo "debug: Running..."
 
@@ -48,7 +50,7 @@ db_progress STEP 1
 
 # chain onto class specific late_script(s) if any
 for class in $(classes); do
-  #dbg_pause "Late Script: $class"
+  checkflag dbg/pauses all "$class/late" && pause "Late Script: $class"
   db_subst hands-off/item DESC "Running script for class '$class'"
   db_progress INFO hands-off/item
 
@@ -66,4 +68,5 @@ db_progress STOP
 db_unregister hands-off/title
 db_unregister hands-off/item
 
+checkflag dbg/pauses all late && pause "Top Level Late Script"
 echo "debug: ended successfully"

@@ -80,5 +80,5 @@ xm create -c xm-debinst1
 !EOF!
 chmod 600 /target/root/.bash_history
 
-dbg_pause "End of Xen3 late_script" all xen3
+checkflag dbg/pauses all xen3 && pause "End of Xen3 late_script"
 echo "debug: script ended successfully"

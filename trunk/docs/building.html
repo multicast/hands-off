@@ -22,15 +22,23 @@
   <p>In order to build the relevant initrd images for your prefered
   boot medium, you need to do the following:
 
-  <p>Check out my modifications from the Debian subversion repository,
-  using subversion:
+  <p>Check out the main d-i installer area from the Debian subversion repository:
 <pre>
-$ mkdir ~/di-build-area
-$ svn co svn://svn.debian.org/svn/d-i/people/philh/packages/ ~/di-build-area
-</pre>
-as well as the bits of d-i you need:
-<pre>
+$ mkdir -p ~/di-build-area/packages
 $ svn co svn://svn.debian.org/svn/d-i/trunk/installer ~/di-build-area/installer
+</pre>
+as well as any of the following that have not been released yet:
+<pre>
+# if auto-install_0.05 has not yet been released:
+$ svn co svn://svn.debian.org/svn/d-i/trunk/packages/auto-install ~/di-build-area/pakages/
+# if base-installer_1.67 has not yet been released:
+$ svn co svn://svn.debian.org/svn/d-i/trunk/packages/base-installer ~/di-build-area/pakages/
+# if preseed_1.18 has not yet been released:
+$ svn co svn://svn.debian.org/svn/d-i/trunk/packages/preseed ~/di-build-area/pakages/
+# if kbd-chooser_1.30 has not yet been released:
+$ svn co svn://svn.debian.org/svn/d-i/trunk/packages/kbd-chooser ~/di-build-area/pakages/
+# if localechooser_1.23 has not yet been released:
+$ svn co svn://svn.debian.org/svn/d-i/trunk/packages/localechooser ~/di-build-area/pakages/
 </pre>
 then change into each directory under the ~/di-build-area/packages
 directory, and build the .udebs needed for the images by running
@@ -46,12 +54,9 @@ $ cd ~/di-build-area/installer/build/
 </pre>
 
 and follow the instructions in the README found there, after copying
-your locally built udebs into the localudebs directory and add
-ai-choosers and auto-install to the files in pkg-lists/ that mention
-localechooser, and tweak the boot.txt and syslinux.cfg files.  My
-tweaks for those can be found in this <a
-href="building-installer.diff">building-installer.diff</a>.  You should be able to
-just apply that diff, or at least use it as inspiration.  (the short version being that you need to do something like):
+your locally built udebs into the localudebs directory.
+
+Here are the steps required (for those that are to bust to read docs):
 
 <pre>
 $ ( cd .. ; dpkg-checkbuilddeps )
@@ -61,9 +66,6 @@ $ make reallyclean
 #### do this whenever anything slightly odd seems to be happening
 #### because the Makefile is not very bright when it comes to working
 #### out when it needs to re-do things, and sometimes it doesn't when it should
-
-#### grab a copy of building-installer.diff mentioned above, and
-$ patch -s < /path/to/building-installer.diff
 
 $ cp ~/di-build-area/packages/*.udeb localudebs/
 
@@ -104,12 +106,6 @@ now copy the initrd images you created above into these locations in the unpacke
 <pre>
     d-i-CD/new/install/2.6/initrd.gz
     d-i-CD/new/install/initrd.gz
-</pre>
-To save typing, you could also add targets to d-i-CD/new/isolinux/isolinux.cfg, something like this:
-<pre>
-   LABEL postfix
-     kernel /install/vmlinuz
-     append vga=normal initrd=/install/initrd.gz ramdisk_size=10240 root=/dev/rd/0 devfs=mount,dall rw -/-=postfix;site-mysite -/url=http://intranet.example.com/d-i --
 </pre>
 Also edit d-i-CD/new/isolinux/isolinux.txt, adding something above the boot
 prompt so it's clear that you've tweaked the image. I use this:
