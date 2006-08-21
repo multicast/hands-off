@@ -32,7 +32,7 @@ iface lo inet loopback
 db_get local/net/ifaces && local ifaces=$RET
 for iface in $ifaces ; do
   ip=ERROR ;    db_get local/net/$iface/ip &&    ip=$RET
-  net=ERROR ;   db_net local/net/$iface/net &&   net=$RET
+  net=ERROR ;   db_get local/net/$iface/net &&   net=$RET
   nmask=ERROR ; db_get local/net/$iface/nmask && nmask=$RET
   bcast=ERROR ; db_get local/net/$iface/bcast && bcast=$RET
   cat >> /target/etc/network/interfaces <<-!EOF!
