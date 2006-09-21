@@ -16,7 +16,10 @@ Pin-Priority: 999
 !EOF!
 
 apt-install postfix/unstable postfix-ldap/unstable
-apt-install kolabd kolab-webadmin kolabadmin
+# FIXME -- need to find out how to sign local debs and get the key trusted
+# by the target machine -- until then, force it:
+in-target apt-get -y --force-yes install kolabd
+apt-install kolab-webadmin kolabadmin
 
 # lets have SSL stuff as well (this should be doable via the web interface, but isn't currently for some reason)
 sed -ie 's/#\(imaps\|pop3s\)/\1/' /target/etc/cyrus.conf

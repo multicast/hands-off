@@ -47,11 +47,11 @@ checkflag() {
 pause() {
 	desc=$1 ; shift
 
-	db_register preseed/meta/text hands-off/pause/title
+	db_register hands-off/meta/text hands-off/pause/title
 	db_subst hands-off/pause/title DESC "Conditional Debugging Pause"
 	db_settitle hands-off/pause/title
 
-	db_register preseed/meta/text hands-off/pause
+	db_register hands-off/meta/text hands-off/pause
 	db_subst hands-off/pause DESCRIPTION "$desc"
 	db_input critical hands-off/pause
 	db_unregister hands-off/pause
@@ -59,3 +59,28 @@ pause() {
 	db_go
 }
 !EOF!
+
+
+# create templates for use in on-the-fly creation of dialogs
+cat > /tmp/HandsOff.templates <<'!EOF!'
+Template: hands-off/meta/text
+Type: text
+# Not translatable because it's only to be preseeded.
+Description: ${DESC}
+ ${DESCRIPTION}
+
+Template: hands-off/meta/string
+Type: string
+# Not translatable because it's only to be preseeded.
+Description: ${DESC}
+ ${DESCRIPTION}
+
+Template: hands-off/meta/boolean
+Type: boolean
+# Not translatable because it's only to be preseeded.
+Description: ${DESC}
+ ${DESCRIPTION}
+!EOF!
+
+debconf-loadtemplate hands-off /tmp/HandsOff.templates
+

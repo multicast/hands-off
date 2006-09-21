@@ -69,7 +69,7 @@ classes="$(expandclasses "$(subclasses "");$classes" | sieve | join_semi)"
 # now that we've worked out the class list, store it for later use
 # if no classes were previously defined, we'll have to register the question
 if ! db_set auto-install/classes "$classes"; then
-	db_register preseed/meta/string auto-install/classes
+	db_register hands-off/meta/string auto-install/classes
 	db_set auto-install/classes "$classes"
 fi
 

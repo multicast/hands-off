@@ -17,8 +17,8 @@ echo "debug: Running..."
 # this is only needed for sarge installs, and not all of them
 udpkg --configure apt-setup-udeb || true
 
-db_register preseed/meta/text hands-off/title
-db_register preseed/meta/text hands-off/item
+db_register hands-off/meta/text hands-off/title
+db_register hands-off/meta/text hands-off/item
 
 db_subst hands-off/title DESC "Preseed late_script(s)"
 db_progress START 0 $({ echo myself; classes; } | wc -w) hands-off/title

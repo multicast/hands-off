@@ -15,8 +15,8 @@ checkflag dbg/flags all-x early-x && set -x
 
 checkflag dbg/pauses all early && pause "Early Script 1"
 
-db_register preseed/meta/text hands-off/title
-db_register preseed/meta/text hands-off/item
+db_register hands-off/meta/text hands-off/title
+db_register hands-off/meta/text hands-off/item
 
 db_subst hands-off/title DESC "Preseed early_script(s)"
 db_progress START 0 $({ echo myself; classes; } | wc -w) hands-off/title

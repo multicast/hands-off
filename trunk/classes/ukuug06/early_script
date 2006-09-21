@@ -5,11 +5,11 @@
 
 sed -ie 's/DejaVu 11/DejaVu 20/' /etc/gtk-2.0/gtkrc
 
-db_register preseed/meta/text hands-off/pause/title
+db_register hands-off/meta/text hands-off/pause/title
 db_subst hands-off/pause/title DESC "UKUUG'06 Preseed Presentation"
 db_settitle hands-off/pause/title
 
-db_register preseed/meta/text hands-off/pause
+db_register hands-off/meta/text hands-off/pause
 db_subst hands-off/pause DESCRIPTION "OK, lets make sure that the fonts are big enough for everyone to read ...
 by editing /etc/gtk-2.0/grkrc
                                                          ----------
@@ -31,11 +31,11 @@ db_subst hands-off/pause DESCRIPTION \
    sed -ie 's/DejaVu 11/DejaVu 20/' /etc/gtk-2.0/gtkrc
 
    . /usr/share/debconf/confmodule
-   db_register preseed/meta/text hands-off/pause/title
+   db_register hands-off/meta/text hands-off/pause/title
    db_subst hands-off/pause/title DESC \"UKUUG'06 Preseed Presentation\"
    db_settitle hands-off/pause/title
 
-   db_register preseed/meta/text hands-off/pause
+   db_register hands-off/meta/text hands-off/pause
    db_subst hands-off/pause DESCRIPTION \"OK, lets make sure ...
    \"
    db_input critical hands-off/pause
