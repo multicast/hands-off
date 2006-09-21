@@ -65,19 +65,16 @@ pause() {
 cat > /tmp/HandsOff.templates <<'!EOF!'
 Template: hands-off/meta/text
 Type: text
-# Not translatable because it's only to be preseeded.
 Description: ${DESC}
  ${DESCRIPTION}
 
 Template: hands-off/meta/string
 Type: string
-# Not translatable because it's only to be preseeded.
 Description: ${DESC}
  ${DESCRIPTION}
 
 Template: hands-off/meta/boolean
 Type: boolean
-# Not translatable because it's only to be preseeded.
 Description: ${DESC}
  ${DESCRIPTION}
 !EOF!
