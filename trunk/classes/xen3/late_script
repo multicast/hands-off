@@ -11,28 +11,26 @@ set -e
 echo "debug: Running..."
 set -x
 
+# discard spare LVM volume, freeing up the space for DomU volumes
+lvremove --force /dev/Debian/keep_2
+
 db_get mirror/suite &&
   echo 'APT::Default-Release "'$RET'";' >> /target/etc/apt/apt.conf
 
-apt-install xen-hypervisor-3.0-i386 xen-utils-3.0 xen-docs-3.0
-apt-install linux-image-xen-686 || apt-install linux-image-2.6.16-2-xen-686
+XEN_VER=3.0.2-1
+SUBARCH="$(archdetect)"
+#apt-install xen-hypervisor-$XEN_VER-${SUBARCH%%/*} xen-utils-$XEN_VER xen-docs-3.0
+#apt-install linux-image-xen-686 || apt-install linux-image-2.6.16-2-xen-686
+#apt-install linux-image-xen-amd64
+
+apt-install xen-hypervisor-3.0-unstable-1-i386 xen-ioemu-3.0-unstable linux-image-xen-k7
 
 # Xen doesn't play nice with TLS
 apt-install libc6-xen || in-target mv /lib/tls /lib/tls.disabled
 
-XEN_KERNEL=$(echo /target/boot/vmlinuz-2.6.16-2-xen-686)
-XEN_VER=${XEN_KERNEL#*vmlinuz-}
-in-target mkinitramfs -o /boot/initrd.img-$XEN_VER $XEN_VER
-
-# put Xen into grub
-XEN=$(cd /target/boot; ls xen*.gz|head -1)
-ROOTDEV=$(sed -ne 's#^\([^	 ]*\)[	 ]*/[	 ].*$#\1#p' /target/etc/fstab)
-sed -ie '/### BEGIN AUTOMAGIC KERNELS LIST/i\
-title Xen 3\
-  kernel /boot/'"$XEN"' dom0_mem=64000\
-  module  /boot/vmlinuz-'"$XEN_VER"' root='"$ROOTDEV"' ro\
-  module  /boot/initrd.img-'"$XEN_VER"'\
-' /target/boot/grub/menu.lst
+#XEN_KERNEL=$(echo /target/boot/vmlinuz-*-xen-*)
+#XEN_KERN_VER=${XEN_KERNEL#*vmlinuz-}
+#in-target mkinitramfs -o /boot/initrd.img-$XEN_KERN_VER $XEN_KERN_VER
 
 # make a directory for disk image files, and make image (see files/cobble-initrd)
 mkdir /target/home/xen-disks
@@ -45,18 +43,8 @@ preseed_fetch /classes/xen3/files/xend-config.sxp  /target/etc/xen/xend-config.s
 preseed_fetch /classes/xen3/files/xm-debinst1  /target/etc/xen/xm-debinst1
 preseed_fetch /classes/xen3/files/xm-debinst1-install  /target/etc/xen/xm-debinst1-install
 
-# sort out the LVM partition
-# First, unmount the redundant partition
-umount /target/reserved-for-LVM
-# then change the big partition's type to LVM
-echo -e 't\n6\n8e\nw\nq' | fdisk /dev/discs/disc0/disc || { echo "fdisk returned [$?]" ; true ; }
-# then get rid of the offending line in the fstab, after remembering the device
-LVMDEV=$(sed -ne 's#^\([^	 ]*\)[	 ]*/reserved-for-LVM[	 ].*$#\1#p' /target/etc/fstab)
-sed -ie '/reserved-for-LVM/d' /target/etc/fstab
-# and discard the redundant mountpount
-rmdir /target/reserved-for-LVM
-# set up LVM
-apt-install lvm2
+in-target sed -ie "s#XEN_VMLINUZ#$(echo /boot/vmlinuz-*xen*)#" /etc/xen/xm-debinst1-install
+in-target sed -ie "s#XEN_VMLINUZ#$(echo /boot/vmlinuz-*xen*)#;s#XEN_INITRD#$(echo /boot/initrd.img-*xen*)#" /etc/xen/xm-debinst1
 
 # sort out a bridge setup for Xen
 apt-install bridge-utils
@@ -72,9 +60,7 @@ apt-install bridge-utils
 # prepopulate root's history with commands needed to install a new xen domain
 cat > /target/root/.bash_history <<!EOF!
  #dd if=/dev/zero of=/dev/hda count=1 ; sync ; reboot -f
-pvcreate $LVMDEV
-vgcreate vg $LVMDEV
-lvcreate -L 2G -n vm1hda vg
+lvcreate -L 2G -n vm1hda Debian
 xm create -c xm-debinst1-install
 xm create -c xm-debinst1
 !EOF!

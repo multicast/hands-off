@@ -10,5 +10,5 @@ d-i    partman/confirm_write_new_label boolean true
 d-i    partman/choose_partition        select Finish partitioning and write changes to disk
 d-i    partman/confirm                 boolean true
 
-
-d-i partman-auto/expert_recipe         string root-lvm-kludge :: 300 4000 7000 ext3 $primary{ } $bootable{ } method{ format } format{ } use_filesystem{ } filesystem{ ext3 } mountpoint{ / } . 64 512 300% linux-swap method{ swap } format{ } . 100 10000 1000000000 ext2 method{ format } format{ } use_filesystem{ } filesystem{ ext2 } mountpoint{ /reserved-for-LVM } .
+# this is the normal "multi" recipe except that a fallow volume is created
+d-i partman-auto/expert_recipe         string root-lvm-kludge :: 128 512 256 ext3 $defaultignore{ } $primary{ } $bootable{ } method{ format } format{ } use_filesystem{ } filesystem{ ext3 } mountpoint{ /boot } .  70 800 280 ext3 $lvmok{ } $primary{ } $bootable{ } method{ format } format{ } use_filesystem{ } filesystem{ ext3 } mountpoint{ / } .  500 3000 5000 ext3 $lvmok{ } method{ format } format{ } use_filesystem{ } filesystem{ ext3 } mountpoint{ /usr } .  70 1500 3000 ext3 $lvmok{ } method{ format } format{ } use_filesystem{ } filesystem{ ext3 } mountpoint{ /var } .  64 512 300% linux-swap $lvmok{ } method{ swap } format{ } .  20 300 400 ext3 $lvmok{ } method{ format } format{ } use_filesystem{ } filesystem{ ext3 } mountpoint{ /tmp } .  70 1500 3000 ext3 $lvmok{ } method{ format } format{ } use_filesystem{ } filesystem{ ext3 } mountpoint{ /home } . 100 10000 1000000000 ext2 $lvmok{ } method{ keep } .

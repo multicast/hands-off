@@ -1,1 +1,6 @@
 d-i apt-setup/local0/repository string http://debian.hands.com/debian sid main
+
+d-i partman-lvm/confirm boolean true
+
+# needed to shut up complaint about unused keep_2 lv
+d-i partman-basicmethods/method_only boolean false

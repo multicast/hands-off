@@ -1,5 +1,3 @@
-d-i apt-setup/local0/repository string http://debian.hands.com/debian sid main
-
 ##########################################################################
 # This is needed because the published kolabd's dependencies are drivel
 # this should disapear once I've sorted that out -- you'll want to ask me

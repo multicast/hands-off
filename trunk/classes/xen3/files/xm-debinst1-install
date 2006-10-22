@@ -8,7 +8,7 @@
 
 #----------------------------------------------------------------------------
 # Kernel image file.
-kernel = "/boot/vmlinuz-2.6.16-2-xen-686"
+kernel = "XEN_VMLINUZ"
 
 # Optional ramdisk.
 #ramdisk = "/boot/initrd.gz"
