@@ -2,9 +2,11 @@
 <h1>"Hands-off" Debian Installation</h1>
 
 <p><font size="+1"><b>WARNING:</b> <em>don't just blithely try this on a
-machine you care about -- it will cheerfully re-partition the hard
-disk, and overwrite your data, WITHOUT asking for permission once
-you've launched it -- you have been warned.</em></font>
+machine you care about -- it will cheerfully re-partition the hard disk,
+and overwrite your data, WITHOUT asking for permission once you've
+launched it, and that can include things like external USB-attached
+hard drives if you're unlucky, so unplug them if you want to keep them,
+unless you mean for it to use them -- you have been warned.</em></font>
 
 <hr>
 
@@ -21,7 +23,7 @@ href="http://svn.hands.com/d-i/">bleeding edge version</a> in svn.
 <p>The features described depend on a new udeb called auto-install,
 which is activated by setting the debconf variable
 auto-install/enabled to true, which on the images available in the <a
-href="etch/media/">media</a> directory is set autmatically by
+href="etch/media/">media</a> directory is set automatically by
 selecting the <tt>auto</tt> image at the boot prompt. This delays the
 kdb-chooser and localechooser udebs until after network-preseed,
 allowing them to be presseded via the network.  Another feature of
@@ -32,7 +34,7 @@ if only a hostname was provided.
 pretty much exactly the same as building vanilla d-i from svn, with the caveat that you may need to also build a few udebs locally if the relevant versions have not yet been released.  For more details, read the <a
 href="etch/docs/building.html">notes on building this stuff</a>.
 
-<p>Once you have an appropriatly prepared boot medium, you are able to
+<p>Once you have an appropriately prepared boot medium, you are able to
 type something like the following at the boot prompt:
 
 <pre>
