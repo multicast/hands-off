@@ -10,6 +10,12 @@ unless you mean for it to use them -- you have been warned.</em></font>
 
 <hr>
 
+<p>This is now documented in the <a
+href="http://d-i.alioth.debian.org/manual/en.i386/apbs02.html#preseed-auto">debian-installer
+manual for etch</a>, and the documentation there can be considered
+more authoritative than what you find here (if you notice differences,
+please mention them)
+
 <p>This site contains a framework for automatically installing Debian
 systems, based on recent (i.e. post-<em>sarge</em>, from svn) versions of
 debian-installer.
@@ -22,13 +28,13 @@ href="http://svn.hands.com/d-i/">bleeding edge version</a> in svn.
 
 <p>The features described depend on a new udeb called auto-install,
 which is activated by setting the debconf variable
-auto-install/enabled to true, which on the images available in the <a
-href="etch/media/">media</a> directory is set automatically by
-selecting the <tt>auto</tt> image at the boot prompt. This delays the
-kdb-chooser and localechooser udebs until after network-preseed,
-allowing them to be presseded via the network.  Another feature of
-auto-install is to expand preseed/url from a hostname to a full URL,
-if only a hostname was provided.
+auto-install/enabled to true, which on recent builds of
+debian-installer media, is set automatically by selecting the
+<tt>auto</tt> image at the boot prompt. This delays the kdb-chooser
+and localechooser udebs until after network-preseed, allowing them to
+be presseded via the network.  Another feature of auto-install is to
+expand preseed/url from a hostname to a full URL, if only a hostname
+was provided.
 
 <p>Since this is now based on debian-installer, the build procedure is
 pretty much exactly the same as building vanilla d-i from svn, with the caveat that you may need to also build a few udebs locally if the relevant versions have not yet been released.  For more details, read the <a
@@ -87,10 +93,6 @@ lookup of your DHCP IP address).  The <tt>etch</tt> bit of the path
 matches the release the installer was part of.  The <tt>/./</tt> bit
 is used by preseed_fetch as the root of the preseed area, so this is
 where paths starting with <tt>/</tt> are anchored.
-
-<p>Boot images with the modifications required are available in the <a
-href="media">media</a> directory -- at present the netboot images are
-the only ones that have been properly tested -- bug reports welcome.
 
 <hr>
 
