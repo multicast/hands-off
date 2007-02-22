@@ -11,8 +11,7 @@ unless you mean for it to use them -- you have been warned.</em></font>
 <hr>
 
 <p>This site contains a framework for automatically installing Debian
-systems, based on recent (i.e. post-<em>sarge</em>, from svn) versions of
-debian-installer.
+systems, based on Etch (and beyond) versions of debian-installer.
 
 <p>The software is available from the <a href="etch">published
 area</a> or you can look at the <a
@@ -28,7 +27,7 @@ please mention them)</em>
 
 <p>The features described depend on a new udeb called auto-install,
 which is activated by setting the debconf variable
-auto-install/enabled to true, which on recent builds of
+auto-install/enable to true, which on recent builds of
 debian-installer media, is set automatically by selecting the
 <tt>auto</tt> image at the boot prompt. This delays the kdb-chooser
 and localechooser udebs until after network-preseed, allowing them to
@@ -36,12 +35,8 @@ be presseded via the network.  Another feature of auto-install is to
 expand preseed/url from a hostname to a full URL, if only a hostname
 was provided.
 
-<p>Since this is now based on debian-installer, the build procedure is
-pretty much exactly the same as building vanilla d-i from svn, with the caveat that you may need to also build a few udebs locally if the relevant versions have not yet been released.  For more details, read the <a
-href="etch/docs/building.html">notes on building this stuff</a>.
-
-<p>Once you have an appropriately prepared boot medium, you are able to
-type something like the following at the boot prompt:
+<p>For example, assuming you have a recent enough boot medium, you
+will be able to type something like the following at the boot prompt:
 
 <pre>
   boot: auto url=hands.com classes=xen3;loc/uk
@@ -58,7 +53,7 @@ aliases for normal debconf variables.  So far the following aliases
 have been defined:
 
 <pre>
-auto            auto-install/enabled
+auto            auto-install/enable
 classes         auto-install/classes
 priority        debconf/priority
 url             preseed/url
@@ -96,10 +91,11 @@ where paths starting with <tt>/</tt> are anchored.
 
 <hr>
 
-<p>Be aware that the scripts here depend on customised versions of
-d-i.  If you're basing significant effort on the current setup, please
-mirror all the files (probably with a subversion check-out) so you're
-not dependant on me maintaining backwards compatibility</b>
+<p>Be aware that the scripts here depend on unreleased (at least until
+Etch is released) versions of d-i.  If you're basing significant
+effort on the current setup, please mirror all the files (probably
+with a subversion check-out) so you're not dependant on me maintaining
+backwards compatibility</b>
 
 <p>If you find this useful, and have ideas about how to improve it, or
 would like to contribute your recipes, please get in touch with <a
