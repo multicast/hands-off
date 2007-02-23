@@ -1,5 +1,5 @@
 This directory is intended for fairly general localisation classes,
-so the "loc/uk" class sets the keyboard, timezone etc for the UK.
+so the "loc/gb" class sets the keyboard, timezone etc for the UK.
 
 I'm expecting to see classes like loc/de with german default settings,
 but could imagine a need for loc/de-US for a machine with a US keyboard
