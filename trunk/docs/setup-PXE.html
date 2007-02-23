@@ -22,10 +22,15 @@ First, you should look at section <em>4.6. Preparing Files for TFTP Net Booting<
   dhcp
   tftpd-hpa
 </pre>
-Then, get the PXE tarball you <a href="building.html">built</a> and untar it into /var/lib/tftpboot (or wherever you've pointed your tftp server)
+Then, grab a <a href="http://people.debian.org/~joeyh/d-i/images/daily/netboot/">recent PXE tarball</a> and untar it into /var/lib/tftpboot (or wherever you've pointed your tftp server)
 <pre>
   tar -C /var/lib/tftpboot -xvzf netboot.tar.gz
 </pre>
+I normally then add a couple of parameters to the append line in the <tt>auto</tt> target in <tt>/var/lib/tftpboot/debian-installer/i386/pxelinux.cfg/default</tt>:
+<pre>
+   interface=auto netcfg/dhcp_timeout=60
+</pre>
+
 You're now ready to try a PXE boot.  Give it a go, and read
 http://hands.com/d-i/ for hints on what to type at the boot prompt to
 kick things off.
