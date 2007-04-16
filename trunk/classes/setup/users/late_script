@@ -10,11 +10,15 @@ set -e
 
 echo "debug: Running..."
 
-# get all the classes users, and use the one that's left at the end
-for class in default $(classes); do
-  preseed_fetch "/local/users/$class" /tmp/setup-users.users &&
-    mv /tmp/setup-users.users /target/tmp
-done
+## get all the classes users, and use the one that's left at the end
+#for class in default $(classes); do
+#  preseed_fetch "/local/users/$class" /tmp/setup-users.users &&
+#    mv /tmp/setup-users.users /target/tmp
+#done
+#
+# that should have been done in the early_script
+
+[ -s /tmp/setup-users.users ] && mv /tmp/setup-users.users /target/tmp
 
 # grab all the mentioned ssh keys, ready for installation
 for keyname in $(sed -ne '/^#/!s/^.*:\([^:]*\)$/\1/p' /target/tmp/setup-users.users | tr "," "\n" | sort -u)
