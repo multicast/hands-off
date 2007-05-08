@@ -23,7 +23,7 @@ Comments can be specified by making them start with a # character
 the ssh key names field is a comma separated list of names that are used to
 construct filenames thus:
 
-  <URL to your dsd area>/local/users/sshkeys.<ssh key name>
+  <root of your preseed tree>/local/users/sshkeys.<ssh key name>
 
 so the user gets the contents of all the listed key files placed in their
 ~/.ssh/authorized-keys.  Just put one or more id*.pub files in each of those
