@@ -2,7 +2,7 @@ This class allows users to be setup, with passwords, sudoer access and
 ssh keys as needed
 
 It works by looking for files named after the classes set for the machine
-in <URL to your dsd area>/local/users/ starting with the fake class of
+in <root of your preseed tree>/local/users/ starting with the fake class of
 "default".  Whichever class is latest in the class list, and has a matching
 file wins.
 
@@ -34,10 +34,8 @@ I generally use this command to generate the first 2 fields:
 
 =-=-= example user file -=-=-
 #user:crypted pw:sudoer:gecos:ssh key names(s)
-root:BLANK:0::admins@customer1,phil@hands
-phil:zvdN3dxoYGn5M:1:Philip Hands,,,:phil@hands
+root:BLANK:0::admins@customer1,phil@workstation1
+phil:zvdN3dxoYGn5M:1:Philip Hands,,,:phil@workstation1
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-This class needs sudo to have already been installed by including it in
-base_includes, so make sure that's happening if you want to add people
-to the sudoers list, or it will break.
+Note, this class needs sudo so it installs it for you in the late_script
