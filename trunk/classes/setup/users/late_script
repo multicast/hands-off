@@ -46,15 +46,17 @@ while (<>) {
 
   system("sed -i -e 's#^${user}:!:#${user}:${crypt}:#' $pwfile") ;
 
-  if ($sudoer) {
+  if ($sudoers) {
     open(SUDOERS,">>/etc/sudoers") ;
     printf SUDOERS "%s\tALL=(ALL) ALL\n", $user ;
     close(SUDOERS) ;
   }
   
   system("mkdir ~$user/.ssh") ;
-  foreach my $key (split(',',$sshkeys)) {
-    system("cat /tmp/sshkeys.$key >> ~$user/.ssh/authorized_keys") ;
+  if (defined($sshkeys)) {
+    foreach my $key (split(',',$sshkeys)) {
+      system("cat /tmp/sshkeys.$key >> ~$user/.ssh/authorized_keys") ;
+    }
   }
   system("chown -R $user: ~$user/.ssh") ;
 }
@@ -65,6 +67,6 @@ db_get mirror/suite && [ sarge = "$RET" ] && pwfile=/etc/passwd
 
 chmod +x /target/tmp/setup-users.pl
 in-target /tmp/setup-users.pl $pwfile /tmp/setup-users.users
-rm /target/tmp/setup-users.* /target/tmp/sshkeys.*
+#rm /target/tmp/setup-users.* /target/tmp/sshkeys.*
 
 echo "debug: ended successfully"
