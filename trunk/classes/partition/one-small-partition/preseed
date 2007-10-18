@@ -15,6 +15,4 @@ d-i    partman/confirm                 boolean true
 # needed to shut up complaint about unused keep_2 lv
 d-i partman-basicmethods/method_only boolean false
 
-# this is the normal "multi" recipe except that a fallow volume is created
-# d-i partman-auto/expert_recipe         string one-small-partition :: 256 512 2000 ext3 $primary{ } $bootable{ } method{ format } format{ } use_filesystem{ } filesystem{ ext3 } mountpoint{ / } . 64 512 300% linux-swap method{ swap } format{ } . 100 10000 1000000000 ext2 method{ keep } .
-d-i partman-auto/expert_recipe string one-small-partition :: 40 50 100 ext3 $primary{ } $bootable{ } method{ format } format{ } use_filesystem{ } filesystem{ ext3 } mountpoint{ /boot } .  1000 1000 1000 ext3 method{ format } format{ } use_filesystem{ } filesystem{ ext3 } mountpoint{ / } .  64 512 300% linux-swap method{ swap } format{ } .  100 10000 1000000000 ext2 method{ keep } .
+d-i partman-auto/expert_recipe string one-small-partition :: 1000 1000 1000 ext3 $primary{ } $bootable{ } method{ format } format{ } use_filesystem{ } filesystem{ ext3 } mountpoint{ / } .  64 512 300% linux-swap method{ swap } format{ } .  100 10000 1000000000 ext2 method{ keep } .
