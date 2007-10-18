@@ -1,3 +1,8 @@
 #!/bin/sh
+set -e
+
+echo 'debug: Running...'
 
 apt-install xserver-xorg-core xserver-xorg-video-i810 xserver-xorg-input-mouse xfonts-base xfonts-75dpi xserver-xorg fvwm xterm gdm
+
+echo "debug: completed successfully"

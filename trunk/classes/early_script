@@ -55,4 +55,5 @@ db_unregister hands-off/item
 db_unregister hands-off/title
 
 checkflag dbg/flags all early && pause "Top Level Early Script"
-echo "debug: ends successfully"
+
+echo "debug: completed successfully"

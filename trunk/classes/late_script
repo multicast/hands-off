@@ -69,4 +69,5 @@ db_unregister hands-off/title
 db_unregister hands-off/item
 
 checkflag dbg/pauses all late && pause "Top Level Late Script"
-echo "debug: ended successfully"
+
+echo "debug: completed successfully"

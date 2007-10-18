@@ -69,4 +69,4 @@ chmod +x /target/tmp/setup-users.pl
 in-target /tmp/setup-users.pl $pwfile /tmp/setup-users.users
 #rm /target/tmp/setup-users.* /target/tmp/sshkeys.*
 
-echo "debug: ended successfully"
+echo "debug: completed successfully"

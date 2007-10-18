@@ -6,6 +6,8 @@
 
 set -e
 
+echo 'debug: Running...'
+
 . /usr/share/debconf/confmodule
 
 if db_get base_install/base_excludes
@@ -18,3 +20,5 @@ then
 		udpkg -i /tmp/bootstrapwrap_${BSW_VER}_all.udeb &&
 		rm /tmp/bootstrapwrap_${BSW_VER}_all.udeb
 fi
+
+echo "debug: completed successfully"

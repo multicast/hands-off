@@ -51,5 +51,4 @@ done
 
 echo "# --- EOF ---" >> /target/etc/network/interfaces
 
-echo 'debug: exiting successfully'
-exit 0
+echo "debug: completed successfully"
