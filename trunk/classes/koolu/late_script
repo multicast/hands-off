@@ -1,0 +1,24 @@
+#!/bin/sh
+
+echo "debug: Running..."
+
+in-target sed -ie "/\\[daemon\\]/a\\AutomaticLoginEnable=true\\nTimedLoginEnable=true\\nAutomaticLogin=koolu\\nTimedLogin=koolu" /etc/gdm/gdm.conf
+
+in-target gconftool -t bool --set /apps/gnome-screensaver/lock_enabled false
+
+apt-install xserver-xorg-video-amd xserver-xorg discover libgl1-mesa-glx libgl1-mesa-dri libglu1-mesa xfonts-base xfonts-100dpi xfonts-75dpi xfonts-scalable iceweasel xterm alsa-base alsa-utils xresprobe cpufrequtils vbetool menu discover xresprobe mdetect read-edid xutils binutils
+
+apt-install linux-image-2.6.23.1-koolu
+
+apt-install firefox x-ttcidfont-conf xprint  xprint-utils matchbox-window-manager
+
+echo '7:23:respawn:/bin/login -f koolukiosk < /dev/tty7 > /dev/tty7' >> /target/etc/inittab
+
+echo 'exec startx' >> /target/home/koolukiosk/.bash_profile
+
+cat <<EOF > /target/home/koolukiosk/.xinitrc
+xterm &
+matchbox-window-manager -use_titlebar no &
+firefox
+EOF
+
