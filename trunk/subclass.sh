@@ -43,7 +43,7 @@ subclasses() {
    fi
    for cls in /tmp/cls-$cl_a_ss /tmp/cls-$cl_a_ss-local; do
      [ -s "$cls" ] || continue
-     grep -v '^[[:space:]]*#' $cls
+     grep -v '^[[:space:]]*\(#\|$\)' $cls
      rm -f $cls
    done | join_semi
 }
