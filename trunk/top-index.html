@@ -39,7 +39,7 @@ was provided.
 will be able to type something like the following at the boot prompt:
 
 <pre>
-  boot: auto url=hands.com classes=xen3;loc/gb
+	boot: auto url=hands.com classes=xen3;loc/gb
 </pre>
 
 and get a Xen3 machine installed, with a UK keyboard and timezone,
@@ -89,13 +89,33 @@ matches the release the installer was part of.  The <tt>/./</tt> bit
 is used by preseed_fetch as the root of the preseed area, so this is
 where paths starting with <tt>/</tt> are anchored.
 
+<h3>Debugging flags:</h3>
+
+If you'd like to enable the -x flag in the top level scripts (or
+your own scripts if you use the same technique) you can either do it
+globally, by adding <pre>	dbg/flags=all-x</pre> or selectively with
+<pre>	dbg/flags=early-x;late-x</pre>  Similarly, you can make the installation
+pause a various points with either <pre>	dbg/pauses=all</pre>
+or (for example) <pre>	dbg/pauses=late;myclass</pre> which can be very handy to allow the chance to
+look at the state of the install by flipping to the shell on F2/F3
+
+<p>To see how this works, look in the scripts for references to <tt>checkflag</tt>:
+<pre>	checkflag dbg/flags all-x early-x && set -x</pre>
+and:
+<pre>	checkflag dbg/pauses all late && pause "Top Level Late Script"</pre>
+<em>these two examples are taken from the top level early and late scripts respectively.</em>
+
+<p>The <tt>checkflag</tt> function checks the named flag (so you can use it for your own purposes too) and if any of the semicolon (;) separated flags you've set match the ones passed to <tt>checkflag</tt> on the command line, then it returns true.
+
 <hr>
 
-<p>Be aware that the scripts here depend on unreleased (at least until
-Etch is released) versions of d-i.  If you're basing significant
-effort on the current setup, please mirror all the files (probably
-with a subversion check-out) so you're not dependant on me maintaining
-backwards compatibility</b>
+<p>If you're basing significant effort on the current setup, you should
+first mirror all the files (probably with a subversion check-out)
+so you're not dependant on me maintaining backwards compatibility.
+I'll endeavor to do so, but it would be a shame if I inadvertently broke
+your setup the day before an important demo.  Of course, you should audit
+these scripts before trusting me not to install backdoors etc. and you
+need to setup your own passwords and ssh keys.</b>
 
 <p>If you find this useful, and have ideas about how to improve it, or
 would like to contribute your recipes, please get in touch with <a
