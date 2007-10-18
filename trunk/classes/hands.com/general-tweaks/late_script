@@ -26,5 +26,4 @@ cat > /target/root/.bash_history <<!EOF!
  #dd if=/dev/zero of=/dev/hda count=1 ; sync ; reboot -f
 !EOF!
 
-
 exit 0
