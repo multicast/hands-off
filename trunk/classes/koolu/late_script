@@ -3,14 +3,26 @@ set -e
 
 echo "debug: Running..."
 
-apt-install xserver-xorg discover xserver-xorg-video-dummy libgl1-mesa-glx libgl1-mesa-dri libglu1-mesa xfonts-base xfonts-100dpi xfonts-75dpi xfonts-scalable iceweasel xterm alsa-base alsa-utils xresprobe cpufrequtils vbetool menu discover xresprobe mdetect read-edid xutils binutils
+set -x
+
+in-target mkdir -p /etc/bootsplash/koolu
+#preseed_fetch /classes/koolu/files/koolu.JPG  /target/etc/bootsplash/koolu/koolu.jpg
 
 # kludge around the current lack of signature on the koolu packages
 in-target apt-get -y --force-yes --no-remove install xserver-xorg-video-amd
 in-target apt-get -y --force-yes --no-remove install linux-image-2.6.23.1-koolu
 
-apt-install firefox x-ttcidfont-conf xprint  xprint-utils matchbox-window-manager
+apt-install xserver-xorg discover xserver-xorg-video-dummy libgl1-mesa-glx libgl1-mesa-dri libglu1-mesa xfonts-base xfonts-100dpi xfonts-75dpi xfonts-scalable iceweasel xterm alsa-base alsa-utils xresprobe cpufrequtils vbetool menu discover xresprobe mdetect read-edid xutils binutils xpdf
 
+apt-install bootsplash
+
+# firefox and friends... pdf and flash
+apt-install iceweasel x-ttcidfont-conf xprint  xprint-utils matchbox-window-manager mozplugger xpdf
+apt-install iceweasel-l10n-* iceweasel-l10n-roa-es-val-
+
+in-target apt-get -y --force-yes --no-remove install flashplugin-nonfree
+
+# auto-startup of koolu kiosk stuff
 echo '7:23:respawn:/bin/login -f koolukiosk < /dev/tty7 > /dev/tty7' >> /target/etc/inittab
 
 echo 'exec startx' >> /target/home/koolukiosk/.bash_profile
@@ -20,5 +32,13 @@ xterm &
 matchbox-window-manager -use_titlebar no &
 firefox
 EOF
+
+in-target adduser koolukiosk audio
+
+apt-install prelink
+
+in-target aptitude clean
+
+in-target prelink -q -v -a --conserve-memory --random
 
 echo "debug: completed successfully"

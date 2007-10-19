@@ -1,1 +1,6 @@
+# any special/backport packages go here:
 d-i apt-setup/local0/repository string http://hands.com/ koolu/
+
+#Erm, doesn't work
+# don't install the stock kernel, as we'll be getting our own from above
+#base-install base-installer/kernel/skip-install boolean true
