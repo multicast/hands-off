@@ -1,0 +1,13 @@
+#!/bin/sh
+
+# This seems to be the only way to install a custom kernel in place of the default
+KLUDGE=/usr/lib/post-base-installer.d/99phils-kernel-kludge
+cat <<!EOF! > $KLUDGE
+#!/bin/sh
+
+echo deb http://hands.com/ koolu/ >> /target/etc/apt/sources.list
+in-target apt-get update
+
+chmod +x $KLUDGE
+
+!EOF!

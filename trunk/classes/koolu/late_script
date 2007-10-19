@@ -5,16 +5,17 @@ echo "debug: Running..."
 
 set -x
 
-in-target mkdir -p /etc/bootsplash/koolu
-#preseed_fetch /classes/koolu/files/koolu.JPG  /target/etc/bootsplash/koolu/koolu.jpg
+sed -ie 's/^# defoptions=.*/# defoptions=vga=791 splash quiet/' /target/boot/grub/menu.lst
 
-# kludge around the current lack of signature on the koolu packages
-in-target apt-get -y --force-yes --no-remove install xserver-xorg-video-amd
-in-target apt-get -y --force-yes --no-remove install linux-image-2.6.23.1-koolu
+# only needed until we have a signed Release file
+echo "deb http://hands.com/ koolu/" >> /target/etc/apt/sources.list
+in-target apt-get update
 
-apt-install xserver-xorg discover xserver-xorg-video-dummy libgl1-mesa-glx libgl1-mesa-dri libglu1-mesa xfonts-base xfonts-100dpi xfonts-75dpi xfonts-scalable iceweasel xterm alsa-base alsa-utils xresprobe cpufrequtils vbetool menu discover xresprobe mdetect read-edid xutils binutils xpdf
-
-apt-install bootsplash
+apt-install linux-image-2.6.23.1-koolu \
+  xserver-xorg-video-amd xserver-xorg discover libgl1-mesa-glx libgl1-mesa-dri libglu1-mesa \
+  xfonts-base xfonts-100dpi xfonts-75dpi xfonts-scalable iceweasel xterm alsa-base alsa-utils \
+  xresprobe cpufrequtils vbetool menu discover xresprobe mdetect read-edid xutils binutils xpdf \
+  usplash debian-edu-artwork-usplash
 
 # firefox and friends... pdf and flash
 apt-install iceweasel x-ttcidfont-conf xprint  xprint-utils matchbox-window-manager mozplugger xpdf
