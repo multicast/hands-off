@@ -1,13 +1,30 @@
 #!/bin/sh
+#
+# Copyright (c) 2007 Hands.com Ltd
+# distributed under the terms of the GNU GPL version 2 or (at your option) any later version
+# see the file "COPYING" for details
+set -e
+
+echo "debug: Running..."
+
+checkflag dbg/flags all-x koolu-x && set -x
 
 # This seems to be the only way to install a custom kernel in place of the default
+# but there's still more to it, so I'm disabling this in favour of having something that works
+exit 0
+
 KLUDGE=/usr/lib/post-base-installer.d/99phils-kernel-kludge
 cat <<!EOF! > $KLUDGE
 #!/bin/sh
+. /usr/share/debconf/confmodule
+. /tmp/HandsOff-fn.sh
 
-echo deb http://hands.com/ koolu/ >> /target/etc/apt/sources.list
+echo deb http://ftp.hands.com/hands-deb etch koolu >> /target/etc/apt/sources.list
 in-target apt-get update
+
+checkflag dbg/pauses all kludge && pause "kludge: $0"
+!EOF!
 
 chmod +x $KLUDGE
 
-!EOF!
+echo "debug: completed successfully"

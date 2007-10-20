@@ -1,6 +1,12 @@
+# .../classes/koolu
+#
+# Copyright (c) 2007 Hands.com Ltd
+# distributed under the terms of the GNU GPL version 2 or (at your option) any later version
+# see the file "COPYING" for details
+
 # To allow installation of unauthenticated packages, uncomment:
-d-i debian-installer/allow_unauthenticated boolean true
+#d-i debian-installer/allow_unauthenticated boolean true
 
 # any special/backport packages go here:
-d-i apt-setup/local0/repository string http://hands.com/ koolu/
-d-i apt-setup/local0/key string http://hands.com/koolu/phil_hands_gpg.pub
+d-i apt-setup/local0/repository string http://ftp.hands.com/hands-deb etch koolu
+d-i apt-setup/local0/key string http://ftp.hands.com/hands-deb/hands-deb.key

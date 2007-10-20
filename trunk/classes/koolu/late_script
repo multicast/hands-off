@@ -1,15 +1,15 @@
 #!/bin/sh
+#
+# Copyright (c) 2007 Hands.com Ltd
+# distributed under the terms of the GNU GPL version 2 or (at your option) any later version
+# see the file "COPYING" for details
 set -e
 
 echo "debug: Running..."
 
-set -x
+checkflag dbg/flags all-x koolu-x && set -x
 
 sed -ie 's/^# defoptions=.*/# defoptions=vga=791 splash quiet/' /target/boot/grub/menu.lst
-
-# only needed until we have a signed Release file
-echo "deb http://hands.com/ koolu/" >> /target/etc/apt/sources.list
-in-target apt-get update
 
 apt-install linux-image-2.6.23.1-koolu \
   xserver-xorg-video-amd xserver-xorg discover libgl1-mesa-glx libgl1-mesa-dri libglu1-mesa \
@@ -31,7 +31,7 @@ echo 'exec startx' >> /target/home/koolukiosk/.bash_profile
 cat <<EOF > /target/home/koolukiosk/.xinitrc
 xterm &
 matchbox-window-manager -use_titlebar no &
-firefox
+firefox http://koolu.com
 EOF
 
 in-target adduser koolukiosk audio
