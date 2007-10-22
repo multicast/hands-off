@@ -15,7 +15,7 @@ apt-install linux-image-2.6.23.1-koolu \
   xserver-xorg-video-amd xserver-xorg discover libgl1-mesa-glx libgl1-mesa-dri libglu1-mesa \
   xfonts-base xfonts-100dpi xfonts-75dpi xfonts-scalable iceweasel xterm alsa-base alsa-utils \
   xresprobe cpufrequtils vbetool menu discover xresprobe mdetect read-edid xutils binutils xpdf \
-  usplash debian-edu-artwork-usplash
+  usplash usplash-theme-debian
 
 # firefox and friends... pdf and flash
 apt-install iceweasel x-ttcidfont-conf xprint  xprint-utils matchbox-window-manager mozplugger xpdf
@@ -41,5 +41,16 @@ apt-install prelink
 in-target aptitude clean
 
 in-target prelink -q -v -a --conserve-memory --random
+
+# Grub splash screen
+preseed_fetch /classes/koolu/files/koolu_splash.xpm.gz /target/boot/grub/koolu_splash.xpm.gz
+sed -ie '/^color/a \\nsplashimage /boot/grub/koolu_splash.xpm.gz' /target/boot/grub/menu.lst
+
+# Koolu usplash -- cheap and nasty -- this should all be in a package
+preseed_fetch /classes/koolu/files/osdesktop-artwork.so.gz /target/usr/lib/usplash/osdesktop-artwork.so.gz
+in-target gunzip /usr/lib/usplash/osdesktop-artwork.so.gz
+rm /target/usr/lib/usplash/usplash-artwork.so
+ln -s osdesktop-artwork.so /target/usr/lib/usplash/usplash-artwork.so
+in-target update-initramfs -u
 
 echo "debug: completed successfully"
