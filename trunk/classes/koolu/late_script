@@ -4,8 +4,9 @@
 # distributed under the terms of the GNU GPL version 2 or (at your option) any later version
 # see the file "COPYING" for details
 set -e
-
 echo "debug: Running..."
+. /usr/share/debconf/confmodule
+. /tmp/HandsOff-fn.sh
 
 checkflag dbg/flags all-x koolu-x && set -x
 
