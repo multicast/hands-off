@@ -3,6 +3,9 @@
 # Copyright (c) 2007 Hands.com Ltd
 # distributed under the terms of the GNU GPL version 2 or (at your option) any later version
 # see the file "COPYING" for details
+
+exit 0
+
 set -e
 echo "debug: Running..."
 . /usr/share/debconf/confmodule
