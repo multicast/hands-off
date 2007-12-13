@@ -22,15 +22,15 @@ apt-install linux-image-2.6.23.1-koolu \
 apt-install iceweasel x-ttcidfont-conf xprint  xprint-utils matchbox-window-manager mozplugger xpdf
 apt-install iceweasel-l10n-* iceweasel-l10n-roa-es-val-
 
-in-target tasksel install kde-desktop
+#in-target tasksel install kde-desktop
 
 sed -ie '/Section "Device"/a\        Option "NoCompression" "true"' /target/etc/X11/xorg.conf
 
-apt-install prelink
+#apt-install prelink
 
-in-target aptitude clean
+#in-target aptitude clean
 
 # This takes _ages_ so might well be something to try and optimise
-in-target prelink -q -v -a --conserve-memory --random
+#in-target prelink -q -v -a --conserve-memory --random
 
 echo "debug: completed successfully"
