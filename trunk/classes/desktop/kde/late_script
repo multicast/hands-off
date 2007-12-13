@@ -1,0 +1,65 @@
+#!/bin/sh
+#
+# Copyright (c) 2007 Luke Kenneth Casson Leighton <lkcl@lkcl.net>
+#
+# distributed under the terms of the GNU GPL version 2 or (at your option)
+# any later version
+# see the file "COPYING" for details
+#
+# lkcl favourite kde desktop setup (for users)
+
+set -e
+
+. /tmp/HandsOff-fn.sh
+
+echo 'debug: Running...'
+
+# kde desktop tasksel
+#in-target aptitude -q --without-recommends -y install ~t^british-desktop$ ~t^desktop$ ~t^kde-desktop$
+in-target tasksel install kde-desktop
+
+apt-install ttf-opensymbol ttf-bitstream-vera ttf-freefont ttf-gentium \
+		ttf-xfree86* \
+		x-ttcidfont-conf
+
+# desktop extras not covered by tasksel kde-desktop (!!!)
+apt-install --force-yes  kde-i18n-engb \
+			k3b k3b-i18n cdrdao dvd+rw-tools \
+			kaffeine ktorrent xine-ui \
+			ksynaptics 
+
+# more userspace packages (not covered by kde-desktop (!!!) )
+apt-install --force-yes  \
+		openoffice.org-l10n-en-gb \
+	     mozilla-firefox-locale-en-gb \
+	     mozilla-helix-player \
+	    thunderbird gimp gaim \
+	    abiword abiword-plugins \
+		koffice koffice-i18n-engb
+
+# printing
+apt-install --force-yes  xprint xprint-utils kooka sane sane-utils \
+			gimp2.0-quiteinsane quiteinsane
+apt-install --force-yes  psfontmgr \
+		linuxprinting.org-ppds hp-ppd \
+		foomatic-db-gimp-print
+
+# silly hp printing
+apt-install --force-yes  hpijs hpoj hpoj-xojpanel 
+
+# spam/virus
+apt-install --force-yes  clamav clamav-freshclam \
+		clamav-daemon \
+		spamassassin razor pyzor dcc-client spamc \
+		arj unzoo libmail-spf-query-perl
+
+
+# sound
+apt-install alsa-utils alsa-base linux-sound-base aumix
+
+# damn sound on alsa-utils
+sed -ie 's/\"Master\" \"80\%\"/"Master" "80\%"; unmute_and_set_level "Master Mono" "80%"/' /target/etc/init.d/alsa-utils
+
+echo 'debug: exiting successfully'
+
+exit 0

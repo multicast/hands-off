@@ -1,0 +1,45 @@
+#!/bin/sh
+#
+# Copyright (c) 2007 Luke Kenneth Casson Leighton <lkcl@lkcl.net>
+#
+# distributed under the terms of the GNU GPL version 2 or (at your option)
+# any later version
+# see the file "COPYING" for details
+#
+# lkcl favourite kde desktop setup (for users)
+
+set -e
+
+. /tmp/HandsOff-fn.sh
+
+echo 'debug: Running...'
+
+# lock the root account (we're only using sudo)
+in-target /usr/bin/passwd -l root
+
+# damn debian-multimedia.
+in-target apt-get -y --force-yes install libgpod0
+
+# must do w32codecs, libdvdcss, etc.
+apt-install --force-yes  w32codecs libdvdcss mjpegtools ffmpeg lame
+
+# desktop extras not covered by tasksel kde-desktop (!!!)
+# these include some things from debian-multimedia (relate to k3b)
+apt-install --force-yes  kde-i18n-engb \
+			k3b k3b-i18n cdrdao dvd+rw-tools \
+			sox toolame pvm transcode vcdimager movixmaker-2 \
+			kaffeine xine-ui 
+
+apt-install --force-yes  \
+		openoffice.org-l10n-en-gb \
+	     gtkpod-aac  \
+	    kino kinoplus kino-dvtitler kino-timfx kino-brightness-contrast-plugin kino-hsv-color-space-plugin dvgrab \
+	    blender 
+
+# ms truetype fonts
+apt-install msttcorefonts
+
+
+echo 'debug: exiting successfully'
+
+exit 0
