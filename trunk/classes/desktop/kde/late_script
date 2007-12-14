@@ -15,8 +15,10 @@ set -e
 echo 'debug: Running...'
 
 # kde desktop tasksel
-#in-target aptitude -q --without-recommends -y install ~t^british-desktop$ ~t^desktop$ ~t^kde-desktop$
-in-target tasksel install kde-desktop
+apt-install libxdmcp6 libxau6 libxfixes3 libxxf86vm1 libxrandr2 libxss1 libxv1 libxtst6 libxxf86dga1
+apt-install xserver-xorg-video-dummy
+in-target aptitude -q --without-recommends -y install ~t^british-desktop$ ~t^desktop$ ~t^kde-desktop$
+#in-target tasksel install kde-desktop
 
 apt-install ttf-opensymbol ttf-bitstream-vera ttf-freefont ttf-gentium \
 		ttf-xfree86* \
