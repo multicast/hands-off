@@ -12,7 +12,7 @@ checkflag dbg/flags all-x koolu-x && set -x
 
 # firefox and friends... pdf and flash
 apt-install iceweasel x-ttcidfont-conf xprint  xprint-utils matchbox-window-manager mozplugger xpdf
-apt-install iceweasel-l10n-* iceweasel-l10n-roa-es-val
+apt-install iceweasel-l10n-*
 
 in-target apt-get -y --force-yes --no-remove install flashplugin-nonfree
 
