@@ -7,8 +7,8 @@
 # see the file "COPYING" for details
 #
 # lkcl favourite kde desktop setup (for users)
-# a number of things that make kde useable for ordinary users are
-# in here - such as ms truetype fonts, non-free flash and disabling
+# a number of things that make kde useable for ordinary users are in
+# here - such as ms truetype fonts, non-free flash, realplayer and disabling
 # root account and replacing it with kdesu and sudo.  purists will
 # of course be utterly horrified and i couldn't care less - and nor
 # will people who will be grateful for not having to phone up having
@@ -74,6 +74,9 @@ apt-install ttf-opensymbol ttf-bitstream-vera ttf-freefont ttf-gentium \
 # flash player
 apt-install --force-yes swf-player flashplugin-nonfree
 
+# real audio player
+apt-install --force-yes realplayer
+
 apt-install --force-yes  adept-updater 
 
 # oem config package.  really needs languagechooser (hacked out...)
@@ -134,12 +137,6 @@ cat >> /etc/sudoers <<'EOF'
 EOF
 
 chmod ugo+rx /target/usr/local/sbin/adduser.local
-
-# sound
-apt-install alsa-utils alsa-base linux-sound-base aumix
-
-# damn sound on alsa-utils
-sed -ie 's/\"Master\" \"80\%\"/"Master" "80\%"; unmute_and_set_level "Master Mono" "80%"/' /target/etc/init.d/alsa-utils
 
 cat >> /target/etc/profile <<'EOF'
 
