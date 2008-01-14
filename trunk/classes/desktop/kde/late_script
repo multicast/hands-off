@@ -14,9 +14,15 @@ set -e
 
 echo 'debug: Running...'
 
+# lkcl: something really weird going on with my squid cache.
+# half way through the kde-desktop install, files are
+# listed as missing, or there's a connection reset, or
+# an md5sum error...
+#apt-install libxdmcp6 libxau6 libxfixes3 libxxf86vm1 libxrandr2 libxss1 libxv1 libxtst6 libxxf86dga1
+#apt-install xserver-xorg-video-dummy
+#apt-install cpp
+
 # kde desktop tasksel
-apt-install libxdmcp6 libxau6 libxfixes3 libxxf86vm1 libxrandr2 libxss1 libxv1 libxtst6 libxxf86dga1
-apt-install xserver-xorg-video-dummy
 in-target aptitude -q --without-recommends -y install ~t^british-desktop$ ~t^desktop$ ~t^kde-desktop$
 #in-target tasksel install kde-desktop
 
@@ -26,7 +32,6 @@ apt-install ttf-opensymbol ttf-bitstream-vera ttf-freefont ttf-gentium \
 
 # desktop extras not covered by tasksel kde-desktop (!!!)
 apt-install --force-yes  kde-i18n-engb \
-			k3b k3b-i18n cdrdao dvd+rw-tools \
 			kaffeine ktorrent xine-ui \
 			ksynaptics 
 
@@ -54,13 +59,6 @@ apt-install --force-yes  clamav clamav-freshclam \
 		clamav-daemon \
 		spamassassin razor pyzor dcc-client spamc \
 		arj unzoo libmail-spf-query-perl
-
-
-# sound
-apt-install alsa-utils alsa-base linux-sound-base aumix
-
-# damn sound on alsa-utils
-sed -ie 's/\"Master\" \"80\%\"/"Master" "80\%"; unmute_and_set_level "Master Mono" "80%"/' /target/etc/init.d/alsa-utils
 
 echo 'debug: exiting successfully'
 
