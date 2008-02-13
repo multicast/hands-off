@@ -74,12 +74,13 @@ if ! db_set auto-install/classes "$classes"; then
 fi
 
 # generate class preseed inclusion list
+[ "true" = "$use_local" ] && includelcl="local/preseed "
 for cls in $(split_semi $classes) ; do
   if expr "$cls" : local/ >/dev/null; then
     includelcl="$includelcl /${cls}/preseed"
   else
     include="${include}classes/${cls}/preseed "
-    [ "true" = "$use_local" ] && includelcl="local/preseed local/${cls}/preseed"
+    [ "true" = "$use_local" ] && includelcl="${includelcl}local/${cls}/preseed "
   fi
 done
 # ... and get it included next
