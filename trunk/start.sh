@@ -7,24 +7,25 @@
 #
 set -e
 
-. /usr/share/debconf/confmodule
+# create templates for use in on-the-fly creation of dialogs
+cat > /tmp/HandsOff.templates <<'!EOF!'
+Template: hands-off/meta/text
+Type: text
+Description: ${DESC}
+ ${DESCRIPTION}
 
-preseed_fetch local_enabled_flag /tmp/local_enabled_flag
-use_local=$(grep -v '^[[:space:]]*\(#\|$\)' /tmp/local_enabled_flag || true)
-rm /tmp/local_enabled_flag
-echo $use_local > /var/run/hands-off.local
-if [ "true" = "$use_local" ]
-then
-  db_set preseed/run local/start.sh subclass.sh
-else
-  db_set preseed/run subclass.sh
-fi
+Template: hands-off/meta/string
+Type: string
+Description: ${DESC}
+ ${DESCRIPTION}
 
-# Make sure that auto-install/classes exists, even if it wasn't on the cmdline
-db_get auto-install/classes || {
-  db_register debian-installer/dummy auto-install/classes
-  db_subst auto-install/classes ID auto-install/classes
-}
+Template: hands-off/meta/boolean
+Type: boolean
+Description: ${DESC}
+ ${DESCRIPTION}
+!EOF!
+
+debconf-loadtemplate hands-off /tmp/HandsOff.templates
 
 cat > /tmp/HandsOff-fn.sh <<'!EOF!'
 # useful functions for preseeding
@@ -58,26 +59,51 @@ pause() {
 	db_unregister hands-off/pause/title
 	db_go
 }
+
+# db_set fails if the variable is not already registered -- this gets round that
+# this might need to check if the variable already exits
+db_really_set() {
+  var=$1 ; shift
+  val=$1 ; shift
+  seen=$1 ; shift
+
+  db_register debian-installer/dummy "$var"
+  db_set "$var" "$val"
+  db_subst "$var" ID "$var"
+  db_fset "$var" seen "$seen"
+}
+
+check_udeb_ver() {
+        # returns true if the udeb is at least Version: ver
+	udeb=$1 ; shift
+        ver=$1 ; shift
+
+        { echo $ver ;
+          sed -ne '/^Package: '${udeb}'$/,/^$/s/^Version: \(.*\)$/\1/p' /var/lib/dpkg/status ;
+        } | sort -t. -c 2>/dev/null
+}
 !EOF!
 
+. /usr/share/debconf/confmodule
+. /tmp/HandsOff-fn.sh
 
-# create templates for use in on-the-fly creation of dialogs
-cat > /tmp/HandsOff.templates <<'!EOF!'
-Template: hands-off/meta/text
-Type: text
-Description: ${DESC}
- ${DESCRIPTION}
+checkflag dbg/pauses all start && pause "Top Level start.sh script"
 
-Template: hands-off/meta/string
-Type: string
-Description: ${DESC}
- ${DESCRIPTION}
+check_udeb_ver preseed-common 1.29 || backcompat=etch.sh
 
-Template: hands-off/meta/boolean
-Type: boolean
-Description: ${DESC}
- ${DESCRIPTION}
-!EOF!
+preseed_fetch local_enabled_flag /tmp/local_enabled_flag
+use_local=$(grep -v '^[[:space:]]*\(#\|$\)' /tmp/local_enabled_flag || true)
+rm /tmp/local_enabled_flag
+echo $use_local > /var/run/hands-off.local
+if [ "true" = "$use_local" ]
+then
+  db_set preseed/run local/start.sh subclass.sh $backcompat
+else
+  db_set preseed/run subclass.sh $backcompat
+fi
 
-debconf-loadtemplate hands-off /tmp/HandsOff.templates
-
+# Make sure that auto-install/classes exists, even if it wasn't on the cmdline
+db_get auto-install/classes || {
+  db_register debian-installer/dummy auto-install/classes
+  db_subst auto-install/classes ID auto-install/classes
+}
