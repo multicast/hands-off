@@ -102,8 +102,28 @@ else
   db_set preseed/run subclass.sh $backcompat
 fi
 
+set -x
 # Make sure that auto-install/classes exists, even if it wasn't on the cmdline
 db_get auto-install/classes || {
-  db_register debian-installer/dummy auto-install/classes
+  db_register hands-off/meta/string auto-install/classes/title
+  db_register hands-off/meta/string auto-install/classes
   db_subst auto-install/classes ID auto-install/classes
 }
+
+if [ -z "$(debconf-get auto-install/classes)" -a \
+     -e /var/run/auto-install-had-to-ask-for-preseed ]; then
+  db_subst auto-install/classes/title DESC "Which auto-install classes do you want to set?"
+  db_settitle auto-install/classes/title
+
+  db_subst auto-install/classes DESCRIPTION "\
+Here you can specify a list of classes you wish to set for this install.  Classes should be separated by semi-colons(;), thus:
+
+  desktop;loc/gb
+
+If you set it to 'tutorial' you'll be given a short tutorial on automated installation.
+
+Leave this blank for a minimal default install:"
+  db_set auto-install/classes tutorial
+  db_input critical auto-install/classes
+  db_go
+fi
