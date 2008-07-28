@@ -1,0 +1,88 @@
+#!/bin/sh
+
+. /usr/share/debconf/confmodule
+. /tmp/HandsOff-fn.sh
+
+db_subst babelbox/info LANGNAME "Debian auto-install/Hands-off tutorial"
+db_info babelbox/info
+
+db_register hands-off/meta/text hands-off/pause/title
+db_register hands-off/meta/text hands-off/pause
+
+set_slide() {
+  db_subst hands-off/pause/title DESC "$1"
+  db_settitle hands-off/pause/title
+  db_subst hands-off/pause DESCRIPTION "$2"
+  db_input critical hands-off/pause
+}
+
+SLIDE=1
+
+while true; do
+  case $SLIDE in
+
+  1)
+    db_capb
+    set_slide "Introduction" \
+              "This tutorial is part of the hands-off framework:
+
+  http://hands.com/d-i/
+
+This is only one of the many ways of taking advantage of debian-installer's automatic installation capabilities -- for much more information, visit:
+
+  http://wiki.debian.org/DebianInstaller/Preseed"
+  ;;
+
+  2)
+    set_slide "Before you start" \
+              "There are a few things you need to decide before seting up for automated installs.
+
+  Do you need to support multiple boot methods, or are you in an
+  environment where you know you'll only ever want to boot from USB
+  stick (or CD, or via PXE), say.  Deciding to support all methods
+  provides much more flexibility, but is a little more effort, and
+  needs more testing.
+
+  Do you want to support a wide range of hardware, or site setups,
+  or are you happy to limit yourself to supporting a limited set of
+  systems in an environment where you control most of the variables?
+  If you want to support a wide range of environments and systems,
+  you'll want to split your preseed fragments up, so that they can
+  be applied differently depending on the details of the install
+  in questio.  One the other hand, if you're installing cluster nodes
+  on a private network, you probably want a single preseed.cfg file,
+  launched with PXE."
+  ;;
+
+
+  3)
+  set_slide "The End" \
+            "That's the end of this tutorial.
+(a bit short, I know, but this is a proof of concept)
+
+If you continue from this slide, the system will reboot to avoid
+touching the disk on your system."
+  ;;
+
+
+  *)
+    reboot
+    break ;;
+
+  esac
+  if db_go; then
+    SLIDE=$(($SLIDE + 1))
+  else
+    SLIDE=$(($SLIDE - 1))
+    if [ $SLIDE -lt 1 ]; then
+      exit 30
+    fi
+  fi
+  db_capb backup
+done
+
+
+db_unregister hands-off/pause
+db_unregister hands-off/pause/title
+
+exit 0
