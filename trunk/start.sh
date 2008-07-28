@@ -102,7 +102,6 @@ else
   db_set preseed/run subclass.sh $backcompat
 fi
 
-set -x
 # Make sure that auto-install/classes exists, even if it wasn't on the cmdline
 db_get auto-install/classes || {
   db_register hands-off/meta/string auto-install/classes/title
