@@ -32,13 +32,13 @@ subclasses() {
    class=$1
    cl_a_ss=$(echo ${class}|sed 's/\([^-a-zA-Z0-9]\)/_/g')
    if expr "$class" : local/ >/dev/null; then
-     preseed_fetch "/$class/subclasses" /tmp/cls-$cl_a_ss-local
+     preseed_fetch "/$class/subclasses" /tmp/cls-$cl_a_ss-local || [ $? = 4 ]
    else
      [ -n "$class" ] &&
-       preseed_fetch "/classes/$class/subclasses" /tmp/cls-$cl_a_ss
+       preseed_fetch "/classes/$class/subclasses" /tmp/cls-$cl_a_ss || [ $? = 4 ]
 
      if [ "true" = "$use_local" ]; then
-       preseed_fetch "/local/$class/subclasses" /tmp/cls-$cl_a_ss-local
+       preseed_fetch "/local/$class/subclasses" /tmp/cls-$cl_a_ss-local || [ $? = 4 ]
      fi
    fi
    for cls in /tmp/cls-$cl_a_ss /tmp/cls-$cl_a_ss-local; do
