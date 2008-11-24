@@ -110,6 +110,7 @@ db_get auto-install/classes || {
 }
 
 if [ -z "$(debconf-get auto-install/classes)" -a \
+     -e /var/run/preseed_unspecified_at_boot  -o \
      -e /var/run/auto-install-had-to-ask-for-preseed ]; then
   db_subst auto-install/classes/title DESC "Which auto-install classes do you want to set?"
   db_settitle auto-install/classes/title
