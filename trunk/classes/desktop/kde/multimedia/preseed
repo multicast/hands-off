@@ -1,6 +1,11 @@
 # for w32codecs, livdvdcss etc.
-d-i apt-setup/local1/repository string http://debian-multimedia.org etch main 
-d-i apt-setup/local1/comment string w32codecs and libdvdcss
+#
+# NOTE - do NOT enable these direct!  put copies of these into a
+# "top level" class, and sort out the ordering of all repositories
+# in there.  only at the "top level" can you add multiple repositories
+# local0, local1 etc. correctly.
+#d-i apt-setup/local0/repository string http://debian-multimedia.org stable main 
+#d-i apt-setup/local0/comment string w32codecs and libdvdcss
 
 # for msttcorefonts, flashplayer etc.
 d-i apt-setup/non-free boolean true

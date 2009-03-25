@@ -18,26 +18,31 @@ echo 'debug: Running...'
 in-target /usr/bin/passwd -l root
 
 # damn debian-multimedia.
-in-target apt-get -y --force-yes install libgpod0
+#in-target apt-get -y --force-yes install libgpod0
 
 # must do w32codecs, libdvdcss, etc.
 apt-install --force-yes  w32codecs libdvdcss mjpegtools ffmpeg lame
 
-# desktop extras not covered by tasksel kde-desktop (!!!)
+# desktop extras not covered by tasksel kde-desktop 
 # these include some things from debian-multimedia (relate to k3b)
-apt-install --force-yes  kde-i18n-engb \
-			k3b k3b-i18n cdrdao dvd+rw-tools \
+apt-install --force-yes  \
+			k3b k3b-i18n wodim dvd+rw-tools \
 			sox toolame pvm transcode vcdimager movixmaker-2 \
-			kaffeine xine-ui 
+			kaffeine ktorrent2.2 xine-ui 
 
 apt-install --force-yes  \
 		openoffice.org-l10n-en-gb \
 	     gtkpod-aac  \
-	    kino kinoplus kino-dvtitler kino-timfx kino-brightness-contrast-plugin kino-hsv-color-space-plugin dvgrab \
-	    blender 
+	    kino kino-brightness-contrast-plugin kino-hsv-color-space-plugin \
+	    dvgrab 
 
 # ms truetype fonts
 apt-install msttcorefonts
+
+in-target apt-get -y --force-yes --no-remove install \
+                                swf-player flashplugin-nonfree
+in-target apt-get -y --force-yes --no-remove \
+                                install mplayer mozilla-mplayer
 
 
 echo 'debug: exiting successfully'

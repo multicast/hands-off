@@ -18,29 +18,31 @@ echo 'debug: Running...'
 # half way through the kde-desktop install, files are
 # listed as missing, or there's a connection reset, or
 # an md5sum error...
+#
+# moral of story: DON'T USE SQUID!
+#
 #apt-install libxdmcp6 libxau6 libxfixes3 libxxf86vm1 libxrandr2 libxss1 libxv1 libxtst6 libxxf86dga1
 #apt-install xserver-xorg-video-dummy
 #apt-install cpp
 
-# kde desktop tasksel
-in-target aptitude -q --without-recommends -y install ~t^british-desktop$ ~t^desktop$ ~t^kde-desktop$
+# kde desktop tasksel.  echo 'yes' just in case of use of debian-multimedia
+# use a command like this because of the echo and in-target.  yuk.
+cat >> /target/tmp/installkde <<!EOF!
+echo yes | aptitude -q --without-recommends -y install ~t^british-desktop$ ~t^desktop$ ~t^kde-desktop$ 
+!EOF!
+
+in-target sh /tmp/installkde
 #in-target tasksel install kde-desktop
 
-apt-install ttf-opensymbol ttf-bitstream-vera ttf-freefont ttf-gentium \
+apt-install ttf-opensymbol ttf-bitstream-vera ttf-freefont ttf-sil-gentium \
 		ttf-xfree86* \
 		x-ttcidfont-conf
-
-# desktop extras not covered by tasksel kde-desktop (!!!)
-apt-install --force-yes  kde-i18n-engb \
-			kaffeine ktorrent xine-ui \
-			ksynaptics 
 
 # more userspace packages (not covered by kde-desktop (!!!) )
 apt-install --force-yes  \
 		openoffice.org-l10n-en-gb \
-	     mozilla-firefox-locale-en-gb \
-	     mozilla-helix-player \
-	    thunderbird gimp gaim \
+	     iceweasel-l10n-en-gb \
+	    icedove gimp gaim \
 	    abiword abiword-plugins \
 		koffice koffice-i18n-engb
 
@@ -49,7 +51,7 @@ apt-install --force-yes  xprint xprint-utils kooka sane sane-utils \
 			gimp2.0-quiteinsane quiteinsane
 apt-install --force-yes  psfontmgr \
 		linuxprinting.org-ppds hp-ppd \
-		foomatic-db-gimp-print
+		foomatic-db-gutenprint
 
 # silly hp printing
 apt-install --force-yes  hpijs hpoj hpoj-xojpanel 
@@ -57,8 +59,8 @@ apt-install --force-yes  hpijs hpoj hpoj-xojpanel
 # spam/virus
 apt-install --force-yes  clamav clamav-freshclam \
 		clamav-daemon \
-		spamassassin razor pyzor dcc-client spamc \
-		arj unzoo libmail-spf-query-perl
+		spamassassin razor pyzor spamc \
+		arj libmail-spf-query-perl
 
 echo 'debug: exiting successfully'
 

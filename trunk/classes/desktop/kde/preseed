@@ -4,3 +4,5 @@ clamav-freshclam        clamav-freshclam/NotifyClamd    boolean true
 clamav-freshclam        clamav-freshclam/local_mirror   select  db.local.clamav.net
 
 d-i tasksel/first multiselect 
+
+

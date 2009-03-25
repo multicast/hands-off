@@ -6,6 +6,7 @@
 
 d-i     debian-installer/country	string GB
 d-i     debian-installer/locale		string en_GB.UTF-8
+d-i     console-keymaps-at/keymap		string uk
 
 d-i	mirror/http/hostname		string ftp.uk.debian.org
 base-config     apt-setup/hostname      string ftp.uk.debian.org
