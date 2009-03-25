@@ -21,7 +21,7 @@ in-target /usr/bin/passwd -l root
 #in-target apt-get -y --force-yes install libgpod0
 
 # must do w32codecs, libdvdcss, etc.
-apt-install --force-yes  w32codecs libdvdcss mjpegtools ffmpeg lame
+apt-install --force-yes  w32codecs libdvdcss2 mjpegtools ffmpeg lame
 
 # desktop extras not covered by tasksel kde-desktop 
 # these include some things from debian-multimedia (relate to k3b)
@@ -40,7 +40,7 @@ apt-install --force-yes  \
 apt-install msttcorefonts
 
 in-target apt-get -y --force-yes --no-remove install \
-                                swf-player flashplugin-nonfree
+                                swf-player flashplayer-mozilla
 in-target apt-get -y --force-yes --no-remove \
                                 install mplayer mozilla-mplayer
 

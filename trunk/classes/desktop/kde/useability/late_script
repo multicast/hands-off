@@ -49,46 +49,41 @@ sed -ie 's/ENABLE="false"/ENABLE="true"/' /target/etc/default/cpufrequtils
 
 # suspend and stuff
 apt-install --force-yes hdparm uswsusp prelink menu wget \
-		bzip2 zip unzip arj unzoo unrar lha \
+		bzip2 zip unzip arj unrar lha \
 		daemon sudo host vim hwdata \
 		lshw mbr dosfstools
 
 # install mbr on hda
-in-target /sbin/install-mbr /dev/hda
+#in-target /sbin/install-mbr /dev/hda
 
 # x-window-system
 
 # hardware recognition and general stuff...
-apt-install  --force-yes discover read-edid mdetect \
-		xdebconfigurator xresprobe 
+#apt-install  --force-yes discover read-edid mdetect \
+#		xdebconfigurator xresprobe 
 
-cat > /target/etc/default/xdebconfigurator <<'!EOF!'
-ENABLE_AT_BOOT=true
-XDEBCFG_ARGS=-dilmr
-!EOF!
+#cat > /target/etc/default/xdebconfigurator <<'!EOF!'
+#ENABLE_AT_BOOT=true
+#XDEBCFG_ARGS=-dilmr
+#!EOF!
 
-apt-install ttf-opensymbol ttf-bitstream-vera ttf-freefont ttf-gentium \
+apt-install ttf-opensymbol ttf-bitstream-vera ttf-freefont ttf-sid-gentium \
 		ttf-xfree86* \
 		x-ttcidfont-conf
 
-# flash player
-apt-install --force-yes swf-player flashplugin-nonfree
-
-# real audio player
-apt-install --force-yes realplayer
-
-apt-install --force-yes  adept-updater 
+# adept - XXX nope, not in lenny.
+#apt-install --force-yes  adept-updater 
 
 # oem config package.  really needs languagechooser (hacked out...)
-apt-install --force-yes user-setup locales-all oem-config-kde
-in-target /usr/sbin/oem-config-prepare
+#apt-install --force-yes user-setup locales-all oem-config-kde
+#in-target /usr/sbin/oem-config-prepare
 
 # in lieu of porting languagechooser to debian from ubuntu: create one choice...
-mkdir /target/usr/share/localechooser
-cat > /target/usr/share/localechooser/languagelist <<'!EOF!'
-English;en_US;en;US;
-!EOF!
-touch /target/usr/share/localechooser/shortlists
+#mkdir /target/usr/share/localechooser
+#cat > /target/usr/share/localechooser/languagelist <<'!EOF!'
+#English;en_US;en;US;
+#!EOF!
+#touch /target/usr/share/localechooser/shortlists
 
 # i don't believe in allowing any incoming traffic on a desktop
 # unless people want it.  they can always use kde print manager to change it.
@@ -148,13 +143,14 @@ export KDE_EXECS_SLAVES="1"
 EOF
 
 # internet proxies getting rid of crap.
-apt-install dansguardian privoxy
+#apt-install dansguardian privoxy
+apt-install privoxy
 
 # want to start up with superkaramba kroller.sez - much better for desktop use.
-#mkdir -p /target/usr/share/superkaramba/themes/31081-kroller
-#wget -O /target/usr/share/superkaramba/kroller.sez.tgz http://www.kde-look.org/content/download.php?content=31081&id=1 
+mkdir -p /target/usr/share/superkaramba/themes/31081-kroller
+wget -O /target/usr/share/superkaramba/kroller.sez.tgz http://www.kde-look.org/content/download.php?content=31081&id=1 
 #in-target tar -C /usr/share/superkaramba/themes/31081-kroller -xzf /usr/share/superkaramba/kroller.sez.tgz
-#in-target tar -C /usr/share/superkaramba -xvzf /usr/share/superkaramba/kroller.sez.tgz
+in-target tar -C /usr/share/superkaramba -xvzf /usr/share/superkaramba/kroller.sez.tgz
 #chmod -R ugo+rx /target/usr/share/superkaramba
 
 echo 'debug: exiting successfully'
