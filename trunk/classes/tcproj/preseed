@@ -1,0 +1,11 @@
+# in here we sort out the repository order.  local0, local1, local2 etc.
+
+d-i apt-setup/local0/repository string http://debian-multimedia.org stable main 
+d-i apt-setup/local0/comment string w32codecs and libdvdcss
+
+# noooooo
+popularity-contest popularity-contest/participate bool false
+
+# use lenny
+d-i mirror/suite        string lenny
+

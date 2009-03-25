@@ -1,0 +1,18 @@
+#!/bin/sh
+#
+# Copyright (c) 2005-2006 Hands.com Ltd
+# distributed under the terms of the GNU GPL version 2 or (at your option) any later version
+# see the file "COPYING" for details
+set -e
+
+. /tmp/HandsOff-fn.sh
+
+echo 'debug: Running...'
+
+# make fsck automatically fix problems at boot time.
+sed -i -e 's/^FSCKFIX=no/FSCKFIX=yes/' /target/etc/default/rcS
+sed -i -e 's/^RAMRUN=no/RAMRUN=yes/' /target/etc/default/rcS
+sed -i -e 's/^RAMLOCK=no/RAMLOCK=yes/' /target/etc/default/rcS
+
+
+exit 0
