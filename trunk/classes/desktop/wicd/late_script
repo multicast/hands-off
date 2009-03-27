@@ -29,15 +29,7 @@ set -e
 
 echo 'debug: Running...'
 
-cat >> /target/etc/apt/preferences <<!EOF!
-Package: *
-Pin: release a=stable
-Pin-Priority: 900
-Package: *
-Pin: release a=testing
-Pin-Priority: 800
-!EOF!
-
+# the /etc/apt/preferences is created in the early_script
 
 in-target apt-get --force-yes -y -t testing install wicd
 
