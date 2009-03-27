@@ -14,5 +14,7 @@ sed -i -e 's/^FSCKFIX=no/FSCKFIX=yes/' /target/etc/default/rcS
 sed -i -e 's/^RAMRUN=no/RAMRUN=yes/' /target/etc/default/rcS
 sed -i -e 's/^RAMLOCK=no/RAMLOCK=yes/' /target/etc/default/rcS
 
+apt-install --force-yes ssh
+
 
 exit 0

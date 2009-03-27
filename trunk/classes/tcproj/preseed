@@ -2,6 +2,8 @@
 
 d-i apt-setup/local0/repository string http://debian-multimedia.org stable main 
 d-i apt-setup/local0/comment string w32codecs and libdvdcss
+d-i apt-setup/local1/repository string http://lkcl.net/debian etch main 
+d-i apt-setup/local1/comment OEM Config (ported from ubuntu)
 
 # noooooo
 popularity-contest popularity-contest/participate bool false

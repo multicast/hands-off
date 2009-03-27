@@ -7,15 +7,15 @@
 # see the file "COPYING" for details
 #
 # lkcl favourite kde desktop setup (for users)
-# a number of things that make kde useable for ordinary users are in
-# here - such as ms truetype fonts, non-free flash, realplayer and disabling
-# root account and replacing it with kdesu and sudo.  purists will
-# of course be utterly horrified and i couldn't care less - and nor
+# a number of things that make kde useable for ordinary users are in here -
+# such as disabling root account and replacing it with kdesu and sudo.  purists
+# will of course be utterly horrified and i couldn't care less - and nor
 # will people who will be grateful for not having to phone up having
 # forgotten the existence of root, let alone its password.
 # oh - and most importantly: oem-config, ported (badly) from ubuntu
 # makes it possible to have a user type in their preferred account
-# details at startup.
+# details at first boot, instead of forcing the maintainers to
+# get involved.
 
 set -e
 
@@ -45,12 +45,12 @@ speedstep-smi
 EOF
 
 # cpufrequtils on
-sed -ie 's/ENABLE="false"/ENABLE="true"/' /target/etc/default/cpufrequtils
+#sed -ie 's/ENABLE="false"/ENABLE="true"/' /target/etc/default/cpufrequtils
 
 # suspend and stuff
 apt-install --force-yes hdparm uswsusp prelink menu wget \
 		bzip2 zip unzip arj unrar lha \
-		daemon sudo host vim hwdata \
+		daemon sudo vim hwdata \
 		lshw mbr dosfstools
 
 # install mbr on hda
@@ -67,34 +67,31 @@ apt-install --force-yes hdparm uswsusp prelink menu wget \
 #XDEBCFG_ARGS=-dilmr
 #!EOF!
 
-apt-install ttf-opensymbol ttf-bitstream-vera ttf-freefont ttf-sid-gentium \
-		ttf-xfree86* \
-		x-ttcidfont-conf
-
 # adept - XXX nope, not in lenny.
 #apt-install --force-yes  adept-updater 
 
 # oem config package.  really needs languagechooser (hacked out...)
-#apt-install --force-yes user-setup locales-all oem-config-kde
-#in-target /usr/sbin/oem-config-prepare
+apt-install --force-yes user-setup locales-all oem-config-kde
+in-target /usr/sbin/oem-config-prepare
 
 # in lieu of porting languagechooser to debian from ubuntu: create one choice...
-#mkdir /target/usr/share/localechooser
-#cat > /target/usr/share/localechooser/languagelist <<'!EOF!'
-#English;en_US;en;US;
-#!EOF!
-#touch /target/usr/share/localechooser/shortlists
+mkdir /target/usr/share/localechooser
+cat > /target/usr/share/localechooser/languagelist <<'!EOF!'
+English;en_US;en;US;
+!EOF!
+touch /target/usr/share/localechooser/shortlists
+
+# iso_3166.tab is now missing. some stupid idiots decided XML is a good idea.
+mkdir -p /target/usr/share/iso-codes
+preseed_fetch /${prefix}/classes/desktop/kde/useability/iso_3166.tab /target/usr/share/iso-codes/iso_3166.tab
 
 # i don't believe in allowing any incoming traffic on a desktop
 # unless people want it.  they can always use kde print manager to change it.
 sed -ie 's/Browsing On/Browsing Off/' /target/etc/cups/cupsd.conf
 
-# ms truetype fonts
-apt-install msttcorefonts
-
 # preferred kde default setup
 mkdir /target/usr/share/kdedesktop
-wget -O /target/usr/share/kdedesktop/kde3.5.tgz http://lkcl.net/d-i/kdedesktop/kde3.5.tgz 
+preseed_fetch /${prefix}/classes/desktop/kde/useability/kde3.5.tgz /target/usr/share/kdedesktop/kde3.5.tgz 
 chmod -R ugo+rx /target/usr/share/kdedesktop
 
 # make it so that users get added to some sensible groups, by default,
@@ -147,9 +144,8 @@ EOF
 apt-install privoxy
 
 # want to start up with superkaramba kroller.sez - much better for desktop use.
-mkdir -p /target/usr/share/superkaramba/themes/31081-kroller
-wget -O /target/usr/share/superkaramba/kroller.sez.tgz http://www.kde-look.org/content/download.php?content=31081&id=1 
-#in-target tar -C /usr/share/superkaramba/themes/31081-kroller -xzf /usr/share/superkaramba/kroller.sez.tgz
+mkdir -p /target/usr/share/superkaramba
+wget -O /target/usr/share/superkaramba/kroller.sez.tgz http://www.kde-look.org/CONTENT/content-files/31081-kroller.sez-v0.94.2.tgz
 in-target tar -C /usr/share/superkaramba -xvzf /usr/share/superkaramba/kroller.sez.tgz
 #chmod -R ugo+rx /target/usr/share/superkaramba
 
