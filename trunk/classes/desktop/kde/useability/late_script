@@ -112,19 +112,24 @@ EOF
 # lock the root account (we're only using sudo)
 in-target /usr/bin/passwd -l root
 
-cat >> /etc/sudoers <<'EOF'
+# create an appropriate sudoers file, including adding wicd-client
+# which is there _if_ classes/desktop/wicd is enabled.
+cat >> /target/etc/sudoers <<'EOF'
 
-# allow anyone in the adm group (all users, realistically) to sudo.  why?
+# allow anyone in the adm group (all users, realistically) to sudo.
 #
-# see /usr/local/sbin/adduser.local script which has usermod -G adm,etc. ...
+# why?  see /usr/local/sbin/adduser.local script which has
+# usermod -G adm,etc. ...
 #
 # in combination with the kdesurc file, which is contained in the
-# /usr/share/kdedesktop tarballs, this means that no password
+# /usr/share/kdedesktop tarballs, this means that no root password
 # is required to go into KDE administrative mode in the KDE control panel.
 #
 # GREAT!  no phone calls or emails from people asking for the root password!
 # cos there ain't one!
+
 %adm	ALL=(ALL) ALL
+%adm	ALL=NOPASSWD: /usr/bin/wicd-client
 
 EOF
 
