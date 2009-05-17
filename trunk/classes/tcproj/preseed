@@ -1,17 +1,14 @@
 # in here we sort out the repository order.  local0, local1, local2 etc.
 
-d-i apt-setup/local0/repository string http://debian-multimedia.org stable main 
-d-i apt-setup/local0/comment string w32codecs and libdvdcss
+d-i apt-setup/local0/repository string http://ftp.hands.com/hands-deb lenny main
+d-i apt-setup/local0/key string http://ftp.hands.com/hands-deb/hands-deb.key
 
-d-i apt-setup/local1/repository string http://lkcl.net/debian etch main 
-d-i apt-setup/local1/comment OEM Config (ported from ubuntu)
+d-i apt-setup/local1/repository string http://debian-multimedia.org stable main 
+d-i apt-setup/local0/key string http://ftp.hands.com/hands-deb/debian-multimedia.key
+d-i apt-setup/local1/comment string w32codecs and libdvdcss
 
-d-i apt-setup/local2/repository string http://ftp.uk.debian.org/debian testing main
-d-i apt-setup/local2/comment string testing, for wicd
+#d-i apt-setup/local2/repository string http://lkcl.net/debian etch main 
+#d-i apt-setup/local2/comment OEM Config (ported from ubuntu)
 
 # noooooo
 popularity-contest popularity-contest/participate bool false
-
-# use lenny
-d-i mirror/suite        string lenny
-

@@ -1,4 +1,11 @@
+# normally these three tweaks would be better off in local/subclasses,
+# but I'm putting them here to make sure our installs are consistent
+loc/gb
+hands.com/general-tweaks
+setup/users
+###
 desktop/wicd
-desktop/kde
-desktop/kde/multimedia
-desktop/kde/useability
+partition/lvm-spare
+#desktop/kde
+#desktop/kde/multimedia
+#desktop/kde/useability
