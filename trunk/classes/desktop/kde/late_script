@@ -54,7 +54,7 @@ apt-install --force-yes  psfontmgr \
 		foomatic-db-gutenprint
 
 # silly hp printing
-apt-install --force-yes  hpijs hpoj hpoj-xojpanel 
+apt-install --force-yes  hpoj hpoj-xojpanel 
 
 # spam/virus
 apt-install --force-yes  clamav clamav-freshclam \
