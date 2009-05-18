@@ -1,1 +1,4 @@
 tasksel tasksel/first multiselect standard, desktop
+
+# cause setup/users to do the right thing about groups etc.
+hands-off hands-off/desktop boolean true
