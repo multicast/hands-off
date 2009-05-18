@@ -10,15 +10,8 @@ set -e
 
 echo 'debug: Running...'
 
-# make fsck automatically fix problems at boot time.
-sed -i -e 's/^FSCKFIX=no/FSCKFIX=yes/' /target/etc/default/rcS
-sed -i -e 's/^RAMRUN=no/RAMRUN=yes/' /target/etc/default/rcS
-sed -i -e 's/^RAMLOCK=no/RAMLOCK=yes/' /target/etc/default/rcS
-
-# install ssh server - needed.  duh.
-apt-install --force-yes -y ssh
-
 # time sync
-apt-install --force-yes -y ntpdate ntp
+apt-install ntpdate openntpd pkgsync bootsplash
 
+echo 'debug: exiting successfully'
 exit 0
