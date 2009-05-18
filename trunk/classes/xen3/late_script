@@ -9,7 +9,6 @@ set -e
 . /tmp/HandsOff-fn.sh
 
 echo "debug: Running..."
-set -x
 
 # discard spare LVM volume, freeing up the space for DomU volumes
 db_get partman-auto-lvm/new_vg_name && VG_NAME=$RET

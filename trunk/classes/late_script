@@ -8,7 +8,6 @@ set -e
 . /usr/share/debconf/confmodule
 . /tmp/HandsOff-fn.sh
 
-set -x
 # enable -x by setting dbg/flags=late-x
 checkflag dbg/flags all-x late-x && set -x
 
