@@ -25,15 +25,6 @@ echo 'debug: Running...'
 #apt-install xserver-xorg-video-dummy
 #apt-install cpp
 
-# kde desktop tasksel.  echo 'yes' just in case of use of debian-multimedia
-# use a command like this because of the echo and in-target.  yuk.
-cat >> /target/tmp/installkde <<!EOF!
-echo yes | aptitude -q --without-recommends -y install ~t^british-desktop$ ~t^desktop$ ~t^kde-desktop$ 
-!EOF!
-
-in-target sh /tmp/installkde
-#in-target tasksel install kde-desktop
-
 apt-install ttf-opensymbol ttf-bitstream-vera ttf-freefont ttf-sil-gentium \
 		ttf-xfree86* \
 		x-ttcidfont-conf
