@@ -12,3 +12,6 @@ d-i apt-setup/local1/comment string w32codecs and libdvdcss
 
 # noooooo
 popularity-contest popularity-contest/participate bool false
+
+# some extra groups to add for new destop users
+hands-off hands-off/adduser-extra-groups string lpadmin
