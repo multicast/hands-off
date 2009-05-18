@@ -6,6 +6,3 @@
 
 # stop glibc restart services question (!!)
 d-i glibc/restart-services  string cron
-
-tasksel tasksel/first multiselect Desktop environment, Standard system
-tasksel tasksel/desktop multiselect lxde
