@@ -28,17 +28,25 @@ done
 
 apt-install sudo
 
+if db_get hands-off/desktop && [ true = "$RET" ]; then
+  sed -i -e 's/#\(ADD_EXTRA_GROUPS=1\)/\1/' /target/etc/adduser.conf
+
+  if db_get hands-off/adduser-extra-groups && [ "$RET" ]; then
+    sed -i -e 's/#\(EXTRA_GROUPS="[^"]*\)/\1 '"$RET"'/' /target/etc/adduser.conf
+  fi
+fi
+
 cat > /target/tmp/setup-users.pl <<'!EOF!'
 #!/usr/bin/perl -w
 
 $pwfile=shift;
 
+$anysudoers = 0;
+
 while (<>) {
   chomp ;
   next if /^\s*(#|$)/ ;
   my ($user,$crypt,$sudoer,$gecos,$sshkeys) = split(':') ;
-
-  open(APTCFG,">/etc/apt/apt.conf") || die;
 
   if ("root" ne "$user") {
     system("adduser --disabled-login --gecos \"$gecos\" $user") ;
@@ -46,10 +54,9 @@ while (<>) {
 
   system("sed -i -e 's#^${user}:!:#${user}:${crypt}:#' $pwfile") ;
 
-  if ($sudoers) {
-    open(SUDOERS,">>/etc/sudoers") ;
-    printf SUDOERS "%s\tALL=(ALL) ALL\n", $user ;
-    close(SUDOERS) ;
+  if ($sudoer) {
+    $anysudoers = 1;
+    system("adduser $user adm") ;
   }
   
   system("mkdir ~$user/.ssh") ;
@@ -60,10 +67,20 @@ while (<>) {
   }
   system("chown -R $user: ~$user/.ssh") ;
 }
+
+if ($anysudoers) {
+  open(SUDOERS,">>/etc/sudoers") || die ;
+  printf SUDOERS "\n# users in 'adm' group get sudo access\n" .
+		"# (added by setup/users class -- see http://hands.com/d-i )\n" .
+		"%%adm\tALL=(ALL) ALL\n" ;
+  close(SUDOERS) ;
+}
 !EOF!
 
 pwfile=/etc/shadow
 db_get mirror/suite && [ sarge = "$RET" ] && pwfile=/etc/passwd
+
+checkflag dbg/pauses all setup/users && pause "setup/users Late Script - pre-in-target"
 
 chmod +x /target/tmp/setup-users.pl
 in-target /tmp/setup-users.pl $pwfile /tmp/setup-users.users
