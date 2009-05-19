@@ -23,8 +23,17 @@ in-target update-initramfs -u
 # get rid of debug debris, if present
 sed -i -e 's/ DEBCONF_DEBUG=[0-9][0-9]*//' /target/boot/grub/menu.lst
 
-# time sync
-apt-install ntpdate openntpd
+apt-install pkgsync
+mkdir /target/etc/pkgsync
+preseed_fetch classes/tcproj/files/musthave /target/etc/pkgsync/musthave
+preseed_fetch classes/tcproj/files/mayhave /target/etc/pkgsync/mayhave
+preseed_fetch classes/tcproj/files/maynothave /target/etc/pkgsync/maynothave
+
+pause "Just before running pkgsync"
+
+in-target pkgsync
+
+pause "Just after running pkgsync"
 
 echo 'debug: exiting successfully'
 exit 0
