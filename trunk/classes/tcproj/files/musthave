@@ -11,11 +11,13 @@ sysklogd
 
 # Misc.
 sudo
-openssh-server
+ssh
+less
 
 # X stuff
 x-window-system
 lxde
+kdm
 
 cups
 gimp
@@ -70,7 +72,8 @@ libgl1-mesa-dri
 grub-splashimages
 foomatic-gui
 dhcp3-client
-libsplashy1
+splashy
+splashy-themes
 libdirectfb-extra
 libevent1
 lxlauncher
@@ -112,3 +115,14 @@ ispell
 tasksel
 tasksel-data
 libedit2
+acpi
+acpid
+acpi-support-base
+hibernate
+ibritish
+iproute
+iptables
+
+# helpful for debugging at least
+man-db
+less
