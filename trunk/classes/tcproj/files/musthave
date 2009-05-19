@@ -20,13 +20,14 @@ lxde
 kdm
 
 cups
-gimp
 debian-multimedia-keyring
 
 #localisation
 openoffice.org-help-en-gb
 openoffice.org-thesaurus-en-us
 myspell-en-gb
+openoffice.org-l10n-en-gb
+iceweasel-l10n-en-gb
 
 
 ### desktop task
@@ -52,7 +53,6 @@ xserver-xorg-input-all
 hplip
 alsa-base
 desktop-base
-swfdec-mozilla
 libnss-mdns
 xterm
 anacron
@@ -62,10 +62,29 @@ foo2zjs
 hpijs
 printconf
 gimp
+gimp2.0-quiteinsane
 menu
 kerneloops
 openoffice.org-gcj
 libgl1-mesa-dri
+ttf-opensymbol 
+ttf-bitstream-vera
+ttf-freefont
+ttf-sil-gentium
+x-ttcidfont-conf
+gaim
+xprint
+xprint-utils
+sane
+sane-utils
+quiteinsane
+psfontmgr
+linuxprinting.org-ppds
+hp-ppd
+foomatic-db-gutenprint
+hpoj
+hpoj-xojpanel
+
 
 
 #----
@@ -99,9 +118,7 @@ python-gtk2
 python-cairo
 python-numeric
 python-pyorbit
-reportbug
 rsyslog
-telnet
 texinfo
 time
 traceroute
@@ -122,6 +139,29 @@ hibernate
 ibritish
 iproute
 iptables
+
+# multimedia desktop
+msttcorefonts
+swf-player
+flashplayer-mozilla
+mplayer
+mozilla-mplayer
+w32codecs
+libdvdcss2
+mjpegtools
+ffmpeg
+lame
+k3b
+k3b-i18n
+wodim
+dvd+rw-tools
+sox
+toolame
+pvm
+transcode
+vcdimager
+kaffeine
+gtkpod-aac
 
 # helpful for debugging at least
 man-db

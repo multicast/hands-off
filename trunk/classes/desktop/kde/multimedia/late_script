@@ -14,9 +14,6 @@ set -e
 
 echo 'debug: Running...'
 
-# lock the root account (we're only using sudo)
-in-target /usr/bin/passwd -l root
-
 # damn debian-multimedia.
 #in-target apt-get -y --force-yes install libgpod0
 
@@ -31,7 +28,6 @@ apt-install --force-yes  \
 			kaffeine ktorrent2.2 xine-ui 
 
 apt-install --force-yes  \
-		openoffice.org-l10n-en-gb \
 	     gtkpod-aac  \
 	    kino kino-brightness-contrast-plugin kino-hsv-color-space-plugin \
 	    dvgrab 
