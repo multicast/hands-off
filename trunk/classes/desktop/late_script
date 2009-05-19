@@ -1,0 +1,20 @@
+#!/bin/sh
+#
+# Copyright (c) 2005-2009 Hands.com Ltd
+# distributed under the terms of the GNU GPL version 2 or (at your option) any later version
+# see the file "COPYING" for details
+set -e
+
+. /tmp/HandsOff-fn.sh
+
+echo 'debug: Running...'
+
+cat >> /target/etc/adduser.conf <<!EOF!
+
+# Add new users to extra groups
+# (added by 'desktop' class -- see http://hands.com/d-i/ for details)
+ADD_EXTRA_GROUPS=1
+!EOF!
+
+echo 'debug: exiting successfully'
+exit 0
