@@ -15,3 +15,6 @@ popularity-contest popularity-contest/participate bool false
 
 # some extra groups to add for new destop users
 hands-off hands-off/adduser-extra-groups string lpadmin powerdev scanner
+
+# forget actually installing the desktop, as pkgsync's going to do that
+tasksel tasksel/first multiselect 
