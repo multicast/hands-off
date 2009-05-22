@@ -142,7 +142,7 @@ iptables
 
 # multimedia desktop
 msttcorefonts
-swf-player
+swfdec-mozilla
 flashplayer-mozilla
 mplayer
 mozilla-mplayer
