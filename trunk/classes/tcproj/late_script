@@ -30,11 +30,11 @@ preseed_fetch classes/tcproj/files/musthave /target/etc/pkgsync/musthave
 preseed_fetch classes/tcproj/files/mayhave /target/etc/pkgsync/mayhave
 preseed_fetch classes/tcproj/files/maynothave /target/etc/pkgsync/maynothave
 
-pause "Just before running pkgsync"
+#pause "Just before running pkgsync"
 
 in-target pkgsync
 
-pause "Just after running pkgsync"
+#pause "Just after running pkgsync"
 
 echo 'debug: exiting successfully'
 exit 0
