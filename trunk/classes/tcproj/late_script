@@ -13,18 +13,9 @@ echo 'debug: Running...'
 
 checkflag dbg/flags all-x tcproj-x && set -x
 
-#eye candy
-apt-install splashy splashy-themes hibernate
-sed -i -e 's/ quiet/& vga=791 splash/' /target/boot/grub/menu.lst
-sed -i -e 's/>default</>debian-moreblue</' /target/etc/splashy/config.xml
-apt-install grub-splashimages
-sed -i -e '/^color /a splashimage=(hd0,0)/grub/splashimages/debian-moreblue-swirl.xpm.gz' /target/boot/grub/menu.lst
-in-target update-initramfs -u
-
-# get rid of debug debris, if present
-sed -i -e 's/ DEBCONF_DEBUG=[0-9][0-9]*//' /target/boot/grub/menu.lst
-
 apt-install pkgsync
+
+# FIXME -- this should be in a locally maintained package
 mkdir /target/etc/pkgsync
 preseed_fetch classes/tcproj/files/musthave /target/etc/pkgsync/musthave
 preseed_fetch classes/tcproj/files/mayhave /target/etc/pkgsync/mayhave
@@ -32,9 +23,16 @@ preseed_fetch classes/tcproj/files/maynothave /target/etc/pkgsync/maynothave
 
 #pause "Just before running pkgsync"
 
+# install all the required packages, as specified by pkgsync
 in-target pkgsync
 
 #pause "Just after running pkgsync"
+
+# setup some  eye candy
+sed -i -e 's/ quiet/& vga=791 splash/' /target/boot/grub/menu.lst
+sed -i -e 's/>default</>debian-moreblue</' /target/etc/splashy/config.xml
+sed -i -e '/^color /a splashimage=(hd0,0)/grub/splashimages/debian-moreblue-swirl.xpm.gz' /target/boot/grub/menu.lst
+in-target update-initramfs -u
 
 echo 'debug: exiting successfully'
 exit 0
