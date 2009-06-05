@@ -13,6 +13,7 @@ sysklogd
 sudo
 ssh
 less
+openvpn
 
 # X stuff
 x-window-system
@@ -21,6 +22,7 @@ kdm
 
 cups
 debian-multimedia-keyring
+hands-deb-keyring
 
 #localisation
 openoffice.org-help-en-gb
