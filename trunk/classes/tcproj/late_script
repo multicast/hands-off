@@ -28,6 +28,9 @@ in-target pkgsync
 
 #pause "Just after running pkgsync"
 
+# prelink for speedier program startup
+in-target prelink -aqR
+
 # setup some  eye candy
 sed -i -e 's/ quiet/& vga=791 splash/' /target/boot/grub/menu.lst
 sed -i -e 's/>default</>debian-moreblue</' /target/etc/splashy/config.xml

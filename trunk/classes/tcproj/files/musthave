@@ -14,6 +14,7 @@ sudo
 ssh
 less
 openvpn
+prelink
 
 # X stuff
 x-window-system
