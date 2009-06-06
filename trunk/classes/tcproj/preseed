@@ -2,9 +2,10 @@
 
 d-i apt-setup/local0/repository string http://ftp.hands.com/hands-deb lenny main
 d-i apt-setup/local0/key string http://ftp.hands.com/hands-deb/hands-deb.key
+d-i apt-setup/local0/comment string Trusted Computing Project packages
 
 d-i apt-setup/local1/repository string http://debian-multimedia.org stable main 
-d-i apt-setup/local0/key string http://ftp.hands.com/hands-deb/debian-multimedia.key
+d-i apt-setup/local1/key string http://ftp.hands.com/hands-deb/debian-multimedia.key
 d-i apt-setup/local1/comment string w32codecs and libdvdcss
 
 #d-i apt-setup/local2/repository string http://lkcl.net/debian etch main 
