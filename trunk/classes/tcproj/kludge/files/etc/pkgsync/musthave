@@ -142,6 +142,8 @@ hibernate
 ibritish
 iproute
 iptables
+wicd
+evince
 
 # multimedia desktop
 msttcorefonts

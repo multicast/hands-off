@@ -13,20 +13,11 @@ echo 'debug: Running...'
 
 checkflag dbg/flags all-x tcproj-x && set -x
 
-apt-install pkgsync
-
-# FIXME -- this should be in a locally maintained package
-mkdir /target/etc/pkgsync
-preseed_fetch classes/tcproj/files/musthave /target/etc/pkgsync/musthave
-preseed_fetch classes/tcproj/files/mayhave /target/etc/pkgsync/mayhave
-preseed_fetch classes/tcproj/files/maynothave /target/etc/pkgsync/maynothave
-
-#pause "Just before running pkgsync"
-
 # install all the required packages, as specified by pkgsync
+apt-install pkgsync
 in-target pkgsync
-
-#pause "Just after running pkgsync"
+# Note: The list of packages should already be there, either via the tcproj/kludge
+#       class, or via the package that should replace that soon
 
 # prelink for speedier program startup
 in-target prelink -aqR

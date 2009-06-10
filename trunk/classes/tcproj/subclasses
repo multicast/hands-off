@@ -1,3 +1,5 @@
+tcproj/kludge
+
 # normally these tweaks would be better off in local/subclasses,
 # but I'm putting them here as well to make sure our installs are consistent
 loc/gb

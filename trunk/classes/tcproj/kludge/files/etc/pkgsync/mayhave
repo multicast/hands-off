@@ -6,3 +6,6 @@
 #
 kernel-image-2.6.*
 linux-image-2.6.*
+
+# needed for Peak USB stick wireless (ra2573 based)
+firmware-ralink
