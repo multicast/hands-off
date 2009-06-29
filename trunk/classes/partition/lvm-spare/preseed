@@ -10,6 +10,11 @@ d-i    partman-auto/choose_recipe      select lvm-spare
 d-i    partman/confirm_write_new_label boolean true
 d-i    partman/choose_partition        select Finish partitioning and write changes to disk
 d-i    partman/confirm                 boolean true
+d-i    partman-auto/purge_lvm_from_device boolean true
+
+d-i partman-lvm/confirm boolean true
+d-i partman-lvm/device_remove_lvm boolean true
+d-i partman-auto/init_automatically_partition select Guided - use entire disk and set up LVM
 
 # needed to shut up complaint about unused keep_2 lv
 d-i partman-basicmethods/method_only boolean false
