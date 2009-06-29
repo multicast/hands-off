@@ -17,7 +17,7 @@ checkflag dbg/flags all-x tcproj/kludge-x && set -x
 preseed_fetch classes/tcproj/kludge/files/etc.tgz /target/tmp/etc.tgz
 in-target tar -C /etc -xozf /tmp/etc.tgz
 
-apt-install hands-deb-keryring
+apt-install hands-deb-keyring
 
 echo 'debug: exiting successfully'
 exit 0
