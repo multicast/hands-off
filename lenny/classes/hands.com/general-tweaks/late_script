@@ -16,7 +16,7 @@ sed -i -e 's/^RAMRUN=no/RAMRUN=yes/' /target/etc/default/rcS
 sed -i -e 's/^RAMLOCK=no/RAMLOCK=yes/' /target/etc/default/rcS
 
 # packages I like
-apt-install less ssh
+apt-install less openssh-server
 
 # set LESSPIPE as I prefer
 sed -i -e '/^  if \[ "$BASH" ]; then$/a\    . /etc/bash.bashrc' /target/etc/profile
