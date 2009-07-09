@@ -27,5 +27,8 @@ cat > /target/root/.bash_history <<!EOF!
  #dd if=/dev/zero of=/dev/hda count=1 ; sync ; reboot -f
 !EOF!
 
+# stop apt looking for CDs -- it's a pain when it asks for them
+sed -ie 's/^deb cdrom:/# &/' /target/etc/apt/sources.list
+
 echo 'debug: exiting successfully'
 exit 0
