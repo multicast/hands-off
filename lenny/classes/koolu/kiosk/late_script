@@ -1,0 +1,38 @@
+#!/bin/sh
+#
+# Copyright (c) 2007 Hands.com Ltd
+# distributed under the terms of the GNU GPL version 2 or (at your option) any later version
+# see the file "COPYING" for details
+set -e
+echo "debug: Running..."
+. /usr/share/debconf/confmodule
+. /tmp/HandsOff-fn.sh
+
+checkflag dbg/flags all-x koolu-x && set -x
+
+# firefox and friends... pdf and flash
+apt-install iceweasel x-ttcidfont-conf xprint  xprint-utils matchbox-window-manager mozplugger xpdf
+apt-install iceweasel-l10n-*
+
+in-target apt-get -y --force-yes --no-remove install flashplugin-nonfree
+
+# auto-startup of koolu kiosk stuff
+echo '7:23:respawn:/bin/login -f koolukiosk < /dev/tty7 > /dev/tty7' >> /target/etc/inittab
+
+echo 'exec startx' >> /target/home/koolukiosk/.bash_profile
+
+cat <<EOF > /target/home/koolukiosk/.xinitrc
+xterm &
+matchbox-window-manager -use_titlebar no &
+firefox http://koolu.com
+EOF
+
+in-target adduser koolukiosk audio
+
+apt-install prelink
+
+in-target aptitude clean
+
+in-target prelink -q -v -a --conserve-memory --random
+
+echo "debug: completed successfully"

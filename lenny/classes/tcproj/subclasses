@@ -1,0 +1,19 @@
+tcproj/kludge
+
+# normally these tweaks would be better off in local/subclasses,
+# but I'm putting them here as well to make sure our installs are consistent
+loc/gb
+hands.com/general-tweaks
+setup/users
+
+# Use LXDE
+desktop/lxde
+
+# speed things up by not creating a vast /home -- FIXME: need something more TCP specific here
+partition/lvm-spare
+
+### disable KDE stuff until we have time to make sure LXDE's menus don't get flooded with irrelevance
+#desktop/kde
+#desktop/kde/multimedia
+#desktop/kde/useability
+

@@ -1,0 +1,22 @@
+#!/bin/sh
+#
+# Copyright (c) 2005-2006 Hands.com Ltd
+# distributed under the terms of the GNU GPL version 2 or (at your option) any later version
+# see the file "COPYING" for details
+set -e
+
+. /usr/share/debconf/confmodule
+. /tmp/HandsOff-fn.sh
+
+echo "debug: Running..."
+
+# get all the classes users, and use the one that's left at the end
+for class in default $(classes); do
+  preseed_fetch "/local/users/$class" /tmp/setup-users.users.tmp &&
+    mv /tmp/setup-users.users.tmp /tmp/setup-users.users
+done
+
+rootpw=$(sed -ne 's/^root:\([^:]*\):.*$/\1/p' /tmp/setup-users.users) &&
+  db_set passwd/root-password-crypted "$rootpw"
+
+echo "debug: completed successfully"

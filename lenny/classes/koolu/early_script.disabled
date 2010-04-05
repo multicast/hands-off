@@ -1,0 +1,36 @@
+#!/bin/sh
+#
+# Copyright (c) 2007 Hands.com Ltd
+# distributed under the terms of the GNU GPL version 2 or (at your option) any later version
+# see the file "COPYING" for details
+set -e
+echo "debug: Running..."
+. /usr/share/debconf/confmodule
+. /tmp/HandsOff-fn.sh
+
+checkflag dbg/flags all-x koolu-x && set -x
+
+# This is fixed in post-etch d-i, but at present one needs to kludge base-installer to
+# prevent it from installing the default kernel.  This works by preventing kernel_update_list()
+# from finding any kernels, which, if base-installer/kernel/skip-install is also set will
+# allow the install to continue, allowing you to do what you want in the late script
+#
+# An alternative would be to ensure that the new repository was already available, and then
+# kludging things to only find the kernel you want installed, but that seems more fragile
+
+KLUDGE=/usr/lib/post-base-installer.d/99phils-kernel-kludge
+cat <<'!EOF!' > $KLUDGE
+#!/bin/sh
+set -e
+. /usr/share/debconf/confmodule
+. /tmp/HandsOff-fn.sh
+
+sed -ie 's/^kernel_update_list () {/& > "$KERNEL_LIST" ; exit 0 ;/' /var/lib/dpkg/info/base-installer.postinst
+
+checkflag dbg/pauses all kludge && pause "$0"
+!EOF!
+
+chmod +x $KLUDGE
+
+checkflag dbg/pauses all koolu koolu-early && pause "$0"
+echo "debug: completed successfully"

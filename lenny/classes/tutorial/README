@@ -1,0 +1,16 @@
+This is a tutorial covering the use of the debian-installer auto-install mode
+
+To give it a go, boot with Lenny's debian-installer, select the Advanced
+menu, and then the "Automatic Install" option.
+
+When prompted for a preconfiguration source, enter:
+
+  hands.com
+
+Then when prompted for classes, just accept the default "tutorial"
+
+This is a work in progress -- if you have suggestions for improvement,
+they will be gratefully received.
+
+Philip Hands <phil@hands.com>
+2008-07-28

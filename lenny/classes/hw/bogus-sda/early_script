@@ -1,0 +1,2 @@
+# remove the usb-storage module to allow the first disk to land on /dev/sda
+modprobe -r usb-storage

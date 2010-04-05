@@ -1,0 +1,8 @@
+# for clamav-freshclam
+clamav-freshclam        clamav-freshclam/autoupdate_freshclam   select  daemon
+clamav-freshclam        clamav-freshclam/NotifyClamd    boolean true
+clamav-freshclam        clamav-freshclam/local_mirror   select  db.local.clamav.net
+
+tasksel tasksel/first multiselect Desktop environment, Standard system
+tasksel tasksel/desktop multiselect kde
+

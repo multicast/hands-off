@@ -1,0 +1,45 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+  <HEAD>
+
+    <TITLE>Hands-Off auto-installer --- building images</TITLE>
+    <LINK REL="stylesheet" HREF="/styles/site.css">
+    <link rel="shortcut icon" href="favicon.ico" />
+    <META NAME="Author" CONTENT="phil@hands.com (Philip Hands)">
+      <META NAME="Description" CONTENT="The Hands-Off auto-installer provides a method for installing Debian GNU/Linux without user interaction, with the configuration being obtained from a variety of sources, and supporting all the boot methods that Debian itself supports.">
+	<meta name=keywords content="Debian GNU Linux iautomatic installation">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+
+  </HEAD>
+  <BODY bgcolor="#ffffff">
+  <h1>Hands-Off auto-installer --- PXE setup</h1>
+
+First, you should look at section <em>4.6. Preparing Files for TFTP Net Booting</em> of the  <a href="http://www.debian.org/releases/stable/i386/install">Debian release notes</a> 
+ 
+<p>In short, you need to have set up:
+<pre>
+  dhcp
+  tftpd-hpa
+</pre>
+Then, grab a <a href="http://people.debian.org/~joeyh/d-i/images/daily/netboot/netboot.tar.gz">recent PXE tarball</a> and untar it into /var/lib/tftpboot (or wherever you've pointed your tftp server)
+<pre>
+  tar -C /var/lib/tftpboot -xvzf netboot.tar.gz
+</pre>
+I normally then add a couple of parameters to the append line in the <tt>auto</tt> target in <tt>/var/lib/tftpboot/debian-installer/i386/pxelinux.cfg/default</tt>:
+<pre>
+   interface=auto netcfg/dhcp_timeout=60
+</pre>
+
+You're now ready to try a PXE boot.  Give it a go, and read
+http://hands.com/d-i/ for hints on what to type at the boot prompt to
+kick things off.
+
+<p>N.B. if you have a machine that doesn't support PXE booting, you
+ can <a href="http://www.rom-o-matic.net/">grab a floppy</a> that will
+ let you kick things off.
+
+</small>
+<address><a href="mailto:&#112;&#104;&#105;&#108;&#064;&#104;&#097;&#110;&#100;&#115;&#046;&#099;&#111;&#109;">Philip Hands</a></address>
+  </body>
+</html>

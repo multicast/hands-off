@@ -1,0 +1,11 @@
+#
+# Sample /etc/pkgsync/mayhave file for a rather bare-bones system.
+# Adjust to your own taste :-)
+#
+# This file is almost empty in most installations.
+#
+kernel-image-2.6.*
+linux-image-2.6.*
+
+# needed for Peak USB stick wireless (ra2573 based)
+firmware-ralink

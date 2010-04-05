@@ -1,0 +1,89 @@
+#!/bin/sh
+#
+# Copyright (c) 2005-2006 Hands.com Ltd
+# distributed under the terms of the GNU GPL version 2 or (at your option) any later version
+# see the file "COPYING" for details
+set -e
+
+. /usr/share/debconf/confmodule
+. /tmp/HandsOff-fn.sh
+
+echo "debug: Running..."
+
+## get all the classes users, and use the one that's left at the end
+#for class in default $(classes); do
+#  preseed_fetch "/local/users/$class" /tmp/setup-users.users &&
+#    mv /tmp/setup-users.users /target/tmp
+#done
+#
+# that should have been done in the early_script
+
+[ -s /tmp/setup-users.users ] && mv /tmp/setup-users.users /target/tmp
+
+# grab all the mentioned ssh keys, ready for installation
+for keyname in $(sed -ne '/^#/!s/^.*:\([^:]*\)$/\1/p' /target/tmp/setup-users.users | tr "," "\n" | sort -u)
+do
+  preseed_fetch "/local/users/sshkeys.$keyname" "/target/tmp/sshkeys.$keyname"
+done
+
+apt-install sudo
+
+if db_get hands-off/desktop && [ true = "$RET" ]; then
+  sed -i -e 's/#\(ADD_EXTRA_GROUPS=1\)/\1/' /target/etc/adduser.conf
+
+  if db_get hands-off/adduser-extra-groups && [ "$RET" ]; then
+    sed -i -e 's/#\(EXTRA_GROUPS="[^"]*\)/\1 '"$RET"'/' /target/etc/adduser.conf
+  fi
+fi
+
+cat > /target/tmp/setup-users.pl <<'!EOF!'
+#!/usr/bin/perl -w
+
+$pwfile=shift;
+
+$anysudoers = 0;
+
+while (<>) {
+  chomp ;
+  next if /^\s*(#|$)/ ;
+  my ($user,$crypt,$sudoer,$gecos,$sshkeys) = split(':') ;
+
+  if ("root" ne "$user") {
+    system("adduser --disabled-login --gecos \"$gecos\" $user") ;
+  }
+
+  system("sed -i -e 's#^${user}:!:#${user}:${crypt}:#' $pwfile") ;
+
+  if ($sudoer) {
+    $anysudoers = 1;
+    system("adduser $user adm") ;
+  }
+  
+  system("mkdir ~$user/.ssh") ;
+  if (defined($sshkeys)) {
+    foreach my $key (split(',',$sshkeys)) {
+      system("cat /tmp/sshkeys.$key >> ~$user/.ssh/authorized_keys") ;
+    }
+  }
+  system("chown -R $user: ~$user/.ssh") ;
+}
+
+if ($anysudoers) {
+  open(SUDOERS,">>/etc/sudoers") || die ;
+  printf SUDOERS "\n# users in 'adm' group get sudo access\n" .
+		"# (added by setup/users class -- see http://hands.com/d-i )\n" .
+		"%%adm\tALL=(ALL) ALL\n" ;
+  close(SUDOERS) ;
+}
+!EOF!
+
+pwfile=/etc/shadow
+db_get mirror/suite && [ sarge = "$RET" ] && pwfile=/etc/passwd
+
+checkflag dbg/pauses all setup/users && pause "setup/users Late Script - pre-in-target"
+
+chmod +x /target/tmp/setup-users.pl
+in-target /tmp/setup-users.pl $pwfile /tmp/setup-users.users
+#rm /target/tmp/setup-users.* /target/tmp/sshkeys.*
+
+echo "debug: completed successfully"

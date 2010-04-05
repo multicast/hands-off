@@ -1,0 +1,30 @@
+#!/bin/sh
+
+image=$1
+target=$2
+scratch=/tmp/cobble$$
+
+mkdir $scratch
+zcat $image | ( cd $scratch ; cpio -i )
+
+oldkern=$( cd $scratch/lib/modules ; echo 2.6.* )
+newkern=$( cd /lib/modules ;  echo 2.6.*xen* )
+
+mkdir $scratch/lib/modules/$newkern
+( cd $scratch/lib/modules/$oldkern ; find . -type d ! -name . -print0 ) |
+        ( cd $scratch/lib/modules/$newkern ; xargs -0 mkdir )
+
+for i in $( cd $scratch/lib/modules/$oldkern ; find . -type f ); do
+  [ -f /lib/modules/$newkern/$i ] &&
+    cp /lib/modules/$newkern/$i $scratch/lib/modules/$newkern
+done
+
+for i in ext3 jbd mbcache.ko ; do
+  cp -a /lib/modules/$newkern/kernel/fs/$i  $scratch/lib/modules/$newkern/kernel/fs/
+done
+
+rm -rf  $scratch/lib/modules/$oldkern
+
+( cd $scratch ; find . | cpio --quiet -o -H newc | gzip > $target )
+
+rm -fr $scratch

@@ -1,0 +1,5 @@
+##########################################################################
+# This is needed because the published kolabd's dependencies are drivel
+# this should disapear once I've sorted that out -- you'll want to ask me
+# how to populate this if you want to run this at home kids <phil@hands.com>
+d-i apt-setup/local1/repository string http://deasil.hands.com/debian local-packages/

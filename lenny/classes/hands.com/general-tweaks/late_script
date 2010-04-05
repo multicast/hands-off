@@ -1,0 +1,34 @@
+#!/bin/sh
+#
+# Copyright (c) 2005-2006 Hands.com Ltd
+# distributed under the terms of the GNU GPL version 2 or (at your option) any later version
+# see the file "COPYING" for details
+set -e
+
+. /tmp/HandsOff-fn.sh
+
+echo 'debug: Running...'
+
+# make fsck automatically fix problems at boot time.
+sed -i -e 's/^FSCKFIX=no/FSCKFIX=yes/' /target/etc/default/rcS
+# ensure that /var/run and /var/lock end up on tmpfs
+sed -i -e 's/^RAMRUN=no/RAMRUN=yes/' /target/etc/default/rcS
+sed -i -e 's/^RAMLOCK=no/RAMLOCK=yes/' /target/etc/default/rcS
+
+# packages I like
+apt-install less ssh
+
+# set LESSPIPE as I prefer
+sed -i -e '/^  if \[ "$BASH" ]; then$/a\    . /etc/bash.bashrc' /target/etc/profile
+echo "export LESSOPEN=\"|lesspipe '%s'\"" >> /target/etc/bash.bashrc
+
+# prepopulate root's history with commands needed to install a new xen domain
+cat > /target/root/.bash_history <<!EOF!
+ #dd if=/dev/zero of=/dev/hda count=1 ; sync ; reboot -f
+!EOF!
+
+# stop apt looking for CDs -- it's a pain when it asks for them
+sed -ie 's/^deb cdrom:/# &/' /target/etc/apt/sources.list
+
+echo 'debug: exiting successfully'
+exit 0
