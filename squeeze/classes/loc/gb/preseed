@@ -7,8 +7,8 @@
 d-i     debian-installer/locale		string en_GB
 
 # only needed pre-squeeze or to override defaults:
-d-i     debian-installer/country	string GB
-d-i     console-keymaps-at/keymap		string uk
+#d-i     debian-installer/country	string GB
+#d-i     console-keymaps-at/keymap		string uk
 
 d-i	mirror/http/hostname		string ftp.uk.debian.org
 base-config     apt-setup/hostname      string ftp.uk.debian.org
