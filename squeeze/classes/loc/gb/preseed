@@ -4,8 +4,10 @@
 # distributed under the terms of the GNU GPL version 2 or (at your option) any later version
 # see the file "COPYING" for details
 
+d-i     debian-installer/locale		string en_GB
+
+# only needed pre-squeeze or to override defaults:
 d-i     debian-installer/country	string GB
-d-i     debian-installer/locale		string en_GB.UTF-8
 d-i     console-keymaps-at/keymap		string uk
 
 d-i	mirror/http/hostname		string ftp.uk.debian.org

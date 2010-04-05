@@ -13,6 +13,9 @@ checkflag dbg/flags all-x late-x && set -x
 
 echo "debug: Running..."
 
+# make sure we've got room on /var
+in-target apt-get clean
+
 # this is only needed for sarge installs, and not all of them
 udpkg --configure apt-setup-udeb || true
 

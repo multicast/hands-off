@@ -26,7 +26,7 @@ server):
 
 <p><em>This is now documented in the <a
 href="http://d-i.alioth.debian.org/manual/en.i386/apbs02.html#preseed-auto">debian-installer
-manual for etch</a>, and the documentation there can be considered
+manual for squeeze</a>, and the documentation there can be considered
 more authoritative than what you find here (if you notice differences,
 please mention them)</em>
 
@@ -82,14 +82,14 @@ name.  If you provide a url that contains no slashes, auto-install's
 postinst (which is run before network-preseed) assumes that you have
 given it a hostname, and replaces it with a URL of the following form:
 <pre>
-	http://&lt;hostname&gt;/d-i/etch/./preseed.cfg
+	http://&lt;hostname&gt;/d-i/lenny/./preseed.cfg
 </pre>
 
 <p>The <tt>&lt;hostname&gt;</tt> section of that is whatever you
 provided as the URL, if it contained any dots, or, if it was without
 dots (i.e. it's just the hostname) then the domain is added to it
 (with that domain probably being found by netcfg, from a reverse
-lookup of your DHCP IP address).  The <tt>etch</tt> bit of the path
+lookup of your DHCP IP address).  The <tt>lenny</tt> bit of the path
 matches the release the installer was part of.  The <tt>/./</tt> bit
 is used by preseed_fetch as the root of the preseed area, so this is
 where paths starting with <tt>/</tt> are anchored.
