@@ -105,13 +105,21 @@ and things like preseed_fetch and the preseed includes will take the <tt>/./</tt
 
 <h3>Debugging flags:</h3>
 
-If you'd like to enable the -x flag in the top level scripts (or
+<p>If you'd like to enable the -x flag in the top level scripts (or
 your own scripts if you use the same technique) you can either do it
 globally, by adding <pre>	dbg/flags=all-x</pre> or selectively with
 <pre>	dbg/flags=early-x;late-x</pre>  Similarly, you can make the installation
 pause a various points with either <pre>	dbg/pauses=all</pre>
-or (for example) <pre>	dbg/pauses=late;myclass</pre> which can be very handy to allow the chance to
-look at the state of the install by flipping to the shell on F2/F3
+or (for example) <pre>	dbg/pauses=late;myclass</pre> assuming that you
+included a pause that checks for the <tt>myclass</tt> flag in your
+script(s) somewhere.  This can be very handy to allow the chance to
+look at the state of the install by flipping to the shell on F2/F3.  In
+addition to explicitly defined flags in your scripts, you can also pause
+just before a class's early or late script by using the name of the class,
+with <tt>/late</tt> or <tt>/early</tt> appended, so if you wanted to
+pause just before <tt>.../classes/hands.com/general-tweaks/late_script</tt>
+runs, you should add <pre>  dbg/pauses=hands.com/general-tweaks/late</pre>
+
 
 <p>To see how this works, look in the scripts for references to <tt>checkflag</tt>:
 <pre>	checkflag dbg/flags all-x early-x && set -x</pre>
