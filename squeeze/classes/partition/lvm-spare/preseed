@@ -6,6 +6,7 @@
 
 #comment this since it undoes what hw/ida needs to do
 #d-i    partman-auto/disk               string /dev/discs/disc0/disc
+d-i    partman-auto/method             string lvm
 d-i    partman-auto/choose_recipe      select lvm-spare
 d-i    partman/confirm_write_new_label boolean true
 d-i    partman/choose_partition        select Finish partitioning and write changes to disk
@@ -20,4 +21,4 @@ d-i partman-auto/method string lvm
 d-i partman-basicmethods/method_only boolean false
 
 # this is the normal "multi" recipe except that a fallow volume is created
-d-i partman-auto/expert_recipe         string lvm-spare :: 128 512 256 ext3 $defaultignore{ } $primary{ } $bootable{ } method{ format } format{ } use_filesystem{ } filesystem{ ext3 } mountpoint{ /boot } .  70 800 280 ext3 $lvmok{ } $primary{ } $bootable{ } method{ format } format{ } use_filesystem{ } filesystem{ ext3 } mountpoint{ / } .  500 3000 5000 ext3 $lvmok{ } method{ format } format{ } use_filesystem{ } filesystem{ ext3 } mountpoint{ /usr } .  70 1500 3000 ext3 $lvmok{ } method{ format } format{ } use_filesystem{ } filesystem{ ext3 } mountpoint{ /var } .  64 512 300% linux-swap $lvmok{ } method{ swap } format{ } .  20 300 400 ext3 $lvmok{ } method{ format } format{ } use_filesystem{ } filesystem{ ext3 } mountpoint{ /tmp } .  70 1500 3000 ext3 $lvmok{ } method{ format } format{ } use_filesystem{ } filesystem{ ext3 } mountpoint{ /home } . 100 10000 1000000000 ext2 $lvmok{ } method{ keep } .
+d-i partman-auto/expert_recipe         string lvm-spare :: 128 512 256 ext3 $defaultignore{ } $primary{ } $bootable{ } method{ format } format{ } use_filesystem{ } filesystem{ ext3 } mountpoint{ /boot } .  70 800 280 ext3 $lvmok{ } $primary{ } $bootable{ } method{ format } format{ } use_filesystem{ } filesystem{ ext3 } mountpoint{ / } .  500 3000 5000 ext3 $lvmok{ } method{ format } format{ } use_filesystem{ } filesystem{ ext3 } mountpoint{ /usr } .  70 1500 3000 ext3 $lvmok{ } method{ format } format{ } use_filesystem{ } filesystem{ ext3 } mountpoint{ /var } .  256 1024 300% linux-swap $lvmok{ } method{ swap } format{ } .  70 1500 3000 ext3 $lvmok{ } method{ format } format{ } use_filesystem{ } filesystem{ ext3 } mountpoint{ /home } . 100 10000 1000000000 ext2 $lvmok{ } method{ keep } .

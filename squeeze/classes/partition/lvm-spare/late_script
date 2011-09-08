@@ -9,4 +9,9 @@ echo "debug: Running..."
 db_get partman-auto-lvm/new_vg_name &&
   lvremove -f /dev/$RET/keep_2
 
+set -x
+grep -q '/tmp' /target/etc/fstab ||
+  echo "tmpfs   /tmp    tmpfs   size=512m,mode=1777     0       0" >> /target/etc/fstab
+set +x
+
 echo "debug: completed successfully"
