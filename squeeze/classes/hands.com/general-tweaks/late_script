@@ -19,7 +19,6 @@ sed -i -e 's/^RAMLOCK=no/RAMLOCK=yes/' /target/etc/default/rcS
 apt-install less ssh bash-completion
 
 # set LESSPIPE as I prefer
-sed -i -e '/^  if \[ "$BASH" ]; then$/a\    . /etc/bash.bashrc' /target/etc/profile
 echo "export LESSOPEN=\"|lesspipe '%s'\"" >> /target/etc/bash.bashrc
 
 # enable bash completion
