@@ -1,6 +1,7 @@
 # adapted from gb
 
-d-i debian-installer/language string nl
+# set language to english for the installer (dutch not available?)
+d-i debian-installer/language string en
 d-i debian-installer/locale string nl_NL.UTF-8
 d-i debian-installer/country string NL
 
