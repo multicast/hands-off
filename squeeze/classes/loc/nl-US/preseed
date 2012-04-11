@@ -1,5 +1,6 @@
-# copied from gb
+# adapted from gb
 
+d-i debian-installer/language string nl
 d-i debian-installer/locale string nl_NL.UTF-8
 d-i debian-installer/country string NL
 
