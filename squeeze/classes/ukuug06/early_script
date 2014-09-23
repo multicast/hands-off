@@ -1,0 +1,92 @@
+#!/bin/sh
+set -e
+
+echo 'debug: Running...'
+
+. /usr/share/debconf/confmodule
+. /tmp/HandsOff-fn.sh
+
+sed -ie 's/DejaVu 11/DejaVu 20/' /etc/gtk-2.0/gtkrc
+
+db_register hands-off/meta/text hands-off/pause/title
+db_subst hands-off/pause/title DESC "UKUUG'06 Preseed Presentation"
+db_settitle hands-off/pause/title
+
+db_register hands-off/meta/text hands-off/pause
+db_subst hands-off/pause DESCRIPTION "OK, lets make sure that the fonts are big enough for everyone to read ...
+by editing /etc/gtk-2.0/grkrc
+                                                         ----------
+
+As you can see, we are in a position to make changes to the running installer, by invoking various hooks that allow scripts or programs to be run.
+
+In the case of this note, it is being displayed though the
+'preseed/early_command' hook.
+
+In the \"Hands-off\" preseeding framework, this is achieved by dropping a file 'early_script' in the 'classes/ukuug06' directory, and then ensuring that the ukuug06 class is defined (with 'classes=ukuug06' at the boot: prompt).
+
+Hands-off then takes care of making sure that it gets invoked for you"
+db_input critical hands-off/pause
+db_go
+
+db_subst hands-off/pause DESCRIPTION \
+"The previous screen was achieved with a script containing:
+
+   sed -ie 's/DejaVu 11/DejaVu 20/' /etc/gtk-2.0/gtkrc
+
+   . /usr/share/debconf/confmodule
+   db_register hands-off/meta/text hands-off/pause/title
+   db_subst hands-off/pause/title DESC \"UKUUG'06 Preseed Presentation\"
+   db_settitle hands-off/pause/title
+
+   db_register hands-off/meta/text hands-off/pause
+   db_subst hands-off/pause DESCRIPTION \"OK, lets make sure ...
+   \"
+   db_input critical hands-off/pause
+   db_go
+
+   db_unregister hands-off/pause
+   db_unregister hands-off/pause/title"
+
+db_input critical hands-off/pause
+db_go
+
+db_subst hands-off/pause DESCRIPTION \
+"Other opportunities to run scripts d-i are:
+
+  o  During preseeding itself, through the use of the magic 'preseed/run'
+     setting.
+
+  o  Just before the reboot, by use of the 'preseed/late_command' hook
+     (Hands-Off uses this to implement the running of <class>/late_script)
+
+  o  For 'sarge' installs, we still have a post reboot base-config phase, which
+     allows a 'base-config/late_command' script."
+db_input critical hands-off/pause
+db_go
+
+db_subst hands-off/pause DESCRIPTION \
+"If that's not enough, you can rip d-i's guts out, and replace them with
+something you found on a distant planet inside a silicon based lifeform:
+
+  o  various stages through the install perform run-parts type behaviour on
+      hook script directories, so dropping a script into one of those directories
+      will allow you to take fine control of other stages of the install
+
+  o  installing extra udebs in the early_command will allow you to enhance or
+     replace pretty much any aspect of d-i behaviour that your imagination is
+     capable of coming up with.
+
+  o  fiddling with the files under /var/lib/dpkg can make unusual things
+     happen (but that's almost always very naughty indeed, and if you do it
+     you'll have to be spanked ;-)
+
+and all without having to rebuild your boot media."
+db_input critical hands-off/pause
+db_go
+
+db_unregister hands-off/pause
+db_unregister hands-off/pause/title
+
+# let's cause an error now, just to be different
+echo "intentional error in UKUUG06 early script"
+exit 1

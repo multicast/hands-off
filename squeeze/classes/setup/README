@@ -1,0 +1,5 @@
+This directory is for generic setup scripts for doing things like
+creating the users, or configuring the NICs on a system.  They
+require configuration files to be created in the local directory to
+be fully useful, but should be written to fail safe and do something
+sane if no local configuration exists.

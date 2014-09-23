@@ -1,0 +1,1 @@
+d-i apt-setup/local0/repository string http://debian.hands.com/debian sid main

@@ -1,0 +1,52 @@
+1.0
+=-=-=-=-
+dashslashdash is no more.
+
+All it's features are now built into the relevant debian-installer udebs
+
+ -/-     -->  auto-install/classes
+ -/url   -->  job now done by preseed/url
+ -/host  -->  not really available in the same form.  Might come back.
+
+ dsd/classes --> auto-install/classes
+
+
+
+0.7
+=-=-=-=-
+Switched to using the etch version of d-i now that sarge-support.udeb
+allows it to install sarge systems
+
+Stop relying on the dsd:// urls and the optional? and substitution| flags
+and instead use the newly added preseed/run program download feature
+
+Move to doing as much as possible in the late_script, if possible removing
+any install_script, since that should fit in better with the one pass install
+from etch
+
+Use /usr/share/dashslashdash/functions.sh to avoid duplication in scripts
+
+0.6
+=-=-=-=-
+Now we're building the images using the debian-installer method
+
+
+0.5
+=-=-=-=-
+
+Replace all local/* variables with dsd/* so that the local admin can use
+the local/ namespace for whatever they wish
+
+Make the initial dashslashdash.sh script assume that it should
+get its files from a release directory, rather than the top level
+so hands.com/d-i/dsd becomes svn.hands.com/d-i/tags/0.5/dsd, for example.
+
+Compatibility with older versions of the config files is pretty badly broken
+by this and the previous set of changes.
+
+0.4
+=-=-=-=-
+
+Since earlier versions, we now support executable preseed files, and
+look out for /dashslashdash.sh to kick everything off, assuming that
+a -/<whatever> kernel commandline parameter specified.

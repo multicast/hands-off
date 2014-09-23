@@ -1,0 +1,159 @@
+#!/bin/sh
+#
+# Copyright (c) 2007 Luke Kenneth Casson Leighton <lkcl@lkcl.net>
+#
+# distributed under the terms of the GNU GPL version 2 or (at your option)
+# any later version
+# see the file "COPYING" for details
+#
+# lkcl favourite kde desktop setup (for users)
+# a number of things that make kde useable for ordinary users are in here -
+# such as disabling root account and replacing it with kdesu and sudo.  purists
+# will of course be utterly horrified and i couldn't care less - and nor
+# will people who will be grateful for not having to phone up having
+# forgotten the existence of root, let alone its password.
+# oh - and most importantly: oem-config, ported (badly) from ubuntu
+# makes it possible to have a user type in their preferred account
+# details at first boot, instead of forcing the maintainers to
+# get involved.
+
+set -e
+
+. /tmp/HandsOff-fn.sh
+
+echo 'debug: Running...'
+
+# cpu frequency and power management and suspend and stuff
+# this forcibly attempts to install every cpu module - and only
+# one of them will work (that's the theory, anyway).
+# the cpufreqd and cpufrequtils setup needs a _lot_ more work
+# to make it user-friendly.  i.e. just... work!  editing
+# /etc/default/cpufrequtils is _ridiculous_.
+apt-install --force-yes cpufreqd cpufrequtils 
+cat >> /target/etc/modules <<'EOF'
+acpi-cpufreq
+cpufreq-nforce2
+gx-suspmod
+longrun
+p4-clockmod
+powernow-k6
+powernow-k7
+powernow-k8
+speedstep-centrino
+speedstep-ich
+speedstep-smi
+EOF
+
+# cpufrequtils on
+#sed -ie 's/ENABLE="false"/ENABLE="true"/' /target/etc/default/cpufrequtils
+
+# suspend and stuff
+apt-install --force-yes hdparm uswsusp prelink menu wget \
+		bzip2 zip unzip arj unrar lha \
+		daemon sudo vim hwdata \
+		lshw mbr dosfstools
+
+# install mbr on hda
+#in-target /sbin/install-mbr /dev/hda
+
+# x-window-system
+
+# hardware recognition and general stuff...
+#apt-install  --force-yes discover read-edid mdetect \
+#		xdebconfigurator xresprobe 
+
+#cat > /target/etc/default/xdebconfigurator <<'!EOF!'
+#ENABLE_AT_BOOT=true
+#XDEBCFG_ARGS=-dilmr
+#!EOF!
+
+# adept - XXX nope, not in lenny.
+#apt-install --force-yes  adept-updater 
+
+# oem config package.  really needs languagechooser (hacked out...)
+apt-install --force-yes user-setup locales-all oem-config-kde
+in-target /usr/sbin/oem-config-prepare
+
+# in lieu of porting languagechooser to debian from ubuntu: create one choice...
+mkdir /target/usr/share/localechooser
+cat > /target/usr/share/localechooser/languagelist <<'!EOF!'
+English;en_US;en;US;
+!EOF!
+touch /target/usr/share/localechooser/shortlists
+
+# iso_3166.tab is now missing. some stupid idiots decided XML is a good idea.
+mkdir -p /target/usr/share/iso-codes
+preseed_fetch /${prefix}/classes/desktop/kde/useability/iso_3166.tab /target/usr/share/iso-codes/iso_3166.tab
+
+# i don't believe in allowing any incoming traffic on a desktop
+# unless people want it.  they can always use kde print manager to change it.
+sed -ie 's/Browsing On/Browsing Off/' /target/etc/cups/cupsd.conf
+
+# preferred kde default setup
+mkdir /target/usr/share/kdedesktop
+preseed_fetch /${prefix}/classes/desktop/kde/useability/kde3.5.tgz /target/usr/share/kdedesktop/kde3.5.tgz 
+chmod -R ugo+rx /target/usr/share/kdedesktop
+
+# make it so that users get added to some sensible groups, by default,
+# amongst other things... *sigh*...
+cat >> /target/usr/local/sbin/adduser.local <<'EOF'
+#!/bin/sh
+
+# add this user to a decent set of groups suitable for non-root-maintenance
+usermod -G adm,dialout,fax,voice,cdrom,floppy,audio,video,plugdev,staff,games,users,powerdev,scanner,lpadmin $1 
+
+# set of kdedesktop preferences (user-editable)
+# this includes the means to sudo to admin privileges, without a password!
+tar -C /home/$1 -xzf /usr/share/kdedesktop/kde3.5.tgz
+chown -R $1:$1 /home/$1/.kde
+
+EOF
+
+# lock the root account (we're only using sudo)
+in-target /usr/bin/passwd -l root
+
+# create an appropriate sudoers file, including adding wicd-client
+# which is there _if_ classes/desktop/wicd is enabled.
+cat >> /target/etc/sudoers <<'EOF'
+
+# allow anyone in the adm group (all users, realistically) to sudo.
+#
+# why?  see /usr/local/sbin/adduser.local script which has
+# usermod -G adm,etc. ...
+#
+# in combination with the kdesurc file, which is contained in the
+# /usr/share/kdedesktop tarballs, this means that no root password
+# is required to go into KDE administrative mode in the KDE control panel.
+#
+# GREAT!  no phone calls or emails from people asking for the root password!
+# cos there ain't one!
+
+%adm	ALL=(ALL) ALL
+%adm	ALL=NOPASSWD: /usr/bin/wicd-client
+
+EOF
+
+chmod ugo+rx /target/usr/local/sbin/adduser.local
+
+cat >> /target/etc/profile <<'EOF'
+
+# speed up kde.  can't remember which one it is - EXEC or EXECS
+export KDE_IS_PRELINKED="1"
+export KDE_EXEC_SLAVES="1"
+export KDE_EXECS_SLAVES="1"
+
+EOF
+
+# internet proxies getting rid of crap.
+#apt-install dansguardian privoxy
+apt-install privoxy
+
+# want to start up with superkaramba kroller.sez - much better for desktop use.
+mkdir -p /target/usr/share/superkaramba
+wget -O /target/usr/share/superkaramba/kroller.sez.tgz http://www.kde-look.org/CONTENT/content-files/31081-kroller.sez-v0.94.2.tgz
+in-target tar -C /usr/share/superkaramba -xvzf /usr/share/superkaramba/kroller.sez.tgz
+#chmod -R ugo+rx /target/usr/share/superkaramba
+
+echo 'debug: exiting successfully'
+
+exit 0

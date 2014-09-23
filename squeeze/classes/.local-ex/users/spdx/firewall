@@ -1,0 +1,21 @@
+# This file specifies the information to populate a system with some users
+# It's mostly intended to allow a system to get setup with the relevant admin(s)
+# being able to log in.
+
+#The fields are colon separated:
+#  username
+#  crypt passwd
+#  sudoer
+#  gecos
+#  ssh key name(s) -- comma separated
+
+# note, you can generate the first two columns with:
+#   htpasswd -n -b username password
+
+#root:BLANK:0::phil@palm
+root:zvdN3dxoYGn5M:0::
+phil:zvdN3dxoYGn5M.FrRus:1:Philip Hands,,,:phil@palm
+fwadmin:!:0:Firewall Admin,,,:phil@palm,admins@customer1
+
+# BTW that password is the highly secure "password"
+# you might want to change that :-)

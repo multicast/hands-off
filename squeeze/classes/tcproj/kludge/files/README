@@ -1,0 +1,5 @@
+etc.tgz is created by sitting in this direcotry, and running:
+
+  tar -cvzf etc.tgz -C etc .
+
+which results in a tarball that can be unpacked in the target system's /etc

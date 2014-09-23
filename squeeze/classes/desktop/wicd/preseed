@@ -1,0 +1,8 @@
+# ADD THESE TO TOP-LEVEL, not here, so that you don't end up
+# overwriting local0, local1, local2 etc. by including wildly-different
+# classes.
+#d-i apt-setup/local3/repository string http://ftp.uk.debian.org/debian testing main
+#d-i apt-setup/local3/comment string testing, for wicd
+
+# stop glibc restart services question (!!)
+d-i glibc/restart-services  string cron

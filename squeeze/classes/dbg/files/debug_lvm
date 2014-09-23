@@ -1,0 +1,24 @@
+#!/bin/sh
+
+# if you add this to the kernel command line:  url=hands.com classes=dbg
+# then this script will be downloaded, and by then switching to Alt-F2 and running:
+#
+#   debug_lvm
+
+# In this example, I'm patching one of the partman-lvm files, when it turns up
+# to allow me to test a bug fix -- obviously, that won't work once the bug is
+# fixed, but it shows the idea
+ 
+. /tmp/HandsOff-dbg-fn.sh
+
+#add_sleep /bin/autopartition-lvm
+#add_x /bin/autopartition-lvm
+#add_sleep_fn /lib/partman/lib/lvm-base.sh pv_on_device
+#add_sleep_fn /lib/partman/lib/lvm-base.sh lvm_get_info
+#add_sleep_fn /lib/partman/lib/lvm-base.sh pv_on_device
+
+wait_for /lib/partman/lib/auto-lvm.sh
+sed -i -e "/open_dialog COMMIT/,\${/close_dialog/s#\$#\n  sleep 10\n  pvs --all > /dev/null\n  device_remove_lvm \$dev#}" /lib/partman/lib/auto-lvm.sh
+
+#top_and_tail /lib/partman/lib/lvm-base.sh
+#top_and_tail /lib/partman/lib/lvm-remove.sh
