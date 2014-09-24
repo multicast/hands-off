@@ -25,10 +25,11 @@ db_subst hands-off/item DESC "Running top level script"
 db_progress INFO hands-off/item
 
 # script to restart the install -- handy for testing
-{
-  echo "#!/bin/sh"
-  echo "dd if=/dev/zero of=/dev/discs/disc0/disc count=1 && sync && reboot"
-} > /usr/bin/zapme
+cat > /usr/bin/zapme <<'!EOF!'
+#!/bin/sh
+disk=${1:-$(echo /dev/?da)}
+test -b "$disk" && dd if=/dev/zero of="$disk" count=1 && sync && reboot
+!EOF!
 chmod +x /usr/bin/zapme
 
 db_progress STEP 1
