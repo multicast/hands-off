@@ -22,7 +22,7 @@ apt-install less ssh bash-completion
 echo 'export LESSOPEN="|lesspipe '%s'"' > /target/etc/profile.d/hands-com_lesspipe.sh
 
 # enable bash completion
-sed -i -e '/-f.*bash_completion/,/fi/s/^#//' /target/etc/bash.bashrc
+sed -i -e '/^# enable bash completion/,/^ *$/{/^# enable /!s/^#//}' /target/etc/bash.bashrc
 
 # prepopulate root's history with commands needed to install a new xen domain
 cat > /target/root/.bash_history <<!EOF!
