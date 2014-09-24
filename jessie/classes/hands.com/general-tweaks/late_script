@@ -10,10 +10,9 @@ set -e
 echo 'debug: Running...'
 
 # make fsck automatically fix problems at boot time.
-sed -i -e 's/^FSCKFIX=no/FSCKFIX=yes/' /target/etc/default/rcS
-# ensure that /var/run and /var/lock end up on tmpfs
-sed -i -e 's/^RAMRUN=no/RAMRUN=yes/' /target/etc/default/rcS
-sed -i -e 's/^RAMLOCK=no/RAMLOCK=yes/' /target/etc/default/rcS
+sed -i -e 's/^#*FSCKFIX=no/FSCKFIX=yes/' /target/etc/default/rcS
+# ensure that /tmp end up on tmpfs
+sed -i -e 's/^#* *RAMTMP=no/RAMTMP=yes/' /target/etc/default/tmpfs
 
 # packages I like
 apt-install less ssh bash-completion
