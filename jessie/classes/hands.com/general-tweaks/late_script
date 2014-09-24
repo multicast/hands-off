@@ -25,8 +25,8 @@ echo 'export LESSOPEN="|lesspipe '%s'"' > /target/etc/profile.d/hands-com_lesspi
 sed -i -e '/^# enable bash completion/,/^ *$/{/^# enable /!s/^#//}' /target/etc/bash.bashrc
 
 # prepopulate root's history with commands needed to install a new xen domain
-cat > /target/root/.bash_history <<!EOF!
- #dd if=/dev/zero of=/dev/hda count=1 ; sync ; reboot -f
+cat > /target/root/.bash_history <<'!EOF!'
+ #dd if=/dev/zero of="$(echo /dev/?da)" conv=nocreat count=1 && sync && reboot -f
 !EOF!
 
 # stop apt looking for CDs -- it's a pain when it asks for them
