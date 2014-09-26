@@ -1,15 +1,12 @@
 #!/bin/sh
 
 # if you add this to the kernel command line:  url=hands.com classes=dbg
-# then this script will be downloaded, and by then switching to Alt-F2 and running:
-#
-#   debug_lvm
+# then this script will be downloaded, and dropped into the background.
 
-# In this example, I'm patching one of the partman-lvm files, when it turns up
-# to allow me to test a bug fix -- obviously, that won't work once the bug is
-# fixed, but it shows the idea
- 
+# define some useful debugging functions
 . /tmp/HandsOff-dbg-fn.sh
+
+# with some examples of their use:
 
 #add_sleep /bin/autopartition-lvm
 #add_x /bin/autopartition-lvm
@@ -17,8 +14,17 @@
 #add_sleep_fn /lib/partman/lib/lvm-base.sh lvm_get_info
 #add_sleep_fn /lib/partman/lib/lvm-base.sh pv_on_device
 
+# In this example, I'm patching one of the partman-lvm files, when it turns up
+# to allow me to test a bug fix -- obviously, that won't work once the bug is
+# fixed, but it shows the idea
+ 
+# the wait_for is needed since the lvm udeb is not unpacked during the
+# early script, so we need to wait for it to tunr up before it can be edited.
+
 wait_for /lib/partman/lib/auto-lvm.sh
 sed -i -e "/open_dialog COMMIT/,\${/close_dialog/s#\$#\n  sleep 10\n  pvs --all > /dev/null\n  device_remove_lvm \$dev#}" /lib/partman/lib/auto-lvm.sh
+
+# and some more examples:
 
 #top_and_tail /lib/partman/lib/lvm-base.sh
 #top_and_tail /lib/partman/lib/lvm-remove.sh
