@@ -1,14 +1,17 @@
 #!/bin/sh
-
-# if you add this to the kernel command line:  dbg/pauses=early
-# then you can use this script by then switching to Alt-F2 and running:
+# early_script of dbg class from http://hands.com/d-i/.../classes/dbg/early_script
 #
-#   preseed_fetch debug.sh /tmp/debug.sh
-#   sh /tmp/debug.sh
+# Copyright (c) 2011-2014 Hands.com Ltd
+# distributed under the terms of the GNU GPL version 2 or (at your option) any later version
+# see the file "COPYING" for details
+#
 
-# In this example, I'm patching one of the partman-lvm files, when it turns up
-# to allow me to test a bug fix -- obviously, that won't work once the bug is
-# fixed, but it shows the idea
+# In this example, we run ./files/debug_lvm in the background so that it
+# can await the creation of /lib/partman/lib/auto-lvm.sh and edit it
+# before d-i runs it, allowing the test of a bug-fix.
+
+# obviously, that script became pointless as soon as the bug was fixed.
+# It is left here as an example.
  
 . /usr/share/debconf/confmodule
 . /tmp/HandsOff-fn.sh

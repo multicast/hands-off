@@ -1,6 +1,13 @@
 #!/bin/sh
+# debug_lvm of dbg class from http://hands.com/d-i/.../classes/dbg/files/debug_lvm
+#
+# Copyright (c) 2011-2014 Hands.com Ltd
+# distributed under the terms of the GNU GPL version 2 or (at your option) any later version
+# see the file "COPYING" for details
+#
 
-# if you add this to the kernel command line:  url=hands.com classes=dbg
+
+# if you add this to d-i's kernel command line:  url=hands.com classes=dbg
 # then this script will be downloaded, and dropped into the background.
 
 # define some useful debugging functions
