@@ -4,9 +4,9 @@ To give it a go, boot with Etch's debian-installer, and at the boot prompt type:
 
   boot:  auto url=hands.com classes=talks/fosdem07
 
-Here's his readme for the directoy in debian's SVN, which you can find here:
+Here's his readme for the directory in debian's SVN, which you can find here:
 
-  svn+ssh://svn.debian.org/svn/d-i/trunk/installer/doc/talks/fosdem07/
+  http://anonscm.debian.org/cgit/d-i/debian-installer.git/tree/doc/talks/fosdem07
 
 =-=-=-=-=-
 At FOSDEM 2007 I gave a talk on automating installations using preseeding
