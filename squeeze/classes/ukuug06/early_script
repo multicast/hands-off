@@ -1,6 +1,24 @@
 #!/bin/sh
 set -e
 
+# Copyright (c) 2005-2006 Hands.com Ltd
+# distributed under the terms of the GNU GPL version 2 or (at your option) any later version
+# see the file "COPYING" for details
+
+# this script abuses debian-installer's generous nature to turn it into
+# a presentation tool, and present the slides for a talk about debian-installer.
+#
+# It was written to work with Debian "etch".
+#
+# It was used as the basis for Frans Pop's 2007 FOSDEM slides:
+#
+#   http://anonscm.debian.org/cgit/d-i/debian-installer.git/tree/doc/talks/fosdem07/README
+#
+# it is part of the ``hands-off'' preseeding framework: http://hands.com/d-i/
+#
+# DO NOT expect it to perform a useful install.
+# DO NOT run it on a machine containing data you want to keep.
+
 echo 'debug: Running...'
 
 . /usr/share/debconf/confmodule
