@@ -6,7 +6,8 @@ set -e
 # see the file "COPYING" for details
 
 # this script abuses debian-installer's generous nature to turn it into
-# a presentation tool, and present the slides for a talk about debian-installer.
+# a presentation tool, and present the slides for a talk about debian-installer,
+# at the UKUUG's 2006 Summer Conference in Brighton. (http://www.ukuug.org/)
 #
 # It was written to work with Debian "etch".
 #
