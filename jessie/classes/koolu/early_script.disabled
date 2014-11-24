@@ -25,7 +25,7 @@ set -e
 . /usr/share/debconf/confmodule
 . /tmp/HandsOff-fn.sh
 
-sed -ie 's/^kernel_update_list () {/& > "$KERNEL_LIST" ; exit 0 ;/' /var/lib/dpkg/info/base-installer.postinst
+sed -i 's/^kernel_update_list () {/& > "$KERNEL_LIST" ; exit 0 ;/' /var/lib/dpkg/info/base-installer.postinst
 
 checkflag dbg/pauses all kludge && pause "$0"
 !EOF!

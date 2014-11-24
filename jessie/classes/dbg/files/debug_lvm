@@ -29,7 +29,7 @@
 # early script, so we need to wait for it to tunr up before it can be edited.
 
 wait_for /lib/partman/lib/auto-lvm.sh
-sed -i -e "/open_dialog COMMIT/,\${/close_dialog/s#\$#\n  sleep 10\n  pvs --all > /dev/null\n  device_remove_lvm \$dev#}" /lib/partman/lib/auto-lvm.sh
+sed -i "/open_dialog COMMIT/,\${/close_dialog/s#\$#\n  sleep 10\n  pvs --all > /dev/null\n  device_remove_lvm \$dev#}" /lib/partman/lib/auto-lvm.sh
 
 # and some more examples:
 

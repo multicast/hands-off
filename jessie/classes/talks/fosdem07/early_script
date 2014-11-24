@@ -17,8 +17,8 @@ db_subst hands-off/pause DESCRIPTION \
 db_input critical hands-off/pause
 db_go
 
-sed -ie 's/Sans 9/Sans 18/' /etc/gtk-2.0/gtkrc
-sed -ie 's/FONT_SIZE=9/FONT_SIZE=11/' /usr/bin/gtk-set-font
+sed -i 's/Sans 9/Sans 18/' /etc/gtk-2.0/gtkrc
+sed -i 's/FONT_SIZE=9/FONT_SIZE=18/' /usr/bin/gtk-set-font
 
 
 db_subst hands-off/pause DESCRIPTION "Can everybody read this?
@@ -27,7 +27,7 @@ Is that better?
 
 It was done by editing /etc/gtk-2.0/grkrc from a
 preconfiguration script:
-   sed -ie 's/Sans 9/Sans 18/' /etc/gtk-2.0/gtkrc"
+   sed -i 's/Sans 9/Sans 18/' /etc/gtk-2.0/gtkrc"
 db_input critical hands-off/pause
 db_go
 
@@ -156,7 +156,7 @@ done
 db_unregister hands-off/pause
 db_unregister hands-off/pause/title
 
-sed -ie 's/Sans 18/Sans 11/' /etc/gtk-2.0/gtkrc
+sed -i 's/Sans 18/Sans 11/' /etc/gtk-2.0/gtkrc
 
 preseed_fetch /classes/fosdem07/base-installer /usr/lib/base-installer.d/00fosdem
 chmod a+x /usr/lib/base-installer.d/00fosdem
