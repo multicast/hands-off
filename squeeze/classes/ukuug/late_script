@@ -3,7 +3,7 @@ set -e
 
 echo "debug: Running..."
 
-in-target sed -ie "/\\[daemon\\]/a\\AutomaticLoginEnable=true\\nTimedLoginEnable=true\\nAutomaticLogin=ukuug\\nTimedLogin=ukuug" /etc/gdm/gdm.conf
+in-target sed -i "/\\[daemon\\]/a\\AutomaticLoginEnable=true\\nTimedLoginEnable=true\\nAutomaticLogin=ukuug\\nTimedLogin=ukuug" /etc/gdm/gdm.conf
 
 in-target gconftool -t bool --set /apps/gnome-screensaver/lock_enabled false
 

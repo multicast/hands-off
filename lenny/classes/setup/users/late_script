@@ -29,10 +29,10 @@ done
 apt-install sudo
 
 if db_get hands-off/desktop && [ true = "$RET" ]; then
-  sed -i -e 's/#\(ADD_EXTRA_GROUPS=1\)/\1/' /target/etc/adduser.conf
+  sed -i 's/#\(ADD_EXTRA_GROUPS=1\)/\1/' /target/etc/adduser.conf
 
   if db_get hands-off/adduser-extra-groups && [ "$RET" ]; then
-    sed -i -e 's/#\(EXTRA_GROUPS="[^"]*\)/\1 '"$RET"'/' /target/etc/adduser.conf
+    sed -i 's/#\(EXTRA_GROUPS="[^"]*\)/\1 '"$RET"'/' /target/etc/adduser.conf
   fi
 fi
 
@@ -52,7 +52,7 @@ while (<>) {
     system("adduser --disabled-login --gecos \"$gecos\" $user") ;
   }
 
-  system("sed -i -e 's#^${user}:!:#${user}:${crypt}:#' $pwfile") ;
+  system("sed -i 's#^${user}:!:#${user}:${crypt}:#' $pwfile") ;
 
   if ($sudoer) {
     $anysudoers = 1;

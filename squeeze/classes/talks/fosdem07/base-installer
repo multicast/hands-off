@@ -6,7 +6,7 @@
 db_register hands-off/meta/text hands-off/pause/title
 db_register hands-off/meta/text hands-off/pause
 
-sed -ie 's/Sans 11/Sans 18/' /etc/gtk-2.0/gtkrc
+sed -i 's/Sans 11/Sans 18/' /etc/gtk-2.0/gtkrc
 db_capb backup
 
 SLIDE=1
@@ -101,7 +101,7 @@ db_input critical hands-off/pause
 
 
 6)
-sed -ie 's/Sans 18/Sans 11/' /etc/gtk-2.0/gtkrc
+sed -i 's/Sans 18/Sans 11/' /etc/gtk-2.0/gtkrc
 db_subst hands-off/pause DESCRIPTION \
 ""
 db_input critical hands-off/pause

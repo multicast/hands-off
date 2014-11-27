@@ -25,7 +25,7 @@ echo 'debug: Running...'
 . /usr/share/debconf/confmodule
 . /tmp/HandsOff-fn.sh
 
-sed -ie 's/DejaVu 11/DejaVu 20/' /etc/gtk-2.0/gtkrc
+sed -i 's/DejaVu 11/DejaVu 20/' /etc/gtk-2.0/gtkrc
 
 db_register hands-off/meta/text hands-off/pause/title
 db_subst hands-off/pause/title DESC "UKUUG'06 Preseed Presentation"
@@ -50,7 +50,7 @@ db_go
 db_subst hands-off/pause DESCRIPTION \
 "The previous screen was achieved with a script containing:
 
-   sed -ie 's/DejaVu 11/DejaVu 20/' /etc/gtk-2.0/gtkrc
+   sed -i 's/DejaVu 11/DejaVu 20/' /etc/gtk-2.0/gtkrc
 
    . /usr/share/debconf/confmodule
    db_register hands-off/meta/text hands-off/pause/title

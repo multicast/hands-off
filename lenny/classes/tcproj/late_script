@@ -23,9 +23,9 @@ in-target pkgsync
 in-target prelink -aqR
 
 # setup some  eye candy
-sed -i -e 's/ quiet/& vga=791 splash/' /target/boot/grub/menu.lst
-sed -i -e 's/>default</>debian-moreblue</' /target/etc/splashy/config.xml
-sed -i -e '/^color /a splashimage=(hd0,0)/grub/splashimages/debian-moreblue-swirl.xpm.gz' /target/boot/grub/menu.lst
+sed -i 's/ quiet/& vga=791 splash/' /target/boot/grub/menu.lst
+sed -i 's/>default</>debian-moreblue</' /target/etc/splashy/config.xml
+sed -i '/^color /a splashimage=(hd0,0)/grub/splashimages/debian-moreblue-swirl.xpm.gz' /target/boot/grub/menu.lst
 in-target update-initramfs -u
 
 echo 'debug: exiting successfully'

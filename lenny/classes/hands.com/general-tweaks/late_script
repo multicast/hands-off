@@ -10,16 +10,16 @@ set -e
 echo 'debug: Running...'
 
 # make fsck automatically fix problems at boot time.
-sed -i -e 's/^FSCKFIX=no/FSCKFIX=yes/' /target/etc/default/rcS
+sed -i 's/^FSCKFIX=no/FSCKFIX=yes/' /target/etc/default/rcS
 # ensure that /var/run and /var/lock end up on tmpfs
-sed -i -e 's/^RAMRUN=no/RAMRUN=yes/' /target/etc/default/rcS
-sed -i -e 's/^RAMLOCK=no/RAMLOCK=yes/' /target/etc/default/rcS
+sed -i 's/^RAMRUN=no/RAMRUN=yes/' /target/etc/default/rcS
+sed -i 's/^RAMLOCK=no/RAMLOCK=yes/' /target/etc/default/rcS
 
 # packages I like
 apt-install less openssh-server bash-completion psmisc
 
 # set LESSPIPE as I prefer
-sed -i -e '/^  if \[ "$BASH" ]; then$/a\    . /etc/bash.bashrc' /target/etc/profile
+sed -i '/^  if \[ "$BASH" ]; then$/a\    . /etc/bash.bashrc' /target/etc/profile
 echo "export LESSOPEN=\"|lesspipe '%s'\"" >> /target/etc/bash.bashrc
 
 # prepopulate root's history with commands needed to install a new xen domain
@@ -28,7 +28,7 @@ cat > /target/root/.bash_history <<!EOF!
 !EOF!
 
 # stop apt looking for CDs -- it's a pain when it asks for them
-sed -ie 's/^deb cdrom:/# &/' /target/etc/apt/sources.list
+sed -i 's/^deb cdrom:/# &/' /target/etc/apt/sources.list
 
 echo 'debug: exiting successfully'
 exit 0

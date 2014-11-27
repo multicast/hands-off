@@ -45,8 +45,8 @@ preseed_fetch /classes/xen3/files/xend-config.sxp  /target/etc/xen/xend-config.s
 preseed_fetch /classes/xen3/files/xm-debinst1  /target/etc/xen/xm-debinst1
 preseed_fetch /classes/xen3/files/xm-debinst1-install  /target/etc/xen/xm-debinst1-install
 
-in-target sed -ie "s#XEN_VMLINUZ#$(echo /boot/vmlinuz-*xen*)#" /etc/xen/xm-debinst1-install
-in-target sed -ie "s#XEN_VMLINUZ#$(echo /boot/vmlinuz-*xen*)#;s#XEN_INITRD#$(echo /boot/initrd.img-*xen*)#" /etc/xen/xm-debinst1
+in-target sed -i "s#XEN_VMLINUZ#$(echo /boot/vmlinuz-*xen*)#" /etc/xen/xm-debinst1-install
+in-target sed -i "s#XEN_VMLINUZ#$(echo /boot/vmlinuz-*xen*)#;s#XEN_INITRD#$(echo /boot/initrd.img-*xen*)#" /etc/xen/xm-debinst1
 
 # sort out a bridge setup for Xen
 apt-install bridge-utils

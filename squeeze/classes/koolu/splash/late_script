@@ -11,11 +11,11 @@ echo "debug: Running koolu/splash/late_script..."
 
 checkflag dbg/flags all-x koolu-splash-x && set -x
 
-sed -ie 's/^# defoptions=.*/# defoptions=vga=791 splash quiet/' /target/boot/grub/menu.lst
+sed -i 's/^# defoptions=.*/# defoptions=vga=791 splash quiet/' /target/boot/grub/menu.lst
 
 # Grub splash screen
 preseed_fetch /classes/koolu/files/koolu_splash.xpm.gz /target/boot/grub/koolu_splash.xpm.gz
-sed -ie '/^color/a \\nsplashimage /boot/grub/koolu_splash.xpm.gz' /target/boot/grub/menu.lst
+sed -i '/^color/a \\nsplashimage /boot/grub/koolu_splash.xpm.gz' /target/boot/grub/menu.lst
 
 # Koolu usplash -- cheap and nasty -- this should all be in a package
 preseed_fetch /classes/koolu/files/osdesktop-artwork.so.gz /target/usr/lib/usplash/osdesktop-artwork.so.gz

@@ -16,7 +16,7 @@ apt-install \
   xresprobe cpufrequtils vbetool menu discover xresprobe mdetect read-edid xutils binutils xpdf \
   usplash usplash-theme-debian
 
-sed -ie '/Section "Device"/a\        Option "NoCompression" "true"' /target/etc/X11/xorg.conf
+sed -i '/Section "Device"/a\        Option "NoCompression" "true"' /target/etc/X11/xorg.conf
 
 # firefox and friends... pdf, flash and realplayer
 apt-install iceweasel x-ttcidfont-conf xprint  xprint-utils matchbox-window-manager mozplugger xpdf
@@ -25,7 +25,7 @@ apt-install iceweasel-l10n-*
 in-target apt-get -y --force-yes --no-remove install flashplugin-nonfree 
 in-target apt-get -y --force-yes --no-remove install helix-player mozilla-helix-player
 
-sed -ie '/Section "Device"/a\        Option "NoCompression" "true"' /target/etc/X11/xorg.conf
+sed -i '/Section "Device"/a\        Option "NoCompression" "true"' /target/etc/X11/xorg.conf
 
 apt-install prelink
 

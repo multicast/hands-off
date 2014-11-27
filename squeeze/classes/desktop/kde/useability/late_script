@@ -45,7 +45,7 @@ speedstep-smi
 EOF
 
 # cpufrequtils on
-#sed -ie 's/ENABLE="false"/ENABLE="true"/' /target/etc/default/cpufrequtils
+#sed -i 's/ENABLE="false"/ENABLE="true"/' /target/etc/default/cpufrequtils
 
 # suspend and stuff
 apt-install --force-yes hdparm uswsusp prelink menu wget \
@@ -87,7 +87,7 @@ preseed_fetch /${prefix}/classes/desktop/kde/useability/iso_3166.tab /target/usr
 
 # i don't believe in allowing any incoming traffic on a desktop
 # unless people want it.  they can always use kde print manager to change it.
-sed -ie 's/Browsing On/Browsing Off/' /target/etc/cups/cupsd.conf
+sed -i 's/Browsing On/Browsing Off/' /target/etc/cups/cupsd.conf
 
 # preferred kde default setup
 mkdir /target/usr/share/kdedesktop
