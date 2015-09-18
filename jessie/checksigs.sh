@@ -24,4 +24,4 @@ gpgv --keyring $keys $sums
 mv $keys /var/lib/preseed/checksums-md5sum
 
 db_set preseed/include start.cfg
-db_set preseed/include/checksum $(sed -ne '/ \.[/]start.cfg$/s/ .*//p' $sums)
+#db_set preseed/include/checksum $(sed -ne '/ \.[/]start.cfg$/s/ .*//p' $sums)
