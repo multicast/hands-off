@@ -109,6 +109,14 @@ db_get auto-install/classes || {
   db_subst auto-install/classes ID auto-install/classes
 }
 
+# kludge to deal with breakage in Jessie
+if [ -e /var/run/preseed_unspecified_at_boot ] &&
+   grep -q '{ db_get preseed/url  || \[ -z "$RET" \]; } &&' /lib/debian-installer-startup.d/S60auto-install
+then
+  echo "removing /var/run/preseed_unspecified_at_boot, which is probably spurious"
+  rm /var/run/preseed_unspecified_at_boot || true
+fi
+
 if [ -z "$(debconf-get auto-install/classes)" -a \
      -e /var/run/preseed_unspecified_at_boot  -o \
      -e /var/run/auto-install-had-to-ask-for-preseed ]; then
