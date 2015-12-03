@@ -7,6 +7,8 @@
 #
 set -e
 
+. /usr/share/debconf/confmodule
+
 # create templates for use in on-the-fly creation of dialogs
 cat > /tmp/HandsOff.templates <<'!EOF!'
 Template: hands-off/meta/text
@@ -84,7 +86,6 @@ check_udeb_ver() {
 }
 !EOF!
 
-. /usr/share/debconf/confmodule
 . /tmp/HandsOff-fn.sh
 
 checkflag dbg/pauses all start && pause "Top Level start.sh script"
