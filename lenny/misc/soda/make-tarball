@@ -1,3 +1,0 @@
-#!/bin/sh
-
-tar --exclude-from=misc/soda/excludes -cvzf ../soda-preseed.tgz . -C misc/soda classes/common.cfg
