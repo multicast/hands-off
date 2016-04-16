@@ -1,0 +1,11 @@
+# -*- conf -*-
+#
+# partition/home
+#
+# Copyright © 2016 Daniel Dehennin <daniel.dehennin@baby-gnu.org>
+#
+# Distributed under the terms of the GNU GPL version 2 or (at your
+# option) any later version see the file "COPYING" for details
+#
+### Default home recipe on regular partitioning
+d-i	partman-auto/choose_recipe	select home
