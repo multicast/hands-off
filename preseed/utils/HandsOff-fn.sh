@@ -105,7 +105,9 @@ subclasses() {
 	local cl_a_ss=$(shell_escape "${class}")
 	[ -n "${class}" ] || return 0
 
-	if expr "${class}" : local/ >/dev/null; then
+	if expr "${class}" : virtual/ >/dev/null; then
+		return 0
+	elif expr "${class}" : local/ >/dev/null; then
 		preseed_fetch "/$class/subclasses" \
 			      "/tmp/cls-${cl_a_ss}" \
 		    || [ $? = 4 ]
@@ -202,6 +204,10 @@ load_classes() {
 	local cls
 	# generate class preseed inclusion list
 	for cls in $(split_semi "${classes}") ; do
+		if expr "${cls}" : virtual/ >/dev/null; then
+			echo "debug: no load of virtual “${cls}”"
+			continue
+		fi
 		checkflag dbg/pauses all classes \
 		    && pause "Load preseed “${cls}”"
 		include=''
