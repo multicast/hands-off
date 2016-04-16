@@ -116,8 +116,6 @@ expandclasses() {
 	local c
 	for c in $(split_semi "${1}") ; do
 		expandclasses $(subclasses "${c}")
-	done
-	for c in $(split_semi "${1}") ; do
 		echo "${c}"
 	done
 }
