@@ -1,0 +1,32 @@
+#!/bin/sh
+
+# Copyright © 2013-2016 Daniel Dehennin <daniel.dehennin@baby-gnu.org>
+#
+# Distributed under the terms of the GNU GPL version 2 or (at your
+# option) any later version see the file "COPYING" for details
+#
+# Environment variable: ${class}
+
+set -e
+
+. /tmp/HandsOff-fn.sh
+
+echo "debug: Running..."
+
+checkflag dbg/flags all-x late-x && set -x
+
+# Workaround https://bugs.debian.org/792823
+cat > /target/etc/default/keyboard <<EOF
+# KEYBOARD CONFIGURATION FILE
+
+# Consult the keyboard(5) manual page.
+
+XKBMODEL="pc105"
+XKBLAYOUT="fr"
+XKBVARIANT="oss"
+XKBOPTIONS=""
+
+BACKSPACE="guess"
+EOF
+
+in-target dpkg-reconfigure -pcritical keyboard-configuration
