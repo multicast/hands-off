@@ -1,0 +1,48 @@
+300 1000 2000 ext3
+	$primary{ }
+	$bootable{ }
+	method{ format }
+	format{ }
+	use_filesystem{ }
+	filesystem{ ext3 }
+	mountpoint{ / }
+.
+256 1000 300% linux-swap
+	method{ swap }
+	format{ }
+.
+2000 6000 1000 ext3
+	method{ format }
+	format{ }
+	use_filesystem{ }
+	filesystem{ ext3 }
+	mountpoint{ /home }
+.
+512 1000 1000 ext3
+	method{ format }
+	format{ }
+	use_filesystem{ }
+	filesystem{ ext3 }
+	mountpoint{ /tmp }
+.
+1000 3000 3000 ext3
+	method{ format }
+	format{ }
+	use_filesystem{ }
+	filesystem{ ext3 }
+	mountpoint{ /usr }
+.
+1000 2000 2000 ext3
+	method{ format }
+	format{ }
+	use_filesystem{ }
+	filesystem{ ext3 }
+	mountpoint{ /var }
+.
+1000 2000 1000000000 ext3
+	method{ format }
+	format{ }
+	use_filesystem{ }
+	filesystem{ ext3 }
+	mountpoint{ /var/log }
+.
