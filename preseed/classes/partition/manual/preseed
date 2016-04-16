@@ -1,0 +1,51 @@
+# -*- conf -*-
+#
+# Copyright © 2013-2016 Daniel Dehennin <daniel.dehennin@baby-gnu.org>
+#
+# Distributed under the terms of the GNU GPL version 2 or (at your
+# option) any later version see the file "COPYING" for details
+#
+### Manual partitionning with confirmations
+
+## Keep preseed values and force questions by setting “seen” to false
+
+# Method
+d-i partman-auto/init_automatically_partition seen false
+d-i partman-auto/method seen false
+
+# Partition table creation
+d-i partman-partitioning/choose_label seen false
+
+# If one of the disks that are going to be automatically partitioned
+# contains an old LVM configuration, the user will normally receive a
+# warning. This can be preseeded away...
+d-i partman-lvm/device_remove_lvm boolean false
+d-i partman-lvm/device_remove_lvm seen false
+
+# Remove pre-existing software RAID array:
+d-i partman-md/device_remove_md boolean false
+d-i partman-md/device_remove_md seen false
+
+# Complain about keep partition?
+d-i partman-basicmethods/method_only seen false
+
+# Confirmation
+d-i partman/confirm_nooverwrite boolean false
+d-i partman/confirm_nooverwrite seen false
+
+d-i partman/confirm_write_new_label boolean false
+d-i partman/confirm_write_new_label seen false
+
+d-i partman/choose_partition select
+d-i partman/choose_partition seen false
+
+d-i partman/confirm boolean false
+d-i partman/confirm seen false
+
+# And the same goes for the confirmation to write the lvm partitions.
+d-i partman-lvm/confirm boolean false
+d-i partman-lvm/confirm seen false
+
+# Overwrite LVM
+d-i partman-lvm/confirm_nooverwrite boolean false
+d-i partman-lvm/confirm_nooverwrite seen false
