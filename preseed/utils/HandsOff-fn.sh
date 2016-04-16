@@ -134,6 +134,11 @@ check_udeb_ver() {
 	      /var/lib/dpkg/status ;
 	} | sort -t. -c 2>/dev/null
 }
+handsoff_poweroff() {
+	error 'The system will be powered off' 'PowerOff'
+	db_really_set debian-installer/exit/poweroff true true
+	exec /lib/debian-installer/exit
+}
 
 # Manipulate classes
 use_local() {
