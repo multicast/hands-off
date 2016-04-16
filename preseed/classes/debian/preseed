@@ -1,0 +1,48 @@
+# -*- conf -*-
+
+# Any domain names assigned from dhcp take precedence over values set
+# here. However, setting the value still prevents the questions from
+# being shown, even if values come from dhcp.
+# RFC2606 domain
+d-i netcfg/get_domain string example.net
+
+### Apt setup
+# Configure APT to not install recommended packages by default. Use of this
+# option can result in an incomplete system and should only be used by very
+# experienced users.
+d-i	base-installer/install-recommends	boolean false
+
+# You can choose to install non-free and contrib software.
+d-i	apt-setup/non-free	boolean false
+d-i	apt-setup/contrib	boolean false
+
+# Minimal installation
+tasksel tasksel/first multiselect manual
+
+d-i	pkgsel/include	string pwgen \
+	openssh-server \
+	openssh-client \
+	molly-guard \
+	bash-completion
+
+# Skip creation of a root account (normal user account will be able to
+# use sudo). The default is false; preseed this to true if you want to set
+# a root password.
+d-i	passwd/root-login	boolean false
+# Root password, either in clear text
+# d-i	passwd/root-password	password
+# d-i	passwd/root-password-again	password
+
+##
+## Create a normal user with sudo capability
+##
+d-i	passwd/make-user	boolean true
+
+# To create a normal user account.
+d-i	passwd/user-fullname		string System User
+d-i	passwd/username			string system
+d-i	passwd/user-password		password Syst3m3!
+d-i	passwd/user-password-again	password Syst3m3!
+
+# Automatic reboot, no CD present => no problem.
+d-i	finish-install/reboot_in_progress note
