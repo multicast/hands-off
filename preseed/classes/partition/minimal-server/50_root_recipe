@@ -1,0 +1,10 @@
+512 2500 1024 $default_filesystem
+                $lvmok{ }
+                method{ format }
+                format{ }
+                use_filesystem{ }
+                $default_filesystem{ }
+                label{ / }
+                mountpoint{ / }
+                options/noatime{ noatime }
+.

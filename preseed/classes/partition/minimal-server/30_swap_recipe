@@ -1,0 +1,5 @@
+512 1024 2048 linux-swap
+                $lvmok{ }
+                method{ swap }
+                format{ }
+.

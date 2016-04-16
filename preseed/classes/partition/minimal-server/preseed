@@ -1,0 +1,13 @@
+# -*- conf -*-
+#
+# Copyright © 2013-2016 Daniel Dehennin <daniel.dehennin@baby-gnu.org>
+#
+# Distributed under the terms of the GNU GPL version 2 or (at your
+# option) any later version see the file "COPYING" for details
+#
+### Minimal server partitionning
+
+# Basic multi-partition recipe usable for small server.
+
+# Select auto-generated partman recipe
+d-i partman-auto/choose_recipe select autohandsoff

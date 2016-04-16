@@ -1,0 +1,11 @@
+768 1024 1024 $default_filesystem
+                $lvmok{ }
+                method{ format }
+                format{ }
+                use_filesystem{ }
+                $default_filesystem{ }
+                label{ /var }
+                mountpoint{ /var }
+                options/nodev{ nodev }
+                options/noatime{ noatime }
+.
