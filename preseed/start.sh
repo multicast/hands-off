@@ -29,68 +29,8 @@ Description: ${DESC}
 
 debconf-loadtemplate hands-off /tmp/HandsOff.templates
 
-cat > /tmp/HandsOff-fn.sh <<'!EOF!'
-# useful functions for preseeding
-in_class() {
-	echo ";$(debconf-get auto-install/classes);" | grep -q ";$1;"
-}
-classes() {
-	echo "$(debconf-get auto-install/classes)" | sed -e 's/;/\n/g'
-}
-checkflag() {
-	flagname=$1 ; shift
-	if db_get $flagname && [ "$RET" ]
-	then
-		for i in "$@"; do
-			echo ";$RET;" | grep -q ";$i;" && return 0
-		done
-	fi
-	return 1
-}
-pause() {
-	desc=$1 ; shift
-
-	db_register hands-off/meta/text hands-off/pause/title
-	db_subst hands-off/pause/title DESC "Conditional Debugging Pause"
-	db_settitle hands-off/pause/title
-
-	db_register hands-off/meta/text hands-off/pause
-	db_subst hands-off/pause DESCRIPTION "$desc"
-	db_input critical hands-off/pause
-	db_unregister hands-off/pause
-	db_unregister hands-off/pause/title
-	db_go
-}
-
-# db_set fails if the variable is not already registered -- this gets round that
-# this might need to check if the variable already exits
-db_really_set() {
-  var=$1 ; shift
-  val=$1 ; shift
-  seen=$1 ; shift
-
-  db_register debian-installer/dummy "$var"
-  db_set "$var" "$val"
-  db_subst "$var" ID "$var"
-  db_fset "$var" seen "$seen"
-}
-
-check_udeb_ver() {
-        # returns true if the udeb is at least Version: ver
-	udeb=$1 ; shift
-        ver=$1 ; shift
-
-        { echo $ver ;
-          sed -ne '/^Package: '${udeb}'$/,/^$/s/^Version: \(.*\)$/\1/p' /var/lib/dpkg/status ;
-        } | sort -t. -c 2>/dev/null
-}
-
-am_checksumming() {
-  [ -e /var/run/hands-off.checksumming ]
-}
-
-CHECKSUM_IF_AVAIL="$(sed -n 's/[  ]*\(-C\))$/\1/p' /bin/preseed_fetch)"
-!EOF!
+# Download HandsOff utilities
+preseed_fetch utils/HandsOff-fn.sh /tmp/HandsOff-fn.sh
 
 . /tmp/HandsOff-fn.sh
 
