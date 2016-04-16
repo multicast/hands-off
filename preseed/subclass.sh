@@ -29,7 +29,7 @@ if ! db_set auto-install/classes "$classes"; then
 fi
 
 # generate class preseed inclusion list
-[ "true" = "$use_local" ] && includelcl="local/preseed "
+use_local && includelcl="local/preseed "
 for cls in $(split_semi $classes) ; do
   preseedpath="/${cls}/preseed"
   if expr "$cls" : local/ >/dev/null; then
@@ -40,12 +40,12 @@ for cls in $(split_semi $classes) ; do
   else
     include="${include}classes${preseedpath} "
     if am_checksumming ; then
-      checsums="$checsums$(/bin/preseed_lookup_checksum classes$preseedpath) "
+      checksums="$checksums$(/bin/preseed_lookup_checksum classes$preseedpath) "
     fi
-    if [ "true" = "$use_local" ] ; then
+    if use_local ; then
       includelcl="${includelcl}local${preseedpath} "
       if am_checksumming ; then
-        checsums_lcl="$checsums_lcl $(/bin/preseed_lookup_checksum local$preseedpath)"
+        checksums_lcl="$checksums_lcl $(/bin/preseed_lookup_checksum local$preseedpath)"
       fi
     fi
   fi
@@ -54,5 +54,5 @@ done
 
 db_set preseed/include "$include$includelcl"
 if am_checksumming ; then
-   db_set preseed/include/checksum "$checsums$checsums_lcl"
+   db_set preseed/include/checksum "$checksums$checsums_lcl"
 fi
