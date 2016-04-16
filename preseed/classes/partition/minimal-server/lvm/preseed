@@ -1,0 +1,11 @@
+# -*- conf -*-
+#
+# Copyright © 2013-2016 Daniel Dehennin <daniel.dehennin@baby-gnu.org>
+#
+# Distributed under the terms of the GNU GPL version 2 or (at your
+# option) any later version see the file "COPYING" for details
+#
+### Minimal server partitionning using LVM
+
+# Use minimal server partitionning with LVM.
+# Only “/boot” is on primary partition.
