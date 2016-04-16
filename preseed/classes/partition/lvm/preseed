@@ -1,0 +1,15 @@
+# -*- conf -*-
+#
+# Copyright © 2013-2016 Daniel Dehennin <daniel.dehennin@baby-gnu.org>
+#
+# Distributed under the terms of the GNU GPL version 2 or (at your
+# option) any later version see the file "COPYING" for details
+#
+### Enable LVM on full disk
+
+# If the system has free space you can choose to only partition that space.
+d-i partman-auto/init_automatically_partition select some_device_lvm
+
+# In addition, you'll need to specify the method to use.
+# The presently available methods are: "regular", "lvm" and "crypto"
+d-i partman-auto/method string lvm
