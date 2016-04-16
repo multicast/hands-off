@@ -44,11 +44,14 @@ use_local=$(grep -q '^[[:space:]]*true\b' /tmp/local_enabled_flag && echo true |
 rm /tmp/local_enabled_flag
 echo $use_local > /var/run/hands-off.local
 
-use_local && local_start=local/start.sh
+if use_local && preseed_fetch local/start.sh /tmp/local_start.sh ; then
+  local_start=local/start.sh
+fi
+
 for i in $local_start subclass.sh $backcompat ; do
   run_scripts="$run_scripts $i"
   if am_checksumming ; then
-    run_checsums="$run_checsums $(/bin/preseed_lookup_checksum $i)"
+    run_checksums="$run_checksums $(/bin/preseed_lookup_checksum $i)"
   fi
 done
 db_set preseed/run $run_scripts
