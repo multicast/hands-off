@@ -60,6 +60,9 @@ db_really_set() {
 }
 
 # Tools
+shell_escape() {
+	echo $@ | sed 's/\([^-a-zA-Z0-9]\)/_/g'
+}
 check_udeb_ver() {
 	# returns true if the udeb is at least Version: ver
 	local udeb="${1}"
