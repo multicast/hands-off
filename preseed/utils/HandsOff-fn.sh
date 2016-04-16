@@ -98,25 +98,18 @@ subclasses() {
 	[ -n "${class}" ] || return 0
 
 	if expr "${class}" : local/ >/dev/null; then
-		preseed_fetch "/${class}/subclasses" \
-			      "/tmp/cls-${cl_a_ss}-local" \
+		preseed_fetch "/$class/subclasses" \
+			      "/tmp/cls-${cl_a_ss}" \
 		    || [ $? = 4 ]
 	else
 		preseed_fetch "/classes/${class}/subclasses" \
 			      "/tmp/cls-${cl_a_ss}" \
 		    || [ $? = 4 ]
-
-		if use_local; then
-			preseed_fetch "/local/${class}/subclasses" \
-			              "/tmp/cls-${cl_a_ss}-local" \
-			    || [ $? = 4 ]
-		fi
 	fi
-	for cls in "/tmp/cls-${cl_a_ss}" "/tmp/cls-${cl_a_ss}-local"; do
-		[ -s "${cls}" ] || continue
-		grep -v '^[[:space:]]*\(#\|$\)' "${cls}"
-		rm -f "${cls}"
-	done | join_semi
+	if [ -s "/tmp/cls-${cl_a_ss}" ]; then
+		grep -v '^[[:space:]]*\(#\|$\)' "/tmp/cls-${cl_a_ss}" | join_semi
+	fi
+	rm -f "/tmp/cls-${cl_a_ss}"
 }
 
 expandclasses() {
@@ -124,6 +117,13 @@ expandclasses() {
 	for c in $(split_semi "${1}") ; do
 		expandclasses $(subclasses "${c}")
 		echo "${c}"
+		if use_local \
+		    && ! expr "${c}" : local/ >/dev/null \
+		    && preseed_fetch "local/${c}/preseed" "/tmp/.test_fetch"
+		then
+			expandclasses $(subclasses "local/${c}")
+			echo "local/${c}"
+		fi
 	done
 }
 
@@ -188,25 +188,19 @@ safe_load_preseed() {
 load_classes() {
 	local classes="${1}"
 	local include
-	local includelcl
 	local cls
 	# generate class preseed inclusion list
 	for cls in $(split_semi "${classes}") ; do
 		checkflag dbg/pauses all classes \
 		    && pause "Load preseed “${cls}”"
 		include=''
-		includelcl=''
 		if expr "${cls}" : local/ >/dev/null; then
-			includelcl="/${cls}/preseed"
+			include="/${cls}/preseed"
 		else
 			include="classes/${cls}/preseed"
-			use_local && includelcl="local/${cls}/preseed"
 		fi
 		# ... and load them
 		[ -n "${include}" ] && load_preseed "${include}"
-		# Never failing if local classe is missing
-		# This permits to have spares local/ tree
-		[ -n "${includelcl}" ] && safe_load_preseed "${includelcl}"
 	done
 	# Do not fails after last test
 	return 0
