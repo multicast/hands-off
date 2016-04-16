@@ -1,0 +1,158 @@
+#!/bin/sh
+
+#------------------------------------------------------------------------
+# Generate partman recipe
+#
+# Copyright © 2013-2016 Daniel Dehennin <daniel.dehennin@baby-gnu.org>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+set -e
+
+. /tmp/HandsOff-fn.sh
+
+echo 'debug: Running... '
+
+TITLE='Partman recipe generator'
+
+checkflag dbg/pauses all partman-early partman early \
+    && pause 'Generation of autohandsoff partman recipe' "${TITLE}"
+checkflag dbg/flags all-x partman-early-x partman-x early-x && set -x
+
+##
+## Check number of non-installer disks
+## Select first if virtual/partition/use-first-disk
+## Go to manual partitionning otherwize
+##
+
+NON_INSTALLER_DISKS=''
+DISKS=$(list-devices disk)
+USB=$(list-devices maybe-usb-floppy)
+
+# Keep HD media safe
+HD_MEDIA=$(grep -E '/((hd-)?media|cdrom)' /proc/mounts | cut -d' ' -f1)
+
+for disk in $DISKS $USB
+do
+	# Skip installation media
+	# $HD_MEDIA can be a partition, so strip “$disk*” from it
+	[ -n "${HD_MEDIA}" -a -z "${HD_MEDIA##$disk*}" ] && continue
+
+	# Do not add space if NON_INSTALLER_DISKS is null
+	# It's important for $FIRST_DISK
+	NON_INSTALLER_DISKS="${NON_INSTALLER_DISKS:+${NON_INSTALLER_DISKS} }${disk}"
+done
+
+# Total number of non installer disks
+N_DISKS=$(wc -w <<EOF
+${NON_INSTALLER_DISKS}
+EOF
+)
+
+if [ ${N_DISKS} -lt 1 ]
+then
+	error 'No disk found, maybe missing firmware?'
+	handsoff_poweroff
+elif [ ${N_DISKS} -eq 1 ] || in_class 'virtual/partition/use-first-disk'
+then
+	[ ${N_DISKS} -eq 1 ] && MSG="single disk" || MSG="first disk"
+	# First non installation media disk
+	FIRST_DISK="${NON_INSTALLER_DISKS%% *}"
+	checkflag dbg/pauses all partman-early partman early \
+	    && pause "Automatic selection of ${MSG} “${FIRST_DISK}”" "${TITLE}"
+	db_really_set partman-auto/disk "${FIRST_DISK}" true
+	db_really_set grub-installer/only_debian 'false' true
+	db_really_set grub-installer/with_other_os 'false' true
+	db_really_set grub-installer/bootdev "${FIRST_DISK}" true
+elif [ ${N_DISKS} -gt 1 ]
+then
+	# More than one disk without “virtual/partition/use-first-disk”
+	# Filter “partition” based “auto” classes
+	# Turn all “auto” to ”manual”
+	# Fetch dependencies
+	subst_cls=$(classes | sed -ne '\,^partition/, s,auto,manual,gp' | join_semi)
+	if [ -n "${subst_cls}" ]
+	then
+		manual_cls=$(append_classes "${subst_cls}")
+		error "Multiple disks detected.
+Load manual classes:
+$(echo ${manual_cls} | sed 's,;,\n- ,g')" "${TITLE}"
+		load_classes "${manual_cls}"
+	else
+		error 'Multiple disks detected.
+Load manual class:
+- partition/manual-lvm' "${TITLE}"
+		load_classes 'partition/manual-lvm'
+	fi
+fi
+
+##
+## Do nothing more for non autohandsoff recipe
+##
+
+db_get partman-auto/choose_recipe
+RECIPE_CHOICE="${RET}"
+if [ "${RECIPE_CHOICE}" != 'autohandsoff' ]
+then
+	checkflag dbg/pauses all partman-early partman early \
+	    && pause "Nothing to do for recipe “${RECIPE_CHOICE}”" "${TITLE}"
+	exit 0
+fi
+
+##
+## Build autohandsoff recipe
+##
+
+RECIPE_PARTS=$(ls -1v ${RECIPES_DIR}/[0-9]*_recipe) || true
+if [ -z "${RECIPE_PARTS}" ] && ! in_class 'partition/manual'
+then
+	error 'No partition recipe defined, run in manual mode' "${TITLE}"
+	load_classes 'partition/manual'
+fi
+
+# Generate recipes per architectures
+for recipe_dir in /lib/partman/recipes*; do
+	checkflag dbg/pauses all partman-early partman early \
+	    && pause "Generate recipe in “${recipe_dir}/”" "${TITLE}"
+
+	RECIPE_DEST="${recipe_dir}/10autohandsoff"
+	RECIPE_ARCH=$(echo "${recipe_dir}" | sed 's,/lib/partman/recipes-\?,,')
+	if [ -n "${RECIPE_ARCH}" ]
+	then
+		ARCH_RECIPE_NAME="${RECIPE_ARCH}_recipe"
+		ARCH_RECIPE_FILE="${ARCH_RECIPES_DIR}/${ARCH_RECIPE_NAME}"
+	else
+		ARCH_RECIPE_FILE=''
+	fi
+
+	if [ -n "${ARCH_RECIPE_FILE}" -a ! -f "${ARCH_RECIPE_FILE}" ]
+	then
+		# Try to download default one
+		# Avoid cat error without arch recipe
+		silent_get_partman_recipe partition/base "${ARCH_RECIPE_NAME}" 'true' \
+		    || ARCH_RECIPE_FILE=''
+	fi
+
+	if [ -n "${ARCH_RECIPE_FILE}${RECIPE_PARTS}" ]
+	then
+		# Add header + arch recipe + numerically indexed recipes
+		echo 'partman-auto/text/autohandsoff_scheme ::' > "${RECIPE_DEST}" \
+		    && cat ${ARCH_RECIPE_FILE} ${RECIPE_PARTS} >> "${RECIPE_DEST}"
+	fi
+done
+
+checkflag dbg/pauses all partman-early partman early \
+    && pause 'End of partman recipe generation' "${TITLE}"
+
+echo 'debug: completed successfully.'

@@ -1,0 +1,134 @@
+Partman recipes management
+==========================
+
+For “partition/” classes users
+------------------------------
+
+If you want to create an installation class, for example
+“debian/minimal/server”, you need to add some sub-classes to your own:
+
+- choose between “partition/regular” or “partition/lvm” partman
+  methods
+- add “partition/auto” for a zero question installation
+- add the “partition/” layout you want, if none fits you needs, just
+  create your own (see below)
+
+Creating new “partition/” classes
+---------------------------------
+
+The “partition/base” class manage the debconf declaration and building
+of custom partman recipe named “autohandsoff”.
+
+The “autohandsoff” recipe is generated at “partman/early_command” by
+concatenating:
+
+- per architecture recipe part, if any, like creating a GPT EFI
+  partition on EFI systems, stored under
+  “/tmp/handsoff-partman/arches”
+
+- all recipe parts under “/tmp/handsoff-partman/recipes”, ending by
+  “_recipe”, sorted numerically
+
+It add a partman header and store the result as “autohandsoff” partman
+recipe, per architecture.
+
+To permit re-usability and overriding, we will use the following
+convention for recipes part numbering:
+
+- 10_lvm_pv_recipe: LVM physical volume. The recipe part provided by
+  class “partition/lvm” declare a physical volume with unlimited
+  maximum size
+
+- 30_swap_recipe
+
+- 40_boot_recipe
+
+- 50_root_recipe: the only one required
+
+- 60_usr_recipe
+
+- 61_usr_local_recipe
+
+- 62_usr_src_recipe
+
+- 63_usr_share_recipe
+
+- 70_var_recipe
+
+- 71_var_cache_recipe
+
+- 72_var_log_recipe
+
+- 73_var_lib_recipe
+
+- 100_home_recipe
+
+- 1000_keep_recipe: maximal size of unused partition/LV
+
+Recipe parts must be downloaded at “preseed/early_command” state to be
+used at “partman/early_command”.
+
+A “get_partman_recipe()” helper is provided by “/tmp/HandsOff-fn.sh”
+to download recipes, it take the following arguments:
+
+1. the class name of the recipe
+2. the recipe name to download
+
+For example, if you want to add a partition/LV to store mysql
+databases, this partition/LV using max size:
+
+1. define a new class “partition/mysql” with the recipe part
+   “74_var_lib_mysql_recipe”:
+
+     2048 10240 -1 ext4
+                     $lvmok{ }
+                     method{ format }
+                     format{ }
+                     use_filesystem{ }
+                     filesystem{ ext4 }
+                     label{ /var/lib/mysql }
+                     mountpoint{ /var/lib/mysql }
+                     options/noatime{ noatime }
+     .
+
+2. create “partition/mysql/early_script” calling:
+
+     get_partman_recipe "${class}" '74_var_lib_mysql_recipe'
+
+And you're done!
+
+Finally, you do not have to agree to the previous convention, in that
+case you just need to:
+
+1. create your own class
+2. add “partition/base” subclass to get the basic infrastructure
+3. create you own recipe part(s)
+4. create an “early_script” to download the recipe part(s)
+
+You must take care of interactions with all the “sub-classes” you use.
+
+Remember that order of class loading is important.
+
+Debugging
+---------
+
+If you want to debug or look at creation of partman recipe, you can
+add several debug flags to your boot command line:
+
+- “dbg/pauses=classes” to stop at the load of each class, useful to
+  verify the order in which classes are loaded
+
+- “dbg/pauses=partman” to stop at the execution of partman related
+  scripts during “preseed/early_command” or “partman/early_command”
+
+- “dbg/pauses=partman-early” to stop at the execution of each class
+  “partman-early_script”, like the “partition/base” script which
+  generate the “autohandsoff” recipe
+
+- “dbg/pauses=early” to stop at the execution of all classes
+  “early_script” during “pressed/early_command”
+
+- “dbg/pauses=late” to stop at the execution of all classes
+  “late_script” during “pressed/late_command”
+
+ -- Daniel Dehennin <daniel.dehennin@baby-gnu.org>, Wed, 13 Apr 2016 23:02:54 +0200
