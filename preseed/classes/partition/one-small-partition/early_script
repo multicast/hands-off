@@ -1,12 +1,19 @@
-# -*- conf -*-
-#
-# Copyright (c) 2005-2007 Hands.com Ltd
+#!/bin/sh
+
 # Copyright © 2013-2016 Daniel Dehennin <daniel.dehennin@baby-gnu.org>
 #
 # Distributed under the terms of the GNU GPL version 2 or (at your
 # option) any later version see the file "COPYING" for details
 #
-## Use one small partition
+# Environment variable: ${class}
 
-# Select auto-generated partman recipe
-d-i partman-auto/choose_recipe select autohandsoff
+set -e
+
+. /tmp/HandsOff-fn.sh
+
+echo "debug: Running..."
+
+checkflag dbg/flags all-x early-x && set -x
+
+# Get recipe part
+get_partman_recipe "${class}" "50_recipe"
