@@ -18,26 +18,8 @@ set -e
 # where that extra complication is actually required, lets just do this
 #
 
-db_get auto-install/classes && classes=$RET
-classes="$(expandclasses "$(subclasses "");$classes" | sieve | join_semi)"
+# Build command line classes dependencies
+cmd_line_cls="$(append_classes)"
 
-# now that we've worked out the class list, store it for later use
-# if no classes were previously defined, we'll have to register the question
-if ! db_set auto-install/classes "$classes"; then
-	db_register hands-off/meta/string auto-install/classes
-	db_set auto-install/classes "$classes"
-fi
-
-# generate class preseed inclusion list
-use_local && includelcl="local/preseed "
-for cls in $(split_semi $classes) ; do
-  if expr "$cls" : local/ >/dev/null; then
-    includelcl="$includelcl /${cls}/preseed"
-  else
-    include="${include}classes/${cls}/preseed "
-    use_local && includelcl="${includelcl}local/${cls}/preseed "
-  fi
-done
-# ... and get it included next
-
-db_set preseed/include "$include$includelcl"
+# Load all classes
+load_classes "${cmd_line_cls}"

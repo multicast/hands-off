@@ -133,3 +133,81 @@ sieve() {
 	echo "${x}"
 	sieve | grep -v "^${x}$"
 }
+
+append_classes() {
+	# Without argument:
+	# - get classes from debconf, probably set by command line
+	# - store all dependencies in debconf
+	# With semi-colon separated classes list as argument:
+	# - get only dependencies from argument
+	# - store merged new dependencies with previous in debconf
+	# Echo new dependencies classes:
+	# - without argument: debconf classes dependencies
+	# - with argument: classes list argument dependencies
+	local cls="${1}"
+	local new_classes
+	local old_classes
+	local merged_classes
+	if [ -z "${cls}" ]; then
+		# New classes to expand from debconf
+		new_classes=$(classes | join_semi)
+	else
+		# New classes to expand from argument
+		new_classes="${cls}"
+		# Keep old classes
+		old_classes=$(classes | join_semi)
+	fi
+	new_classes=$(expandclasses "${new_classes}" | sieve | join_semi)
+	merged_classes=$(split_semi "${old_classes};${new_classes}" | sieve | join_semi)
+
+	# Now that we've worked out the class list, store it for later
+	# use.
+	# If no classes were previously defined, we'll have to
+	# register the question
+	db_really_set auto-install/classes "${merged_classes}" "true"
+	# Output newly added classes
+	echo "${new_classes}"
+}
+
+load_preseed() {
+	local seed="${1}"
+	local checksum="${2}"
+	[ -n "${seed}" ] && preseed_location "${seed}" "${checksum}"
+}
+
+safe_load_preseed() {
+	# Never fail
+	local seed="${1}"
+	local checksum="${2}"
+	[ -n "${seed}" ] || return 0
+	preseed_fetch "${seed}" /tmp/.test_fetch \
+	    || { [ $? = 4 ] && return 0; }
+	preseed_location "${seed}" "${checksum}"
+}
+
+load_classes() {
+	local classes="${1}"
+	local include
+	local includelcl
+	local cls
+	# generate class preseed inclusion list
+	for cls in $(split_semi "${classes}") ; do
+		checkflag dbg/pauses all classes \
+		    && pause "Load preseed “${cls}”"
+		include=''
+		includelcl=''
+		if expr "${cls}" : local/ >/dev/null; then
+			includelcl="/${cls}/preseed"
+		else
+			include="classes/${cls}/preseed"
+			use_local && includelcl="local/${cls}/preseed"
+		fi
+		# ... and load them
+		[ -n "${include}" ] && load_preseed "${include}"
+		# Never failing if local classe is missing
+		# This permits to have spares local/ tree
+		[ -n "${includelcl}" ] && safe_load_preseed "${includelcl}"
+	done
+	# Do not fails after last test
+	return 0
+}
