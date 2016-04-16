@@ -1,0 +1,3 @@
+partition/regular
+partition/auto
+virtual/partition/use-first-disk
