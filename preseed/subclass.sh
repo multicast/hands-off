@@ -7,7 +7,6 @@
 #
 set -e
 
-. /usr/share/debconf/confmodule
 . /tmp/HandsOff-fn.sh
 
 # === recursive class subclass processing
@@ -18,51 +17,6 @@ set -e
 # depended on them, or at the end of the list, but until I see examples
 # where that extra complication is actually required, lets just do this
 #
-
-use_local=$([ -r /var/run/hands-off.local ] && cat /var/run/hands-off.local)
-
-split_semi() {
-  echo "$1" | sed -e 's/;/\n/g'
-}
-
-join_semi() {
-  tr '\n' ';' | sed -e 's/;$//'
-}
-
-subclasses() {
-   class=$1
-   cl_a_ss=$(echo ${class}|sed 's/\([^-a-zA-Z0-9]\)/_/g')
-   if expr "$class" : local/ >/dev/null; then
-     preseed_fetch $CHECKSUM_IF_AVAIL "/$class/subclasses" /tmp/cls-$cl_a_ss-local || [ $? = 4 ]
-   else
-     [ -n "$class" ] &&
-       preseed_fetch $CHECKSUM_IF_AVAIL "/classes/$class/subclasses" /tmp/cls-$cl_a_ss || [ $? = 4 ]
-
-     if [ "true" = "$use_local" ]; then
-       preseed_fetch $CHECKSUM_IF_AVAIL "/local/$class/subclasses" /tmp/cls-$cl_a_ss-local || [ $? = 4 ]
-     fi
-   fi
-   for cls in /tmp/cls-$cl_a_ss /tmp/cls-$cl_a_ss-local; do
-     [ -s "$cls" ] || continue
-     grep -v '^[[:space:]]*\(#\|$\)' $cls
-     rm -f $cls
-   done | join_semi
-}
-
-expandclasses() {
-  for c in $(split_semi $1) ; do
-    expandclasses $(subclasses $c)
-  done
-  for c in $(split_semi $1) ; do
-    echo $c
-  done
-}
-
-sieve() {
-  read x || return
-  echo $x
-  sieve | grep -v "^$x$"
-}
 
 db_get auto-install/classes && classes=$RET
 classes="$(expandclasses "$(subclasses "");$classes" | sieve | join_semi)"
