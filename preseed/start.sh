@@ -40,6 +40,13 @@ checkflag dbg/flags all-x start-x && set -x
 
 check_udeb_ver preseed-common 1.29 || backcompat=etch.sh
 
+# Make sure that auto-install/classes exists, even if it wasn't on the cmdline
+db_get auto-install/classes || {
+  db_register hands-off/meta/string auto-install/classes/title
+  db_register hands-off/meta/string auto-install/classes
+  db_subst auto-install/classes ID auto-install/classes
+}
+
 # Local classes can be set by the local_enabled_flag file
 # or by hands-off/local=(true|false) command line option
 preseed_fetch $CHECKSUM_IF_AVAIL local_enabled_flag /var/run/hands-off.local
@@ -61,13 +68,6 @@ db_set preseed/run $run_scripts
 if am_checksumming ; then
   db_set preseed/run/checksum $run_checksums
 fi
-
-# Make sure that auto-install/classes exists, even if it wasn't on the cmdline
-db_get auto-install/classes || {
-  db_register hands-off/meta/string auto-install/classes/title
-  db_register hands-off/meta/string auto-install/classes
-  db_subst auto-install/classes ID auto-install/classes
-}
 
 # kludge to deal with breakage in Jessie
 if [ -e /var/run/preseed_unspecified_at_boot ] &&
