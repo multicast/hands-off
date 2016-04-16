@@ -1,0 +1,5 @@
+1024 10000 -1 ext4
+                $defaultignore{ }
+                $primary{ }
+                method{ lvm }
+.
