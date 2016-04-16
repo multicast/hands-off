@@ -1,0 +1,16 @@
+# -*- conf -*-
+#
+# Copyright © 2013-2016 Daniel Dehennin <daniel.dehennin@baby-gnu.org>
+#
+# Distributed under the terms of the GNU GPL version 2 or (at your
+# option) any later version see the file "COPYING" for details
+#
+### Select and generate recipe
+
+### Partitioning
+# Select auto-generated partman recipe
+d-i partman-auto/choose_recipe select autohandsoff
+
+# This command is run immediately before the partitioner starts.
+#
+d-i partman/early_command string log-output -t partman_early sh /tmp/classes_scripts_runner partman-early 'Partman Early' 'early;partman'

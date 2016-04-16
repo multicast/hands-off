@@ -1,0 +1,6 @@
+64 64 64 free
+                $iflabel{ gpt }
+                $primary{ }
+                method{ efi }
+                format{ }
+.
