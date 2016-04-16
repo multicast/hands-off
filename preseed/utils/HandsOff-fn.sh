@@ -60,6 +60,9 @@ db_really_set() {
 }
 
 # Tools
+shell_escape() {
+	echo $@ | sed 's/\([^-a-zA-Z0-9]\)/_/g'
+}
 check_udeb_ver() {
 	# returns true if the udeb is at least Version: ver
 	local udeb="${1}"
@@ -69,4 +72,59 @@ check_udeb_ver() {
 	  sed -ne '/^Package: '${udeb}'$/,/^$/s/^Version: \(.*\)$/\1/p' \
 	      /var/lib/dpkg/status ;
 	} | sort -t. -c 2>/dev/null
+}
+
+# Manipulate classes
+use_local=$([ -r /var/run/hands-off.local ] && cat /var/run/hands-off.local) || true
+
+split_semi() {
+	echo "${1}" | sed 's/;/\n/g'
+}
+
+join_semi() {
+	tr '\n ' ';' | sed 's/^;\+// ; s/;\+$//; s/;;\+/;/g'
+}
+
+subclasses() {
+	local class="${1}"
+	local cl_a_ss=$(shell_escape "${class}")
+	[ -n "${class}" ] || return 0
+
+	if expr "${class}" : local/ >/dev/null; then
+		preseed_fetch "/${class}/subclasses" \
+			      "/tmp/cls-${cl_a_ss}-local" \
+		    || [ $? = 4 ]
+	else
+		preseed_fetch "/classes/${class}/subclasses" \
+			      "/tmp/cls-${cl_a_ss}" \
+		    || [ $? = 4 ]
+
+		if use_local; then
+			preseed_fetch "/local/${class}/subclasses" \
+			              "/tmp/cls-${cl_a_ss}-local" \
+			    || [ $? = 4 ]
+		fi
+	fi
+	for cls in "/tmp/cls-${cl_a_ss}" "/tmp/cls-${cl_a_ss}-local"; do
+		[ -s "${cls}" ] || continue
+		grep -v '^[[:space:]]*\(#\|$\)' "${cls}"
+		rm -f "${cls}"
+	done | join_semi
+}
+
+expandclasses() {
+	local c
+	for c in $(split_semi "${1}") ; do
+		expandclasses $(subclasses "${c}")
+	done
+	for c in $(split_semi "${1}") ; do
+		echo "${c}"
+	done
+}
+
+sieve() {
+	local x
+	read x || return
+	echo "${x}"
+	sieve | grep -v "^${x}$"
 }
