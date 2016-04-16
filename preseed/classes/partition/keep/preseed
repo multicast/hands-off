@@ -1,0 +1,13 @@
+# -*- conf -*-
+#
+# Copyright © 2013-2016 Daniel Dehennin <daniel.dehennin@baby-gnu.org>
+#
+# Distributed under the terms of the GNU GPL version 2 or (at your
+# option) any later version see the file "COPYING" for details
+#
+### Add a fallow partition or LV
+
+# The included recipe provide an unused empty partition or LV.
+#
+# If LVM is enabled, the fallow LVM is deleted at
+# “preseed/late_command”.
