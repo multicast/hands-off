@@ -83,7 +83,14 @@ CHECKSUM_IF_AVAIL="$(sed -n 's/[  ]*\(-C\))$/\1/p' /bin/preseed_fetch)"
 !EOF!
 
 # Manipulate classes
-use_local=$([ -r /var/run/hands-off.local ] && cat /var/run/hands-off.local) || true
+use_local() {
+	if [ -z "${handsoff_use_local}" ]
+	then
+		grep -qi '^true$' /var/run/hands-off.local > /dev/null 2>&1
+		handsoff_use_local=$?
+	fi
+	[ "${handsoff_use_local}" = 0 ]
+}
 
 split_semi() {
 	echo "${1}" | sed 's/;/\n/g'
