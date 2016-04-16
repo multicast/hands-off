@@ -277,3 +277,63 @@ load_classes() {
 	# Do not fails after last test
 	return 0
 }
+
+####
+#### Partman
+####
+## Variables
+HANDSOFF_PARTMAN_DIR='/tmp/handsoff-partman'
+RECIPES_DIR="${HANDSOFF_PARTMAN_DIR}/recipes"
+ARCH_RECIPES_DIR="${HANDSOFF_PARTMAN_DIR}/arches"
+[ -d "${RECIPES_DIR}" ] || mkdir -p "${RECIPES_DIR}" "${ARCH_RECIPES_DIR}"
+
+## helpers
+
+# Download recipe part
+# Only use return code
+silent_get_partman_recipe() {
+	local cls="${1}"
+	local recipe="${2}"
+	local arch="${3}"
+	local title='Partman recipe download'
+	local destdir
+
+	if [ -z "${cls}" -o -z "${recipe}" ]
+	then
+		failed_partman_recipe_poweroff "${cls}" "${recipe}"
+	fi
+	if [ "${arch}" = 'true' ]
+	then
+		arch="arch "
+		destdir="${ARCH_RECIPES_DIR}"
+	else
+		destdir="${RECIPES_DIR}"
+	fi
+	checkflag dbg/pauses all partman \
+	    && pause "Download ${arch}recipe part “${cls}/${recipe}”" \
+		     "$title"
+	if expr "${cls}" : local/
+	then
+		preseed_fetch "${cls}/${recipe}" "${destdir}/${recipe}"
+	else
+		preseed_fetch "classes/${cls}/${recipe}" "${destdir}/${recipe}"
+	fi
+}
+
+# Ask user to continue or poweroff
+failed_partman_recipe_poweroff() {
+	local cls="${1}"
+	local recipe="${2}"
+	error "Failed download of “${cls}/${recipe}”" 'Partman recipe download error'
+	bool 'If you continue, the system may not work as expected!
+
+Do you want to poweroff the system?' 'Abort and poweroff?' \
+	    && handsoff_poweroff \
+	    || true # never fail if user want to continue
+}
+
+# Download recipe part or ask to poweroff on error
+get_partman_recipe() {
+	silent_get_partman_recipe "${@}" \
+	    || failed_partman_recipe_poweroff "${@}"
+}
