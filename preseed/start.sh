@@ -69,6 +69,43 @@ if am_checksumming ; then
   db_set preseed/run/checksum $run_checksums
 fi
 
+# Configure /etc/nsswitch.conf to make “hostname -d” working
+echo -e "\nhosts: dns files" >> /etc/nsswitch.conf
+
+# Hostname/DNS domain are set from
+# 1) DHCP
+# 2) netcfg/get_hostname
+if HOSTNAME=$(hostname) && [ "${HOSTNAME}" != '(none)' ] ; then
+    preseed_fetch "classes/$HOSTNAME/preseed" /tmp/.test_fetch \
+        && hostname_cls="$HOSTNAME"
+
+    use_local \
+	&& preseed_fetch "local/$HOSTNAME/preseed" /tmp/.test_fetch \
+        && hostname_cls="${hostname_cls};local/$HOSTNAME"
+fi
+
+if DNS_DOMAIN=$(hostname -d 2> /dev/null); then
+    preseed_fetch "classes/$DNS_DOMAIN/preseed" /tmp/.test_fetch \
+        && domain_cls="$DNS_DOMAIN"
+
+    use_local \
+	&& preseed_fetch "local/$DNS_DOMAIN/preseed" /tmp/.test_fetch \
+        && domain_cls="${domain_cls};local/$DNS_DOMAIN"
+fi
+
+if [ -n "${DNS_DOMAIN}" -a -n "${HOSTNAME}" ]; then
+    preseed_fetch "classes/$DNS_DOMAIN/$HOSTNAME/preseed" /tmp/.test_fetch \
+        && fqdn="$DNS_DOMAIN/$HOSTNAME"
+
+    use_local \
+	&& preseed_fetch "local/$DNS_DOMAIN/$HOSTNAME/preseed" /tmp/.test_fetch \
+        && fqdn="${fqdn};local/$DNS_DOMAIN/$HOSTNAME"
+fi
+
+if [ -n "${domain_cls}" -o -n "${hostname_cls}" -o -n "${fqdn}" ]; then
+    append_classes "${domain_cls};${hostname_cls};${fqdn}"
+fi
+
 # kludge to deal with breakage in Jessie
 if [ -e /var/run/preseed_unspecified_at_boot ] &&
    grep -q '{ db_get preseed/url  || \[ -z "$RET" \]; } &&' /lib/debian-installer-startup.d/S60auto-install
