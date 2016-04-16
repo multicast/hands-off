@@ -1,0 +1,13 @@
+# -*- conf -*-
+### Localization
+# Locale sets language and country.
+# critical
+d-i	debian-installer/locale			string fr_FR.UTF-8
+
+# The values can also be preseeded individually for greater flexibility.
+d-i	debian-installer/language		string fr
+d-i	debian-installer/country		string FR
+
+# Disable automatic (interactive) keymap detection.
+d-i	console-setup/ask_detect		boolean	false
+d-i	keyboard-configuration/xkb-keymap	select	fr(oss)
