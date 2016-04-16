@@ -31,19 +31,80 @@ checkflag() {
 	fi
 	return 1
 }
+handsoff_box() {
+	local type="${1}"
+	local title="${2}"
+	local desc="${3}"
+	local user_value
+	if [ -z "${type}" ]; then
+		type='pause'
+	fi
+	if [ -z "${title}" ]; then
+		title='Conditional Debugging Pause'
+	fi
+	if [ -z "${desc}" ]; then
+		desc='Dummy description message'
+	fi
+
+	## Register dialogue box
+	# Title
+	db_register "hands-off/meta/${type}" "hands-off/${type}/title"
+	db_subst "hands-off/${type}/title" DESC "${title}"
+	db_settitle "hands-off/${type}/title"
+	# Description
+	db_register "hands-off/meta/${type}" "hands-off/${type}"
+	db_subst "hands-off/${type}" DESCRIPTION "${desc}"
+	db_input critical "hands-off/${type}"
+
+	# Display dialog box
+	db_go
+
+	# Get user input
+	db_get "hands-off/${type}"
+	user_value="${RET}"
+
+	# Clean
+	db_reset "hands-off/${type}"
+	db_unregister "hands-off/${type}"
+	db_unregister "hands-off/${type}/title"
+
+	# Set return value
+	RET="${user_value}"
+}
 pause() {
 	local desc="${1}"
-
-	db_register hands-off/meta/text hands-off/pause/title
-	db_subst hands-off/pause/title DESC "Conditional Debugging Pause"
-	db_settitle hands-off/pause/title
-
-	db_register hands-off/meta/text hands-off/pause
-	db_subst hands-off/pause DESCRIPTION "${desc}"
-	db_input critical hands-off/pause
-	db_unregister hands-off/pause
-	db_unregister hands-off/pause/title
-	db_go
+	local title="${2}"
+	if [ -z "${title}" ]; then
+		title='Conditional Debugging Pause'
+	fi
+	handsoff_box 'pause' "${title}" "${desc}"
+}
+error() {
+	local desc="${1}"
+	local title="${2}"
+	if [ -z "${title}" ]; then
+		title='Conditional Error'
+	fi
+	handsoff_box 'error' "${title}" "${desc}"
+}
+bool() {
+	local desc="${1}"
+	local title="${2}"
+	if [ -z "${title}" ]; then
+		title='Conditional Boolean'
+	fi
+	handsoff_box 'boolean' "${title}" "${desc}"
+	[ "${RET}" = "true" ]
+}
+string() {
+	local desc="${1}"
+	local title="${2}"
+	if [ -z "${title}" ]; then
+		title='Conditional String'
+	fi
+	handsoff_box 'string' "${title}" "${desc}"
+	# Output value to user
+	echo "${RET}"
 }
 
 # db_set fails if the variable is not already registered -- this gets round that
@@ -198,7 +259,7 @@ load_classes() {
 			continue
 		fi
 		checkflag dbg/pauses all classes \
-		    && pause "Load preseed “${cls}”"
+		    && pause "Load preseed “${cls}”" 'Class loading'
 		include=''
 		if expr "${cls}" : local/ >/dev/null; then
 			include="/${cls}/preseed"
