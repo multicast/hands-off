@@ -1,0 +1,5 @@
+# Use DHCP
+net/dhcp
+# Use multi partition over LVM
+partition/multi
+partition/lvm
