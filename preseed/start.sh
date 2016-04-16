@@ -2,6 +2,7 @@
 # start.sh preseed from http://hands.com/d-i/.../start.sh
 #
 # Copyright (c) 2005-2006 Hands.com Ltd
+# Copyright © 2012-2016 Daniel Dehennin <daniel.dehennin@baby-gnu.org>
 # distributed under the terms of the GNU GPL version 2 or (at your option) any later version
 # see the file "COPYING" for details
 #
