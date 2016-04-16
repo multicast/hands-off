@@ -1,0 +1,9 @@
+# -*- conf -*-
+
+### Apt setup
+d-i apt-setup/universe boolean true
+d-i apt-setup/multiverse boolean true
+d-i apt-setup/restricted boolean false
+
+# Minimal installation
+tasksel tasksel/first multiselect ubuntu-minimal
