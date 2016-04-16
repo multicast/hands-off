@@ -19,5 +19,6 @@ if classes | grep -q "${virtual}"; then
     # Only the last one
     preseed_interface=$(classes | sed -ne "\,${virtual}, s,^${virtual},,p" | tail -n 1)
     debconf-set 'netcfg/choose_interface' "${preseed_interface}"
-    checkflag dbg/pauses all net && pause "Interface forced on “${preseed_interface}”"
+    checkflag dbg/pauses all net \
+        && pause "Interface forced on “${preseed_interface}”" 'Network interface'
 fi
