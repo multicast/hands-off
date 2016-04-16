@@ -1,0 +1,11 @@
+512 512 512 $default_filesystem
+                $lvmok{ }
+                method{ format }
+                format{ }
+                use_filesystem{ }
+                $default_filesystem{ }
+                label{ /home }
+                mountpoint{ /home }
+                options/nodev{ nodev }
+                options/noatime{ noatime }
+.

@@ -1,0 +1,12 @@
+64 128 256 $default_filesystem
+                $primary{ }
+                $bootable{ }
+                method{ format }
+                format{ }
+                use_filesystem{ }
+                $default_filesystem{ }
+                label{ /boot }
+                mountpoint{ /boot }
+                options/nodev{ nodev }
+                options/noatime{ noatime }
+.
