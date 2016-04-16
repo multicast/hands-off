@@ -17,6 +17,11 @@ Type: text
 Description: ${DESC}
  ${DESCRIPTION}
 
+Template: hands-off/meta/pause
+Type: note
+Description: ${DESC}
+ ${DESCRIPTION}
+
 Template: hands-off/meta/string
 Type: string
 Description: ${DESC}
@@ -24,6 +29,11 @@ Description: ${DESC}
 
 Template: hands-off/meta/boolean
 Type: boolean
+Description: ${DESC}
+ ${DESCRIPTION}
+
+Template: hands-off/meta/error
+Type: error
 Description: ${DESC}
  ${DESCRIPTION}
 !EOF!
@@ -35,7 +45,7 @@ preseed_fetch utils/HandsOff-fn.sh /tmp/HandsOff-fn.sh
 
 . /tmp/HandsOff-fn.sh
 
-checkflag dbg/pauses all start && pause "Top Level start.sh script"
+checkflag dbg/pauses all start && pause "Top Level start.sh script" 'Start'
 checkflag dbg/flags all-x start-x && set -x
 
 check_udeb_ver preseed-common 1.29 || backcompat=etch.sh
