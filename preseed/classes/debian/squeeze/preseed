@@ -1,60 +1,9 @@
-# Starting point for autometic preseed installs
+# -*- conf -*-
 #
-# Copyright (c) 2005-2006 Hands.com Ltd
-# distributed under the terms of the GNU GPL version 2 or (at your option) any later version
-# see the file "COPYING" for details
-#
+# Installation suite
+d-i mirror/suite string squeeze
 
-# here we put stuff that we often expect to override
-# these should perhaps be applied automatically by d-i when auto-install/enabled is set
-d-i     debian-installer/locale         string en_US
-d-i	console-keymaps-at/keymap	select us
-# you might want these to keep lenny/sarge happy:
-#d-i     debian-installer/country        string US
-#d-i     debian-installer/language       string en
-
-d-i	mirror/country			string manual
-d-i	mirror/http/hostname		string ftp.debian.org
-d-i	mirror/http/directory		string /debian
-base-config	apt-setup/hostname	string ftp.debian.org
-base-config	apt-setup/directory	string /debian
-
-# some basic configs, may be overridden by other files
-#d-i	mirror/suite			string stable
-#d-i	mirror/http/proxy		string
-#d-i	partman-auto/disk		string /dev/hda
-d-i partman-auto/choose_recipe select multi
-d-i	partman-auto/method		string lvm
-d-i	partman/confirm_write_new_label boolean true
-d-i	partman-lvm/confirm		boolean true
-d-i	partman-lvm/device_remove_lvm	boolean true
-d-i	partman-md/device_remove_md	boolean true
-d-i	partman/choose_partition	select finish
-d-i	partman/confirm			boolean true
-d-i	grub-installer/only_debian	boolean true
-d-i	finish-install/reboot_in_progress	note
-
-d-i partman-md/device_remove_md	boolean true
-d-i partman-partitioning/confirm_write_new_label	boolean true
-d-i partman/confirm_nooverwrite	boolean true
-d-i partman-lvm/confirm_nooverwrite	boolean true
-d-i popularity-contest/participate boolean false
-
-base-config	base-config/intro	note 
-base-config	base-config/login	note 
-base-config	tzconfig/gmt		boolean true
-passwd		passwd/make-user	boolean false
-passwd		passwd/root-password-crypted	string !ERASEME!
-base-config	apt-setup/uri_type	select http
-base-config	apt-setup/country	select enter information manually
-base-config	apt-setup/another	boolean false
-base-config	apt-setup/security-updates	boolean true
-tasksel		tasksel/first		multiselect
-
-ssh	ssh/protocol2_only	boolean true
-ssh	ssh/run_sshd		boolean true
-ssh	ssh/SUID_client		boolean false
-
-# Joey says: For some reason this question is asked on hppa and a few other
-# archs (due to serial console install?)
-console-data console-data/keymap/policy select Don't touch keymap
+# Any hostname and domain names assigned from dhcp take precedence over
+# values set here. However, setting the values still prevents the questions
+# from being shown, even if values come from dhcp.
+d-i netcfg/get_hostname string squeeze

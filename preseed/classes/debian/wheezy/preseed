@@ -1,9 +1,10 @@
 # -*- conf -*-
 #
 # Installation suite
-d-i mirror/suite string lenny
+d-i mirror/suite string wheezy
 
 # Any hostname and domain names assigned from dhcp take precedence over
 # values set here. However, setting the values still prevents the questions
 # from being shown, even if values come from dhcp.
-d-i netcfg/get_hostname string lenny
+d-i netcfg/get_hostname string wheezy
+
