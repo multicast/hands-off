@@ -1,2 +1,21 @@
-# override jenkins.debian.net setting of the proxy (for pb10 & the testvm)
+# A stripped version of:  d-i-preseed-cfgs/debian_jessie_gnome_preseed.cfg
+# from ssh://git.debian.org/git/qa/jenkins.debian.net.git 
+# with the bits that are done already by start.cfg removed
+# (probably could do more FIXME)
+
+d-i netcfg/choose_interface select auto
+d-i netcfg/get_hostname string unassigned-hostname
+d-i netcfg/get_domain string unassigned-domain
+d-i netcfg/wireless_wep string
+d-i mirror/http/hostname string ftp.de.debian.org
 d-i mirror/http/proxy string http://10.2.1.1:3128/
+d-i passwd/root-password password r00tme
+d-i passwd/root-password-again password r00tme
+d-i passwd/user-fullname string Jenkins Testuser
+d-i passwd/username string jenkins
+d-i passwd/user-password password insecure
+d-i passwd/user-password-again password insecure
+d-i time/zone string US/Eastern
+#tasksel tasksel/first multiselect standard, desktop
+d-i grub-installer/bootdev  string /dev/sda
+d-i debian-installer/exit/poweroff boolean true
