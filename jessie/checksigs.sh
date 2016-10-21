@@ -11,17 +11,21 @@ set -e
 
 set -x
 
-# Should be adding a checksum from a signed checksum file here
-for f in MD5SUMS.asc trustedkeys.gpg ; do
-	preseed_fetch $f /tmp/$f
-done
-sums=/tmp/MD5SUMS.asc
-keys=/tmp/trustedkeys.gpg
+db_get hands-off/checksigs && checksigs="$RET"
 
-# FIXME: we need some way to bootstrap this trust, since anyone could add their key to this downloaded file
-gpgv --keyring $keys $sums
+if [ "true" = "$checksigs" ] ; then
+	# Should be adding a checksum from a signed checksum file here
+	for f in MD5SUMS.asc trustedkeys.gpg ; do
+		preseed_fetch $f /tmp/$f
+	done
+	sums=/tmp/MD5SUMS.asc
+	keys=/tmp/trustedkeys.gpg
 
-mv $keys /var/lib/preseed/checksums-md5sum
+	# FIXME: we need some way to bootstrap this trust, since anyone could add their key to this downloaded file
+	gpgv --keyring $keys $sums
 
+	mv $keys /var/lib/preseed/checksums-md5sum
+
+	db_set preseed/include/checksum $(sed -ne '/ \.[/]start.cfg$/s/ .*//p' $sums)
+fi
 db_set preseed/include start.cfg
-#db_set preseed/include/checksum $(sed -ne '/ \.[/]start.cfg$/s/ .*//p' $sums)
