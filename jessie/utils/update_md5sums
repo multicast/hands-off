@@ -1,0 +1,6 @@
+#!/bin/sh
+
+find ./ -name MD5SUMS\* -prune -o \( -type f -print0 \) | \
+  xargs -0 md5sum > MD5SUMS
+
+gpg --clearsign --personal-digest-preferences SHA256 MD5SUMS
