@@ -21,8 +21,6 @@ if [ "true" = "$checksigs" ] ; then
 	sums=/tmp/MD5SUMS.asc
 	keys=/tmp/trustedkeys.gpg
 
-	# FIXME: this is trying to generate entropy, which gpgv uses for some reason -- it's a pathetic kludge
-	ping 10.2.1.1 > /dev/null &
 	# FIXME: we need some way to bootstrap this trust, since anyone could add their key to this downloaded file
 	gpgv --keyring $keys $sums
 
