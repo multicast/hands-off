@@ -21,6 +21,8 @@ if [ "true" = "$checksigs" ] ; then
 	sums=/tmp/MD5SUMS.asc
 	keys=/tmp/trustedkeys.gpg
 
+	# let's see if this gets us past the gpgv call below
+	modprobe rng-core
 	# FIXME: we need some way to bootstrap this trust, since anyone could add their key to this downloaded file
 	gpgv --keyring $keys $sums
 
