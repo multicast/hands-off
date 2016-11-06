@@ -36,7 +36,7 @@ if [ "true" = "$checksigs" ] ; then
 		# if the lookup script is missing, add our own
 		cat > $lookup <<-!EOF!
 			#!/bin/sh -e
-			grep " \$1$" $sums | cut -d\  -f1
+			grep " \${1#/}$" $sums | cut -d\  -f1
 			!EOF!
 		chmod +x $lookup
 	fi
