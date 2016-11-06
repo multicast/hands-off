@@ -1,4 +1,8 @@
-#!/bin/sh
+#!/bin/sh -e
+
+# first update the checksum in preseed.cfg
+checksigs_MD5=$(md5sum checksigs.sh|cut -d\  -f1)
+sed -i '\#preseed/run/checksum#s#\(string[[:space:]]\+\)[[:alnum:]]\+$#\1'"${checksigs_MD5}"'#' preseed.cfg
 
 find ./ -name MD5SUMS\* -prune -o \( -type f -print0 \) | \
   sed -z -e 's#^\./##' | \
