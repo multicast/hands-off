@@ -25,7 +25,7 @@ if [ "true" = "$checksigs" ] ; then
 	keys=/tmp/trustedkeys.gpg
 
 	# let's see if this gets us past the gpgv call below (which eats entropy) -- this is a pathetic kludge, but seems to do the trick
-	ping -c 100 $(ip route | sed -n '/^default via \([.0-9]*\) .*$/\1/p') > /dev/null &
+	ping -c 100 $(ip route | sed -n 's/^default via \([.0-9]*\) .*$/\1/p') > /dev/null &
 
 	# FIXME: we need some way to bootstrap this trust, since anyone could add their key to this downloaded file
 	gpgv --keyring $keys $tmp_sums || exit 1
