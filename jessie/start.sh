@@ -93,7 +93,7 @@ checkflag dbg/pauses all start && pause "Top Level start.sh script"
 check_udeb_ver preseed-common 1.29 || backcompat=etch.sh
 
 preseed_fetch local_enabled_flag /tmp/local_enabled_flag
-use_local=$(grep -v '^[[:space:]]*\(#\|$\)' /tmp/local_enabled_flag || true)
+use_local=$(grep -q '^[[:space:]]*true\b' /tmp/local_enabled_flag && echo true)
 rm /tmp/local_enabled_flag
 echo $use_local > /var/run/hands-off.local
 if [ "true" = "$use_local" ]
