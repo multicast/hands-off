@@ -96,12 +96,13 @@ preseed_fetch local_enabled_flag /tmp/local_enabled_flag
 use_local=$(grep -q '^[[:space:]]*true\b' /tmp/local_enabled_flag && echo true)
 rm /tmp/local_enabled_flag
 echo $use_local > /var/run/hands-off.local
-if [ "true" = "$use_local" ]
-then
-  db_set preseed/run local/start.sh subclass.sh $backcompat
-else
-  db_set preseed/run subclass.sh $backcompat
-fi
+
+for i in ${use_local:+local/start.sh} subclass.sh $backcompat ; do
+  run_scripts="$run_scripts $i"
+  run_checsums="$run_checsums $(/bin/preseed_lookup_checksum $i)"
+done
+db_set preseed/run $run_scripts
+db_set preseed/run/checksums $run_checksums
 
 # Make sure that auto-install/classes exists, even if it wasn't on the cmdline
 db_get auto-install/classes || {
