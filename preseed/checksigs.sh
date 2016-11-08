@@ -42,6 +42,6 @@ if grep -q -- '^[[:space:]]*-C)$' /bin/preseed_fetch && [ "false" != "$checksigs
 		chmod +x $lookup
 	fi
 
-	db_set preseed/include/checksum $($lookup start.cfg)
+	db_set preseed/run/checksum $($lookup start.sh)
 fi
-db_set preseed/include start.cfg
+db_set preseed/run start.sh
