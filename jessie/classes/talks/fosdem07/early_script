@@ -158,7 +158,7 @@ db_unregister hands-off/pause/title
 
 sed -i 's/Sans 18/Sans 11/' /etc/gtk-2.0/gtkrc
 
-preseed_fetch /classes/fosdem07/base-installer /usr/lib/base-installer.d/00fosdem
+preseed_fetch $CHECKSUM_IF_AVAIL /classes/fosdem07/base-installer /usr/lib/base-installer.d/00fosdem
 chmod a+x /usr/lib/base-installer.d/00fosdem
 
 exit 0

@@ -84,6 +84,8 @@ check_udeb_ver() {
           sed -ne '/^Package: '${udeb}'$/,/^$/s/^Version: \(.*\)$/\1/p' /var/lib/dpkg/status ;
         } | sort -t. -c 2>/dev/null
 }
+
+CHECKSUM_IF_AVAIL="$(sed -n 's/[  ]*\(-C\))$/\1/p' /bin/preseed_fetch)"
 !EOF!
 
 . /tmp/HandsOff-fn.sh
@@ -92,7 +94,7 @@ checkflag dbg/pauses all start && pause "Top Level start.sh script"
 
 check_udeb_ver preseed-common 1.29 || backcompat=etch.sh
 
-preseed_fetch local_enabled_flag /tmp/local_enabled_flag
+preseed_fetch $CHECKSUM_IF_AVAIL local_enabled_flag /tmp/local_enabled_flag
 use_local=$(grep -q '^[[:space:]]*true\b' /tmp/local_enabled_flag && echo true || true)
 rm /tmp/local_enabled_flag
 echo $use_local > /var/run/hands-off.local

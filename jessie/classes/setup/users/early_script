@@ -12,7 +12,7 @@ echo "debug: Running..."
 
 # get all the classes users, and use the one that's left at the end
 for class in default $(classes); do
-  preseed_fetch "/local/users/$class" /tmp/setup-users.users.tmp &&
+  preseed_fetch $CHECKSUM_IF_AVAIL "/local/users/$class" /tmp/setup-users.users.tmp &&
     mv /tmp/setup-users.users.tmp /tmp/setup-users.users
 done
 

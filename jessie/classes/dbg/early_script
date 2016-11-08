@@ -16,8 +16,8 @@
 . /usr/share/debconf/confmodule
 . /tmp/HandsOff-fn.sh
 
-preseed_fetch /classes/dbg/files/HandsOff-dbg-fn.sh /tmp/HandsOff-dbg-fn.sh
-preseed_fetch /classes/dbg/files/debug_lvm /tmp/debug_lvm
+preseed_fetch $CHECKSUM_IF_AVAIL /classes/dbg/files/HandsOff-dbg-fn.sh /tmp/HandsOff-dbg-fn.sh
+preseed_fetch $CHECKSUM_IF_AVAIL /classes/dbg/files/debug_lvm /tmp/debug_lvm
 chmod +x /tmp/debug_lvm
 
 # drop this in the background so that it can wait for files to edit

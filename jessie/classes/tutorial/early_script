@@ -17,7 +17,7 @@ set_slide() {
 }
 
 db_get debconf/language && lang="$RET"
-preseed_fetch "classes/tutorial/slides.$lang.txt" /tmp/slides.txt || preseed_fetch classes/tutorial/slides.txt /tmp/slides.txt
+preseed_fetch $CHECKSUM_IF_AVAIL "classes/tutorial/slides.$lang.txt" /tmp/slides.txt || preseed_fetch $CHECKSUM_IF_AVAIL classes/tutorial/slides.txt /tmp/slides.txt
 
 SLIDE=1
 

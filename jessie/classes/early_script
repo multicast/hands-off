@@ -41,7 +41,7 @@ for class in $(classes); do
 
   CLASS_EARLY_URL="/classes/${class}/early_script"
   cl_a_ss=$(echo ${class}|sed 's/\([^-a-zA-Z0-9]\)/_/g')
-  preseed_fetch ${CLASS_EARLY_URL} /tmp/early_script-${cl_a_ss} || \
+  preseed_fetch $CHECKSUM_IF_AVAIL ${CLASS_EARLY_URL} /tmp/early_script-${cl_a_ss} || \
     echo "warning: .../${CLASS_EARLY_URL} not found"
 
   if [ -e /tmp/early_script-${cl_a_ss} ] ; then

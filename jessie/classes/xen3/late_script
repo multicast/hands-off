@@ -36,14 +36,14 @@ apt-install linux-image-2.6-xen-$LINARCH
 
 # make a directory for disk image files, and make image (see files/cobble-initrd)
 mkdir /target/home/xen-disks
-preseed_fetch /classes/xen3/files/cobble-initrd  /target/home/xen-disks/cobble-initrd
-preseed_fetch /classes/xen3/files/initrd.gz  /target/home/xen-disks/orig-netinst-initrd.gz
+preseed_fetch $CHECKSUM_IF_AVAIL /classes/xen3/files/cobble-initrd /target/home/xen-disks/cobble-initrd
+preseed_fetch $CHECKSUM_IF_AVAIL /classes/xen3/files/initrd.gz /target/home/xen-disks/orig-netinst-initrd.gz
 in-target sh /home/xen-disks/cobble-initrd /home/xen-disks/orig-netinst-initrd.gz /home/xen-disks/xen-netinst-initrd.gz
 
 # set up config files
-preseed_fetch /classes/xen3/files/xend-config.sxp  /target/etc/xen/xend-config.sxp
-preseed_fetch /classes/xen3/files/xm-debinst1  /target/etc/xen/xm-debinst1
-preseed_fetch /classes/xen3/files/xm-debinst1-install  /target/etc/xen/xm-debinst1-install
+preseed_fetch $CHECKSUM_IF_AVAIL /classes/xen3/files/xend-config.sxp /target/etc/xen/xend-config.sxp
+preseed_fetch $CHECKSUM_IF_AVAIL /classes/xen3/files/xm-debinst1 /target/etc/xen/xm-debinst1
+preseed_fetch $CHECKSUM_IF_AVAIL /classes/xen3/files/xm-debinst1-install /target/etc/xen/xm-debinst1-install
 
 in-target sed -i "s#XEN_VMLINUZ#$(echo /boot/vmlinuz-*xen*)#" /etc/xen/xm-debinst1-install
 in-target sed -i "s#XEN_VMLINUZ#$(echo /boot/vmlinuz-*xen*)#;s#XEN_INITRD#$(echo /boot/initrd.img-*xen*)#" /etc/xen/xm-debinst1
