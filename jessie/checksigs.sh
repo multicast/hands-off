@@ -14,6 +14,7 @@ set -x
 db_get hands-off/checksigs && checksigs="$RET"
 
 if grep -q -- '^[[:space:]]*-C)$' /bin/preseed_fetch && [ "false" != "$checksigs" ] ; then
+	touch /var/run/hands-off.checksumming
 	sums=/var/lib/preseed/checksums-md5sum
 	lookup=/bin/preseed_lookup_checksum
 

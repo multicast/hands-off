@@ -80,17 +80,17 @@ for cls in $(split_semi $classes) ; do
   preseedpath="/${cls}/preseed"
   if expr "$cls" : local/ >/dev/null; then
     includelcl="$includelcl $preseedpath"
-    checsums_lcl="$checsums_lcl $(/bin/preseed_lookup_checksum $preseedpath)"
+    am_checksumming && checsums_lcl="$checsums_lcl $(/bin/preseed_lookup_checksum $preseedpath)"
   else
     include="${include}classes${preseedpath} "
-    checsums="$checsums$(/bin/preseed_lookup_checksum classes$preseedpath) "
+    am_checksumming && checsums="$checsums$(/bin/preseed_lookup_checksum classes$preseedpath) "
     if [ "true" = "$use_local" ] ; then
       includelcl="${includelcl}local${preseedpath} "
-      checsums_lcl="$checsums_lcl $(/bin/preseed_lookup_checksum local$preseedpath)"
+      am_checksumming && checsums_lcl="$checsums_lcl $(/bin/preseed_lookup_checksum local$preseedpath)"
     fi
   fi
 done
 # ... and get it included next
 
 db_set preseed/include "$include$includelcl"
-db_set preseed/include/checksum "$checsums$checsums_lcl"
+am_checksumming && db_set preseed/include/checksum "$checsums$checsums_lcl"
