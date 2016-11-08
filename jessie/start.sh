@@ -105,10 +105,14 @@ echo $use_local > /var/run/hands-off.local
 
 for i in ${use_local:+local/start.sh} subclass.sh $backcompat ; do
   run_scripts="$run_scripts $i"
-  am_checksumming && run_checsums="$run_checsums $(/bin/preseed_lookup_checksum $i)"
+  if am_checksumming ; then
+    run_checsums="$run_checsums $(/bin/preseed_lookup_checksum $i)"
+  fi
 done
 db_set preseed/run $run_scripts
-am_checksumming && db_set preseed/run/checksum $run_checksums
+if am_checksumming ; then
+  db_set preseed/run/checksum $run_checksums
+fi
 
 # Make sure that auto-install/classes exists, even if it wasn't on the cmdline
 db_get auto-install/classes || {
