@@ -16,11 +16,13 @@ sed -i 's/^RAMRUN=no/RAMRUN=yes/' /target/etc/default/rcS
 sed -i 's/^RAMLOCK=no/RAMLOCK=yes/' /target/etc/default/rcS
 
 # packages I like
-apt-install less openssh-server bash-completion psmisc
+apt-install less ssh bash-completion
 
 # set LESSPIPE as I prefer
-sed -i '/^  if \[ "$BASH" ]; then$/a\    . /etc/bash.bashrc' /target/etc/profile
-echo "export LESSOPEN=\"|lesspipe '%s'\"" >> /target/etc/bash.bashrc
+echo 'export LESSOPEN="|lesspipe '%s'"' > /target/etc/profile.d/hands-com_lesspipe.sh
+
+# enable bash completion
+sed -i '/-f.*bash_completion/,/fi/s/^#//' /target/etc/bash.bashrc
 
 # prepopulate root's history with commands needed to install a new xen domain
 cat > /target/root/.bash_history <<!EOF!

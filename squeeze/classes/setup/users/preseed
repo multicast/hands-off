@@ -1,2 +1,0 @@
-# lock root's password here, because we'll be setting it in the late_command
-# user-setup passwd/root-password-crypted password !AUTO-INSTALL!

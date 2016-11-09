@@ -10,13 +10,8 @@ set -e
 
 echo "debug: Running..."
 
-## get all the classes users, and use the one that's left at the end
-#for class in default $(classes); do
-#  preseed_fetch "/local/users/$class" /tmp/setup-users.users &&
-#    mv /tmp/setup-users.users /target/tmp
-#done
-#
-# that should have been done in the early_script
+# try stopping excessive bash_completion setup
+sed -i 's#if \[ -f /etc/bash_completion ]#if \[ -f /etc/bash_completion -a -z "$BASH_COMPLETION" ]#' /target/etc/skel/.bashrc
 
 [ -s /tmp/setup-users.users ] && mv /tmp/setup-users.users /target/tmp
 
