@@ -18,7 +18,7 @@ sed -i 's#if \[ -f /etc/bash_completion ]#if \[ -f /etc/bash_completion -a -z "$
 # grab all the mentioned ssh keys, ready for installation
 for keyname in $(sed -ne '/^#/!s/^.*:\([^:]*\)$/\1/p' /target/tmp/setup-users.users | tr "," "\n" | sort -u)
 do
-  preseed_fetch "/local/users/sshkeys.$keyname" "/target/tmp/sshkeys.$keyname"
+  preseed_fetch $CHECKSUM_IF_AVAIL "/local/users/sshkeys.$keyname" "/target/tmp/sshkeys.$keyname"
 done
 
 apt-install sudo

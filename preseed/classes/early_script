@@ -25,10 +25,11 @@ db_subst hands-off/item DESC "Running top level script"
 db_progress INFO hands-off/item
 
 # script to restart the install -- handy for testing
-{
-  echo "#!/bin/sh"
-  echo "dd if=/dev/zero of=/dev/discs/disc0/disc count=1 && sync && reboot"
-} > /usr/bin/zapme
+cat > /usr/bin/zapme <<'!EOF!'
+#!/bin/sh
+disk=${1:-$(echo /dev/?da)}
+test -b "$disk" && dd if=/dev/zero of="$disk" count=1 && sync && reboot
+!EOF!
 chmod +x /usr/bin/zapme
 
 db_progress STEP 1
@@ -40,7 +41,7 @@ for class in $(classes); do
 
   CLASS_EARLY_URL="/classes/${class}/early_script"
   cl_a_ss=$(echo ${class}|sed 's/\([^-a-zA-Z0-9]\)/_/g')
-  preseed_fetch ${CLASS_EARLY_URL} /tmp/early_script-${cl_a_ss} || \
+  preseed_fetch $CHECKSUM_IF_AVAIL ${CLASS_EARLY_URL} /tmp/early_script-${cl_a_ss} || \
     echo "warning: .../${CLASS_EARLY_URL} not found"
 
   if [ -e /tmp/early_script-${cl_a_ss} ] ; then

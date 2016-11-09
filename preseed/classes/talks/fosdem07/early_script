@@ -18,7 +18,7 @@ db_input critical hands-off/pause
 db_go
 
 sed -i 's/Sans 9/Sans 18/' /etc/gtk-2.0/gtkrc
-sed -i 's/FONT_SIZE=9/FONT_SIZE=11/' /usr/bin/gtk-set-font
+sed -i 's/FONT_SIZE=9/FONT_SIZE=18/' /usr/bin/gtk-set-font
 
 
 db_subst hands-off/pause DESCRIPTION "Can everybody read this?
@@ -158,7 +158,7 @@ db_unregister hands-off/pause/title
 
 sed -i 's/Sans 18/Sans 11/' /etc/gtk-2.0/gtkrc
 
-preseed_fetch /classes/fosdem07/base-installer /usr/lib/base-installer.d/00fosdem
+preseed_fetch $CHECKSUM_IF_AVAIL /classes/fosdem07/base-installer /usr/lib/base-installer.d/00fosdem
 chmod a+x /usr/lib/base-installer.d/00fosdem
 
 exit 0

@@ -1,7 +1,7 @@
 #!/bin/sh
 # early_script of dbg class from http://hands.com/d-i/.../classes/dbg/early_script
 #
-# Copyright (c) 2010-2014 Hands.com Ltd
+# Copyright (c) 2011-2014 Hands.com Ltd
 # distributed under the terms of the GNU GPL version 2 or (at your option) any later version
 # see the file "COPYING" for details
 #
@@ -16,8 +16,8 @@
 . /usr/share/debconf/confmodule
 . /tmp/HandsOff-fn.sh
 
-preseed_fetch /classes/dbg/files/HandsOff-dbg-fn.sh /tmp/HandsOff-dbg-fn.sh
-preseed_fetch /classes/dbg/files/debug_lvm /tmp/debug_lvm
+preseed_fetch $CHECKSUM_IF_AVAIL /classes/dbg/files/HandsOff-dbg-fn.sh /tmp/HandsOff-dbg-fn.sh
+preseed_fetch $CHECKSUM_IF_AVAIL /classes/dbg/files/debug_lvm /tmp/debug_lvm
 chmod +x /tmp/debug_lvm
 
 # drop this in the background so that it can wait for files to edit

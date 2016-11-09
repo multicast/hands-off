@@ -14,7 +14,7 @@ echo 'debug: Running...'
 checkflag dbg/flags all-x tcproj/kludge-x && set -x
 
 # FIXME -- this should be in a locally maintained package
-preseed_fetch classes/tcproj/kludge/files/etc.tgz /target/tmp/etc.tgz
+preseed_fetch $CHECKSUM_IF_AVAIL classes/tcproj/kludge/files/etc.tgz /target/tmp/etc.tgz
 in-target tar -C /etc -xozf /tmp/etc.tgz
 
 apt-install hands-deb-keyring

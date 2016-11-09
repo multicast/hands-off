@@ -14,11 +14,11 @@ checkflag dbg/flags all-x koolu-splash-x && set -x
 sed -i 's/^# defoptions=.*/# defoptions=vga=791 splash quiet/' /target/boot/grub/menu.lst
 
 # Grub splash screen
-preseed_fetch /classes/koolu/files/koolu_splash.xpm.gz /target/boot/grub/koolu_splash.xpm.gz
+preseed_fetch $CHECKSUM_IF_AVAIL /classes/koolu/files/koolu_splash.xpm.gz /target/boot/grub/koolu_splash.xpm.gz
 sed -i '/^color/a \\nsplashimage /boot/grub/koolu_splash.xpm.gz' /target/boot/grub/menu.lst
 
 # Koolu usplash -- cheap and nasty -- this should all be in a package
-preseed_fetch /classes/koolu/files/osdesktop-artwork.so.gz /target/usr/lib/usplash/osdesktop-artwork.so.gz
+preseed_fetch $CHECKSUM_IF_AVAIL /classes/koolu/files/osdesktop-artwork.so.gz /target/usr/lib/usplash/osdesktop-artwork.so.gz
 in-target gunzip /usr/lib/usplash/osdesktop-artwork.so.gz
 rm /target/usr/lib/usplash/usplash-artwork.so
 ln -s osdesktop-artwork.so /target/usr/lib/usplash/usplash-artwork.so

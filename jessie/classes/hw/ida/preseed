@@ -1,2 +1,0 @@
-# Compaq SmartArrays confuse partman, or some such, so need this
-d-i partman-auto/disk string /dev/ida/c0d0

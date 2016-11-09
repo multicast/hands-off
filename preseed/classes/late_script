@@ -58,7 +58,7 @@ for class in $(classes); do
 
   cl_a_ss=$(echo ${class}|sed 's/\([^-a-zA-Z0-9]\)/_/g')
   prefix=classes/ ; expr "$class" : local/ >/dev/null && prefix=
-  preseed_fetch /${prefix}${class}/late_script /tmp/late_script-${cl_a_ss} && {
+  preseed_fetch $CHECKSUM_IF_AVAIL /${prefix}${class}/late_script /tmp/late_script-${cl_a_ss} && {
     chmod +x /tmp/late_script-${cl_a_ss}
     log-output -t ${prefix}${class}/late_script /tmp/late_script-${cl_a_ss}
   }

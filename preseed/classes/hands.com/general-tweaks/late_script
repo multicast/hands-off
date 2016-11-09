@@ -9,11 +9,12 @@ set -e
 
 echo 'debug: Running...'
 
-# make fsck automatically fix problems at boot time.
-sed -i 's/^FSCKFIX=no/FSCKFIX=yes/' /target/etc/default/rcS
-# ensure that /var/run and /var/lock end up on tmpfs
-sed -i 's/^RAMRUN=no/RAMRUN=yes/' /target/etc/default/rcS
-sed -i 's/^RAMLOCK=no/RAMLOCK=yes/' /target/etc/default/rcS
+if [ -f /target/etc/default/rcS ] ; then
+	# make fsck automatically fix problems at boot time.
+	sed -i 's/^#*FSCKFIX=no/FSCKFIX=yes/' /target/etc/default/rcS
+	# ensure that /tmp end up on tmpfs
+	sed -i 's/^#* *RAMTMP=no/RAMTMP=yes/' /target/etc/default/tmpfs
+fi
 
 # packages I like
 apt-install less ssh bash-completion
@@ -22,11 +23,11 @@ apt-install less ssh bash-completion
 echo 'export LESSOPEN="|lesspipe '%s'"' > /target/etc/profile.d/hands-com_lesspipe.sh
 
 # enable bash completion
-sed -i '/-f.*bash_completion/,/fi/s/^#//' /target/etc/bash.bashrc
+sed -i '/^# enable bash completion/,/^ *$/{/^# enable /!s/^#//}' /target/etc/bash.bashrc
 
 # prepopulate root's history with commands needed to install a new xen domain
-cat > /target/root/.bash_history <<!EOF!
- #dd if=/dev/zero of=/dev/hda count=1 ; sync ; reboot -f
+cat > /target/root/.bash_history <<'!EOF!'
+ #dd if=/dev/zero of="$(echo /dev/?da)" conv=nocreat count=1 && sync && reboot -f
 !EOF!
 
 # stop apt looking for CDs -- it's a pain when it asks for them

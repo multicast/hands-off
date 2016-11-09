@@ -84,6 +84,12 @@ check_udeb_ver() {
           sed -ne '/^Package: '${udeb}'$/,/^$/s/^Version: \(.*\)$/\1/p' /var/lib/dpkg/status ;
         } | sort -t. -c 2>/dev/null
 }
+
+am_checksumming() {
+  [ -e /var/run/hands-off.checksumming ]
+}
+
+CHECKSUM_IF_AVAIL="$(sed -n 's/[  ]*\(-C\))$/\1/p' /bin/preseed_fetch)"
 !EOF!
 
 . /tmp/HandsOff-fn.sh
@@ -92,15 +98,20 @@ checkflag dbg/pauses all start && pause "Top Level start.sh script"
 
 check_udeb_ver preseed-common 1.29 || backcompat=etch.sh
 
-preseed_fetch local_enabled_flag /tmp/local_enabled_flag
-use_local=$(grep -v '^[[:space:]]*\(#\|$\)' /tmp/local_enabled_flag || true)
+preseed_fetch $CHECKSUM_IF_AVAIL local_enabled_flag /tmp/local_enabled_flag
+use_local=$(grep -q '^[[:space:]]*true\b' /tmp/local_enabled_flag && echo true || true)
 rm /tmp/local_enabled_flag
 echo $use_local > /var/run/hands-off.local
-if [ "true" = "$use_local" ]
-then
-  db_set preseed/run local/start.sh subclass.sh $backcompat
-else
-  db_set preseed/run subclass.sh $backcompat
+
+for i in ${use_local:+local/start.sh} subclass.sh $backcompat ; do
+  run_scripts="$run_scripts $i"
+  if am_checksumming ; then
+    run_checsums="$run_checsums $(/bin/preseed_lookup_checksum $i)"
+  fi
+done
+db_set preseed/run $run_scripts
+if am_checksumming ; then
+  db_set preseed/run/checksum $run_checksums
 fi
 
 # Make sure that auto-install/classes exists, even if it wasn't on the cmdline
@@ -109,6 +120,14 @@ db_get auto-install/classes || {
   db_register hands-off/meta/string auto-install/classes
   db_subst auto-install/classes ID auto-install/classes
 }
+
+# kludge to deal with breakage in Jessie
+if [ -e /var/run/preseed_unspecified_at_boot ] &&
+   grep -q '{ db_get preseed/url  || \[ -z "$RET" \]; } &&' /lib/debian-installer-startup.d/S60auto-install
+then
+  echo "removing /var/run/preseed_unspecified_at_boot, which is probably spurious"
+  rm /var/run/preseed_unspecified_at_boot || true
+fi
 
 if [ -z "$(debconf-get auto-install/classes)" -a \
      -e /var/run/preseed_unspecified_at_boot  -o \
