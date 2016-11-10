@@ -8,8 +8,6 @@
 #
 set -e
 
-. /usr/share/debconf/confmodule
-
 # create templates for use in on-the-fly creation of dialogs
 cat > /tmp/HandsOff.templates <<'!EOF!'
 Template: hands-off/meta/text
