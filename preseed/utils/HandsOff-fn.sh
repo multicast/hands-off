@@ -146,7 +146,6 @@ am_checksumming() {
 }
 
 CHECKSUM_IF_AVAIL="$(sed -n 's/[  ]*\(-C\))$/\1/p' /bin/preseed_fetch)"
-!EOF!
 
 # Manipulate classes
 use_local() {
