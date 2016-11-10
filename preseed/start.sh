@@ -40,8 +40,12 @@ Description: ${DESC}
 
 debconf-loadtemplate hands-off /tmp/HandsOff.templates
 
-# Download HandsOff utilities
-preseed_fetch utils/HandsOff-fn.sh /tmp/HandsOff-fn.sh
+## Download HandsOff utilities
+# Common functions
+preseed_fetch /utils/HandsOff-fn.sh /tmp/HandsOff-fn.sh
+# Per class scripts runner for */early_command */late_command
+preseed_fetch /utils/HandsOff-classes-scripts-runner.sh /tmp/classes_scripts_runner
+chmod +x /tmp/classes_scripts_runner
 
 . /tmp/HandsOff-fn.sh
 
