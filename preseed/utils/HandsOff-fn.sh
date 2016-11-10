@@ -141,3 +141,84 @@ sieve() {
 	echo "${x}"
 	sieve | grep -v "^${x}$"
 }
+
+append_classes() {
+	# Without argument:
+	# - get classes from debconf, probably set by command line
+	# - store all dependencies in debconf
+	# With semi-colon separated classes list as argument:
+	# - get only dependencies from argument
+	# - store merged new dependencies with previous in debconf
+	# Echo new dependencies classes:
+	# - without argument: debconf classes dependencies
+	# - with argument: classes list argument dependencies
+	local cls="${1}"
+	local new_classes
+	local old_classes
+	local merged_classes
+	if [ -z "${cls}" ]; then
+		# New classes to expand from debconf
+		new_classes=$(classes | join_semi)
+	else
+		# New classes to expand from argument
+		new_classes="${cls}"
+		# Keep old classes
+		old_classes=$(classes | join_semi)
+	fi
+	new_classes=$(expandclasses "${new_classes}" | sieve | join_semi)
+	merged_classes=$(split_semi "${old_classes};${new_classes}" | sieve | join_semi)
+
+	# Now that we've worked out the class list, store it for later
+	# use.
+	# If no classes were previously defined, we'll have to
+	# register the question
+	db_really_set auto-install/classes "${merged_classes}" "true"
+	# Output newly added classes
+	echo "${new_classes}"
+}
+
+# this is using preseed_location, which is not a documented UI -- naughty.  FIXME?
+load_preseed() {
+	local seed="${1}"
+	local checksum="${2}"
+	[ -n "${seed}" ] || return 0
+	[ -z "${checksum}" ] && am_checksumming && checksum="$(/bin/preseed_lookup_checksum $seed)"
+	preseed_location "${seed}" "${checksum}"
+}
+
+safe_load_preseed() {
+	# Never fail
+	local seed="${1}"
+	local checksum="${2}"
+	[ -n "${seed}" ] || return 0
+	preseed_fetch "${seed}" /tmp/.test_fetch \
+	    || { [ $? = 4 ] && return 0; }
+	load_preseed "${seed}" "${checksum}"
+}
+
+load_classes() {
+	local classes="${1}"
+	local include
+	local includelcl
+	local cls
+	# generate class preseed inclusion list
+	for cls in $(split_semi "${classes}") ; do
+		preseedpath="/${cls}/preseed"
+		checkflag dbg/pauses all classes \
+		    && pause "Load preseed “${cls}”"
+		includelcl=''
+		if expr "${cls}" : local/ >/dev/null; then
+			includelcl="${preseedpath}"
+		else
+			include="classes${preseedpath}"
+			use_local && includelcl="local${preseedpath}"
+		fi
+		# ... and load them
+		[ -n "${include}" ] && load_preseed "${include}"
+		# Never failing if local class is missing
+		# This permits one to have sparse local/ tree
+		[ -n "${includelcl}" ] && safe_load_preseed "${includelcl}"
+	done
+	# Do not fails after last test
+	return 0
+}
