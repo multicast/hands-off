@@ -17,6 +17,6 @@ for class in default $(classes); do
 done
 
 rootpw=$(sed -ne 's/^root:\([^:]*\):.*$/\1/p' /tmp/setup-users.users) &&
-  db_set passwd/root-password-crypted "$rootpw"
+  db_really_set passwd/root-password-crypted "$rootpw" true
 
 echo "debug: completed successfully"
