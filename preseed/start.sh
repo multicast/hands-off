@@ -92,33 +92,34 @@ echo -e "\nhosts: dns files" >> /etc/nsswitch.conf
 # 1) DHCP
 # 2) netcfg/get_hostname
 if HOSTNAME=$(hostname) && [ "${HOSTNAME}" != '(none)' ] ; then
-    preseed_fetch "classes/$HOSTNAME/preseed" /tmp/.test_fetch \
-        && hostname_cls="$HOSTNAME"
+    preseed_fetch "classes/_hostname/$HOSTNAME/preseed" /tmp/.test_fetch \
+        && hostname_cls="_hostname/$HOSTNAME"
 
     use_local \
-	&& preseed_fetch "local/$HOSTNAME/preseed" /tmp/.test_fetch \
-        && hostname_cls="${hostname_cls};local/$HOSTNAME"
+	&& preseed_fetch "local/_hostname/$HOSTNAME/preseed" /tmp/.test_fetch \
+        && hostname_cls="${hostname_cls};local/_hostname/$HOSTNAME"
 fi
 
 if DNS_DOMAIN=$(hostname -d 2> /dev/null); then
-    preseed_fetch "classes/$DNS_DOMAIN/preseed" /tmp/.test_fetch \
-        && domain_cls="$DNS_DOMAIN"
+    preseed_fetch "classes/_hostname/$DNS_DOMAIN/preseed" /tmp/.test_fetch \
+        && domain_cls="_hostname/$DNS_DOMAIN"
 
     use_local \
-	&& preseed_fetch "local/$DNS_DOMAIN/preseed" /tmp/.test_fetch \
-        && domain_cls="${domain_cls};local/$DNS_DOMAIN"
+	&& preseed_fetch "local/_hostname/$DNS_DOMAIN/preseed" /tmp/.test_fetch \
+        && domain_cls="${domain_cls};local/_hostname/$DNS_DOMAIN"
 fi
 
 if [ -n "${DNS_DOMAIN}" -a -n "${HOSTNAME}" ]; then
-    preseed_fetch "classes/$DNS_DOMAIN/$HOSTNAME/preseed" /tmp/.test_fetch \
-        && fqdn="$DNS_DOMAIN/$HOSTNAME"
+    preseed_fetch "classes/_hostname/$DNS_DOMAIN/$HOSTNAME/preseed" /tmp/.test_fetch \
+        && fqdn="_hostname/$DNS_DOMAIN/$HOSTNAME"
 
     use_local \
-	&& preseed_fetch "local/$DNS_DOMAIN/$HOSTNAME/preseed" /tmp/.test_fetch \
-        && fqdn="${fqdn};local/$DNS_DOMAIN/$HOSTNAME"
+	&& preseed_fetch "local/_hostname/$DNS_DOMAIN/$HOSTNAME/preseed" /tmp/.test_fetch \
+        && fqdn="${fqdn};local/_hostname/$DNS_DOMAIN/$HOSTNAME"
 fi
 
 if [ -n "${domain_cls}" -o -n "${hostname_cls}" -o -n "${fqdn}" ]; then
+    printf "domain_cls=${domain_cls};hostname_cls=${hostname_cls};fqdn=${fqdn}\n" >&2
     append_classes "${domain_cls};${hostname_cls};${fqdn}"
 fi
 
