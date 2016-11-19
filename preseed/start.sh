@@ -71,6 +71,7 @@ if db_get hands-off/local ; then
 fi
 
 if use_local && preseed_fetch local/start.sh /tmp/local_start.sh ; then
+  chmod +x /tmp/local_start.sh
   local_start=local/start.sh
 fi
 
