@@ -1,3 +1,0 @@
-# preseed for desktop/lxde
-tasksel tasksel/first multiselect Desktop environment, Standard system
-tasksel tasksel/desktop multiselect lxde
