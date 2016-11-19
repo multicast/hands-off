@@ -26,7 +26,7 @@
 # fixed, but it shows the idea
  
 # the wait_for is needed since the lvm udeb is not unpacked during the
-# early script, so we need to wait for it to tunr up before it can be edited.
+# early script, so we need to wait for it to turn up before it can be edited.
 
 wait_for /lib/partman/lib/auto-lvm.sh
 sed -i "/open_dialog COMMIT/,\${/close_dialog/s#\$#\n  sleep 10\n  pvs --all > /dev/null\n  device_remove_lvm \$dev#}" /lib/partman/lib/auto-lvm.sh
