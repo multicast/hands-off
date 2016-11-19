@@ -1,5 +1,0 @@
-This is split out from tcproj because it needs to be done before
-setup/users so that the additions to /etc/skel make a difference.
-
-Really it ought to be in a package which could then be installed via an
-apt-install in tcproj's early script -- hence the name kludge
