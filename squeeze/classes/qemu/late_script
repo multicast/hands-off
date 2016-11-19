@@ -1,8 +1,0 @@
-#!/bin/sh
-set -e
-
-echo 'debug: Running...'
-
-apt-install qemu xbase-clients
-
-echo "debug: completed successfully"

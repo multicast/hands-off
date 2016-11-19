@@ -1,8 +1,0 @@
-#
-# Sample /etc/pkgsync/maynothave file for a rather bare-bones system.
-# Adjust to your own taste :-)
-#
-# This file is almost empty in most installations.
-#
-sysklogd
-gdm
