@@ -201,8 +201,9 @@ subclasses() {
 expandclasses() {
 	local c
 	for c in $(split_semi "${1}") ; do
+		[ "local/" = "${c}" ] && echo "${c}"
 		expandclasses $(subclasses "${c}")
-		echo "${c}"
+		[ "local/" != "${c}" ] && echo "${c}"
 		if use_local \
 		    && ! expr "${c}" : local/ >/dev/null \
 		    && preseed_fetch "local/${c}/preseed" "/tmp/.test_fetch"
