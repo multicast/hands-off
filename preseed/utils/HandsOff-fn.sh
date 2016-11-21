@@ -236,7 +236,7 @@ append_classes() {
 	local merged_classes
 	if [ -z "${cls}" ]; then
 		# New classes to expand from debconf
-		new_classes=$(classes | join_semi)
+		new_classes=$(classes | join_semi)$(use_local && echo ";local/")
 	else
 		# New classes to expand from argument
 		new_classes="${cls}"
