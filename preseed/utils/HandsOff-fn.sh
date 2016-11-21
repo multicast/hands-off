@@ -221,6 +221,11 @@ sieve() {
 	sieve | grep -v "^${x}$"
 }
 
+locals_last() {
+	# this sorts all the local/ classes after all other classes, otherwise preserving order
+	sed '\#^local/#{${x;G};H;$p;d;};$G' | grep -v '^$'
+}
+
 append_classes() {
 	# Without argument:
 	# - get classes from debconf, probably set by command line
@@ -235,17 +240,25 @@ append_classes() {
 	local new_classes
 	local old_classes
 	local merged_classes
+	local reorder_classes=cat
 	if [ -z "${cls}" ]; then
+		# ensure that local/ comes after normal classes, with local/* after that
+		reorder_classes=locals_last
 		# New classes to expand from debconf
-		new_classes=$(classes | join_semi)$(use_local && echo ";local/")
+		cls=$(classes | join_semi)$(use_local && echo ";local/")
 	else
-		# New classes to expand from argument
-		new_classes="${cls}"
 		# Keep old classes
 		old_classes=$(classes | join_semi)
 	fi
-	new_classes=$(expandclasses "${new_classes}" | sieve | join_semi)
-	merged_classes=$(split_semi "${old_classes};${new_classes}" | sieve | join_semi)
+	new_classes=$(expandclasses "${cls}" | sieve | ${reorder_classes} | join_semi)
+	if [ "$old_classes" ] ; then
+		# it is possible that one would want the sub-classes for the new classes not to be seived
+		# I think that in that case, you're using subclasses incorrectly.
+		# You can always create a new cloned subclass to avoid it being sieved
+		merged_classes=$(split_semi "${old_classes};${new_classes}" | sieve | join_semi)
+	else
+		merged_classes=$new_classes
+	fi
 
 	# Now that we've worked out the class list, store it for later
 	# use.
