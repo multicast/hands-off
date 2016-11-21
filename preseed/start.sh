@@ -84,40 +84,40 @@ echo -e "\nhosts: dns files" >> /etc/nsswitch.conf
 # 1) DHCP
 # 2) netcfg/get_hostname
 if HOSTNAME=$(hostname) && [ "${HOSTNAME}" != '(none)' ] ; then
-    preseed_fetch "classes/_hostname/$HOSTNAME/preseed" /tmp/.test_fetch \
-        && hostname_cls="_hostname/$HOSTNAME"
+  preseed_fetch "classes/_hostname/$HOSTNAME/preseed" /tmp/.test_fetch \
+    && hostname_cls="_hostname/$HOSTNAME"
 
-    use_local \
-	&& preseed_fetch "local/_hostname/$HOSTNAME/preseed" /tmp/.test_fetch \
-        && hostname_cls="${hostname_cls};local/_hostname/$HOSTNAME"
+  use_local \
+    && preseed_fetch "local/_hostname/$HOSTNAME/preseed" /tmp/.test_fetch \
+    && hostname_cls="${hostname_cls};local/_hostname/$HOSTNAME"
 fi
 
 if DNS_DOMAIN=$(hostname -d 2> /dev/null); then
-    preseed_fetch "classes/_hostname/$DNS_DOMAIN/preseed" /tmp/.test_fetch \
-        && domain_cls="_hostname/$DNS_DOMAIN"
+  preseed_fetch "classes/_hostname/$DNS_DOMAIN/preseed" /tmp/.test_fetch \
+    && domain_cls="_hostname/$DNS_DOMAIN"
 
-    use_local \
-	&& preseed_fetch "local/_hostname/$DNS_DOMAIN/preseed" /tmp/.test_fetch \
-        && domain_cls="${domain_cls};local/_hostname/$DNS_DOMAIN"
+  use_local \
+    && preseed_fetch "local/_hostname/$DNS_DOMAIN/preseed" /tmp/.test_fetch \
+    && domain_cls="${domain_cls};local/_hostname/$DNS_DOMAIN"
 fi
 
 if [ -n "${DNS_DOMAIN}" -a -n "${HOSTNAME}" ]; then
-    preseed_fetch "classes/_hostname/$DNS_DOMAIN/$HOSTNAME/preseed" /tmp/.test_fetch \
-        && fqdn="_hostname/$DNS_DOMAIN/$HOSTNAME"
+  preseed_fetch "classes/_hostname/$DNS_DOMAIN/$HOSTNAME/preseed" /tmp/.test_fetch \
+    && fqdn="_hostname/$DNS_DOMAIN/$HOSTNAME"
 
-    use_local \
-	&& preseed_fetch "local/_hostname/$DNS_DOMAIN/$HOSTNAME/preseed" /tmp/.test_fetch \
-        && fqdn="${fqdn};local/_hostname/$DNS_DOMAIN/$HOSTNAME"
+  use_local \
+    && preseed_fetch "local/_hostname/$DNS_DOMAIN/$HOSTNAME/preseed" /tmp/.test_fetch \
+    && fqdn="${fqdn};local/_hostname/$DNS_DOMAIN/$HOSTNAME"
 fi
 
 if [ -n "${domain_cls}" -o -n "${hostname_cls}" -o -n "${fqdn}" ]; then
-    printf "domain_cls=${domain_cls};hostname_cls=${hostname_cls};fqdn=${fqdn}\n" >&2
-    append_classes "${domain_cls};${hostname_cls};${fqdn}"
+  printf "domain_cls=${domain_cls};hostname_cls=${hostname_cls};fqdn=${fqdn}\n" >&2
+  append_classes "${domain_cls};${hostname_cls};${fqdn}"
 fi
 
 # kludge to deal with breakage in Jessie
 if [ -e /var/run/preseed_unspecified_at_boot ] &&
-   grep -q '{ db_get preseed/url  || \[ -z "$RET" \]; } &&' /lib/debian-installer-startup.d/S60auto-install
+  grep -q '{ db_get preseed/url  || \[ -z "$RET" \]; } &&' /lib/debian-installer-startup.d/S60auto-install
 then
   echo "removing /var/run/preseed_unspecified_at_boot, which is probably spurious"
   rm /var/run/preseed_unspecified_at_boot || true

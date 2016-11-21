@@ -142,7 +142,7 @@ handsoff_poweroff() {
 
 # allow backwards compatible code to be written that will do checksumming if it is available
 am_checksumming() {
-  [ -e /var/run/hands-off.checksumming ]
+	[ -e /var/run/hands-off.checksumming ]
 }
 
 CHECKSUM_IF_AVAIL="$(sed -n 's/[  ]*\(-C\))$/\1/p' /bin/preseed_fetch)"
