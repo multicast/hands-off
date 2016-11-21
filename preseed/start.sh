@@ -63,17 +63,8 @@ db_get auto-install/classes || {
 db_set preseed/early_command log-output -t early_script sh /tmp/classes_scripts_runner early 'Preseed Early' 'early'
 db_set preseed/late_command  log-output -t late_script sh /tmp/classes_scripts_runner late 'Preseed Late' 'late'
 
-# Local classes can be set by the local_enabled_flag file
-# or by hands-off/local=(true|false) command line option
-preseed_fetch $CHECKSUM_IF_AVAIL local_enabled_flag /var/run/hands-off.local
-if db_get hands-off/local ; then
-  echo "${RET}" > /var/run/hands-off.local
-fi
-
-if use_local && preseed_fetch local/start.sh /tmp/local_start.sh ; then
-  chmod +x /tmp/local_start.sh
+use_local && preseed_fetch local/start.sh /tmp/.test_fetch &&
   local_start=local/start.sh
-fi
 
 for i in $local_start subclass.sh $backcompat ; do
   run_scripts="$run_scripts $i"

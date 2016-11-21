@@ -149,12 +149,23 @@ CHECKSUM_IF_AVAIL="$(sed -n 's/[  ]*\(-C\))$/\1/p' /bin/preseed_fetch)"
 
 # Manipulate classes
 use_local() {
-	if [ -z "${handsoff_use_local}" ]
-	then
-		grep -qi '^true$' /var/run/hands-off.local > /dev/null 2>&1
-		handsoff_use_local=$?
+	local flagfile=/var/run/hands-off.local
+
+	if [ ! -e /var/run/hands-off.local ] ; then
+		# Local classes can be set by the local_enabled_flag file
+		# or by hands-off/local=(true|false) command line option
+		local flag=false
+		local tmpfile=/tmp/local_enabled_flag
+
+		if db_get hands-off/local && [ "$RET" ] ; then
+			flag="$RET"
+		elif preseed_fetch $CHECKSUM_IF_AVAIL local_enabled_flag $tmpfile ; then
+			grep -iq '^[[:space:]]*true[[:space:]]*$' $tmpfile && flag=true
+			rm $tmpfile
+		fi
+		echo $flag > $flagfile
 	fi
-	[ "${handsoff_use_local}" = 0 ]
+	grep -q 'true' $flagfile
 }
 
 split_semi() {
