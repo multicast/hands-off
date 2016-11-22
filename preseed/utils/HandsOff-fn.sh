@@ -183,11 +183,11 @@ subclasses() {
 	if expr "${class}" : virtual/ >/dev/null; then
 		return 0
 	elif expr "${class}" : local/ >/dev/null; then
-		preseed_fetch "/$class/subclasses" \
+		preseed_fetch $CHECKSUM_IF_AVAIL "/$class/subclasses" \
 			      "/tmp/cls-${cl_a_ss}" \
 		    || [ $? = 4 ]
 	else
-		preseed_fetch "/classes/${class}/subclasses" \
+		preseed_fetch $CHECKSUM_IF_AVAIL "/classes/${class}/subclasses" \
 			      "/tmp/cls-${cl_a_ss}" \
 		    || [ $? = 4 ]
 	fi
@@ -205,7 +205,7 @@ expandclasses() {
 		[ "local/" != "${c}" ] && echo "${c}"
 		if use_local \
 		    && ! expr "${c}" : local/ >/dev/null \
-		    && preseed_fetch "local/${c}/preseed" "/tmp/.test_fetch"
+		    && preseed_fetch $CHECKSUM_IF_AVAIL "local/${c}/preseed" "/tmp/.test_fetch"
 		then
 			expandclasses $(subclasses "local/${c}")
 			echo "local/${c}"
@@ -282,7 +282,7 @@ safe_load_preseed() {
 	local seed="${1}"
 	local checksum="${2}"
 	[ -n "${seed}" ] || return 0
-	preseed_fetch "${seed}" /tmp/.test_fetch \
+	preseed_fetch $CHECKSUM_IF_AVAIL "${seed}" /tmp/.test_fetch \
 	    || { [ $? = 4 ] && return 0; }
 	load_preseed "${seed}" "${checksum}"
 }
@@ -348,9 +348,9 @@ silent_get_partman_recipe() {
 		     "$title"
 	if expr "${cls}" : local/
 	then
-		preseed_fetch "${cls}/${recipe}" "${destdir}/${recipe}"
+		preseed_fetch $CHECKSUM_IF_AVAIL "${cls}/${recipe}" "${destdir}/${recipe}"
 	else
-		preseed_fetch "classes/${cls}/${recipe}" "${destdir}/${recipe}"
+		preseed_fetch $CHECKSUM_IF_AVAIL "classes/${cls}/${recipe}" "${destdir}/${recipe}"
 	fi
 }
 

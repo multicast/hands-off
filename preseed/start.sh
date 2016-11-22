@@ -39,10 +39,11 @@ Description: ${DESC}
 debconf-loadtemplate hands-off /tmp/HandsOff.templates
 
 ## Download HandsOff utilities
+CHECKSUM_IF_AVAIL="$(sed -n 's/[  ]*\(-C\))$/\1/p' /bin/preseed_fetch)"
 # Common functions
-preseed_fetch /utils/HandsOff-fn.sh /tmp/HandsOff-fn.sh
+preseed_fetch $CHECKSUM_IF_AVAIL /utils/HandsOff-fn.sh /tmp/HandsOff-fn.sh
 # Per class scripts runner for */early_command */late_command
-preseed_fetch /utils/HandsOff-classes-scripts-runner.sh /tmp/classes_scripts_runner
+preseed_fetch $CHECKSUM_IF_AVAIL /utils/HandsOff-classes-scripts-runner.sh /tmp/classes_scripts_runner
 chmod +x /tmp/classes_scripts_runner
 
 . /tmp/HandsOff-fn.sh
