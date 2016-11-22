@@ -22,7 +22,6 @@ set -e
 
 echo 'debug: Running...'
 
-. /usr/share/debconf/confmodule
 . /tmp/HandsOff-fn.sh
 
 sed -i 's/DejaVu 11/DejaVu 20/' /etc/gtk-2.0/gtkrc

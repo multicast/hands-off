@@ -1,6 +1,5 @@
 #!/bin/sh
 
-. /usr/share/debconf/confmodule
 . /tmp/HandsOff-fn.sh
 
 db_register hands-off/meta/text hands-off/pause/title

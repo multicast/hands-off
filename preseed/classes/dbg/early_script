@@ -13,7 +13,6 @@
 # obviously, that script became pointless as soon as the bug was fixed.
 # It is left here as an example.
  
-. /usr/share/debconf/confmodule
 . /tmp/HandsOff-fn.sh
 
 preseed_fetch $CHECKSUM_IF_AVAIL /classes/dbg/files/HandsOff-dbg-fn.sh /tmp/HandsOff-dbg-fn.sh

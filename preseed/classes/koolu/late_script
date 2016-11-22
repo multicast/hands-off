@@ -6,7 +6,6 @@
 
 set -e
 echo "debug: Running koolu/late_script..."
-. /usr/share/debconf/confmodule
 . /tmp/HandsOff-fn.sh
 
 checkflag dbg/flags all-x koolu-x && set -x

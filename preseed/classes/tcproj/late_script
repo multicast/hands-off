@@ -6,7 +6,6 @@
 # see the file "COPYING" for details
 set -e
 
-. /usr/share/debconf/confmodule
 . /tmp/HandsOff-fn.sh
 
 echo 'debug: Running...'

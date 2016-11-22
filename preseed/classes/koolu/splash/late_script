@@ -6,7 +6,6 @@
 
 set -e
 echo "debug: Running koolu/splash/late_script..."
-. /usr/share/debconf/confmodule
 . /tmp/HandsOff-fn.sh
 
 checkflag dbg/flags all-x koolu-splash-x && set -x

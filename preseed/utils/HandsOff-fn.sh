@@ -11,7 +11,6 @@
 #
 #     . /tmp/HandsOff-fn.sh
 #
-. /usr/share/debconf/confmodule
 . /lib/preseed/preseed.sh
 
 # useful functions for preseeding

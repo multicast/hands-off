@@ -7,7 +7,6 @@
 #
 set -e
 
-. /usr/share/debconf/confmodule
 . /tmp/HandsOff-fn.sh
 
 checkflag dbg/pauses all etch && pause "Top Level etch.sh script 1"
