@@ -1,0 +1,4 @@
+#!/bin/sh
+
+# testing this before making a class out of it, or making it the default somehow
+anna-install eatmydata-udeb
