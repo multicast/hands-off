@@ -14,8 +14,10 @@ Template: pkgsel/simplified-tasksel
 Type: select
 Choices-C: desktop, server, custom
 Choices: standard ("${DESKTOP}") desktop, standard server - installs ssh server, other use cases
-Description: Select install type
- this allows you to select what sort of system you want to install
+Description: Choose type of system to install
+ You can now choose between installing a standard desktop, a standard
+ server, or alternatively to use the task selection menu to have finer
+ grained control over installing tasks and blends.
 !EOF!
 
 debconf-loadtemplate pkgsel /tmp/HandsOff.templates
