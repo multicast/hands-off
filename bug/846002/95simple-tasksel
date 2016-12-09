@@ -1,0 +1,25 @@
+#!/bin/sh
+set -e
+
+. /usr/share/debconf/confmodule
+
+# if tasksel/first has been preseeded, don't bother with this
+db_fget tasksel/first seen && [ "$RET" = true ] && exit 0
+
+db_get tasksel/desktop && [ "$RET" ] && desktop=$RET
+[ -z "$desktop" ] && desktop="$(chroot /target apt-cache show task-desktop | sed -n 's/Recommends: task-\([^-]*\)-desktop .*/\1/p' | head -1)"
+
+db_subst "pkgsel/simplified-tasksel" DESKTOP "$desktop"
+db_input critical "pkgsel/simplified-tasksel"
+db_go || true
+
+if db_get pkgsel/simplified-tasksel && [ "$RET" ] ; then
+  case "$RET" in
+    desktop )
+      echo tasksel tasksel/first multiselect ${desktop}-desktop, standard | chroot /target debconf-set-selections
+    ;;
+    server )
+      echo tasksel tasksel/first multiselect ssh-server, standard | chroot /target debconf-set-selections
+    ;;
+  esac
+fi
