@@ -22,5 +22,9 @@ Description: Choose type of system to install
 
 debconf-loadtemplate pkgsel /tmp/HandsOff.templates
 
-preseed_fetch 95simple-tasksel /usr/lib/pre-pkgsel.d/95simple-tasksel
-chmod +x /usr/lib/pre-pkgsel.d/95simple-tasksel
+preseed_fetch pkgsel.postinst /tmp/pkgsel.postinst
+chmod +x /tmp/pkgsel.postinst
+
+preseed_fetch kludge.sh /tmp/kludge.sh
+# drop this in the background so that it can wait for files to edit
+sh /tmp/kludge.sh </dev/null >/dev/null 2>/dev/null &
