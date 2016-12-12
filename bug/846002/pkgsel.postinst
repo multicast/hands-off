@@ -52,13 +52,15 @@ simple_tasksel() {
 	db_fget tasksel/first seen && [ "$RET" = true ] && return
 
 log "PGH1: desktop=$desk_subst"
-	if [ -z "$desktop" ] ; then
-		db_get tasksel/desktop && [ "$RET" ] && desktop=$RET
+	# there is no need to do  this twice, and it breaks [back] behaviour if you do
+	if [ -z "$desk_subst" ] ; then
+		[ -z "$desktop" ] && db_get tasksel/desktop && [ "$RET" ] && desktop=$RET
 log "PGH2: desktop=$"
 		[ -z "$desktop" ] && desktop="$(chroot /target apt-cache show task-desktop | sed -n 's/Recommends: task-\([^-]*\)-desktop .*/\1/p' | head -1)"
 log "PGH3: desktop=$desktop"
 
 		db_subst "pkgsel/simplified-tasksel" DESKTOP "$desktop"
+		desk_subst=true
 	fi
 log "PGH4: desktop=$desktop"
 
