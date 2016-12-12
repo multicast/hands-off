@@ -163,28 +163,20 @@ log "starting tasksel"
 db_progress INFO pkgsel/progress/tasksel
 ######
 set -x
-STATE=1
-while [ "$STATE" != 0 -a "$STATE" != 3 ]; do
-	case "$STATE" in
-	1)
-		STATE=2
-		simple_tasksel
-		log "simple_tasksel returns $? -- we blindly carry on -- should we? (FIXME)"
-	;;
+while true; do
+	simple_tasksel
 
-	2)
-		STATE=3
-		db_capb backup
-		in-target sh -c "tasksel --new-install --debconf-apt-progress='--from $tasksel_start --to $tasksel_end --logstderr'; echo tasksel returns: $? >> /tmp/tasksel.err ; exit 10" || {
-			log "tasksel returns $?"
-			if [ 10 = $? ] ; then
-				STATE=1
-			else
-				aptfailed
-			fi
-		}
-		db_capb
-	;;
+	db_capb backup
+	set +x
+	in-target sh -c "tasksel --new-install --debconf-apt-progress='--from $tasksel_start --to $tasksel_end --logstderr'"
+	RET=$?
+	log "pkgsel.postinst: tasksel returned '$RET'"
+	set -e
+	db_capb
+	case "$RET" in
+		0  ) break ;;
+		10 ) continue ;;
+		*  ) aptfailed ;;
 	esac
 done
 ######
