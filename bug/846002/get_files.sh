@@ -13,7 +13,7 @@ cat > /tmp/HandsOff.templates <<'!EOF!'
 Template: pkgsel/simplified-tasksel
 Type: select
 Choices-C: desktop, server, custom
-Choices: standard ("${DESKTOP}") desktop, standard server - installs ssh server, other use cases
+Choices: standard ("${DESKTOP}") desktop, standard server - console mode with ssh server installed, other use cases
 Description: Choose type of system to install
  You can now choose between installing a standard desktop, a standard
  server, or alternatively to use the task selection menu to have finer
