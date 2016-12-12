@@ -161,25 +161,8 @@ fi
 log "starting tasksel"
 
 db_progress INFO pkgsel/progress/tasksel
-######
-set -x
-while true; do
-	simple_tasksel
-
-	db_capb backup
-	set +x
-	in-target sh -c "tasksel --new-install --debconf-apt-progress='--from $tasksel_start --to $tasksel_end --logstderr'"
-	RET=$?
-	log "pkgsel.postinst: tasksel returned '$RET'"
-	set -e
-	db_capb
-	case "$RET" in
-		0  ) break ;;
-		10 ) continue ;;
-		*  ) aptfailed ;;
-	esac
-done
-######
+simple_tasksel
+in-target sh -c "tasksel --new-install --debconf-apt-progress='--from $tasksel_start --to $tasksel_end --logstderr'" || aptfailed
 
 if db_get pkgsel/include/install-recommends; then
 	log "The template pkgsel/include/install-recommends is no longer used; please use base-installer/install-recommends instead"
