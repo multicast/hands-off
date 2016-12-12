@@ -1,0 +1,10 @@
+d-i anna/choose_modules string network-console screen-udeb
+d-i preseed/early_command string anna-install network-console screen-udeb
+
+#d-i network-console/password-disabled boolean true
+#d-i network-console/authorized_keys_url string http://169.254.169.254/latest/meta-data/public-keys/0/openssh-key
+# OR
+d-i network-console/password password r00tme
+d-i network-console/password-again password r00tme
+
+d-i preseed/include string preseed.cfg
