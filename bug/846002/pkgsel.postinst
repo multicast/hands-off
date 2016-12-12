@@ -51,22 +51,28 @@ simple_tasksel() {
 	# if tasksel/first has been preseeded, don't bother with this
 	db_fget tasksel/first seen && [ "$RET" = true ] && return
 
+log "PGH1: desktop=$desk_subst"
 	if [ -z "$desktop" ] ; then
 		db_get tasksel/desktop && [ "$RET" ] && desktop=$RET
+log "PGH2: desktop=$"
 		[ -z "$desktop" ] && desktop="$(chroot /target apt-cache show task-desktop | sed -n 's/Recommends: task-\([^-]*\)-desktop .*/\1/p' | head -1)"
+log "PGH3: desktop=$desktop"
 
 		db_subst "pkgsel/simplified-tasksel" DESKTOP "$desktop"
 	fi
+log "PGH4: desktop=$desktop"
 
 	db_input critical "pkgsel/simplified-tasksel"
 	db_go || true
 
 	if db_get pkgsel/simplified-tasksel && [ "$RET" ] ; then
+log "PGH5: desktop=$desktop"
 		case "$RET" in
 		desktop) eval "echo tasksel tasksel/first multiselect ${desktop}-desktop, standard" | chroot /target debconf-set-selections ;;
 		server)  eval "echo tasksel tasksel/first multiselect ssh-server, standard" | chroot /target debconf-set-selections ;;
 		esac
 	fi
+log "PGH6: desktop=$desktop"
 }
 
 db_progress START 0 1000 debian-installer/pkgsel/title
