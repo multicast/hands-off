@@ -51,10 +51,13 @@ simple_tasksel() {
 	# if tasksel/first has been preseeded, don't bother with this
 	db_fget tasksel/first seen && [ "$RET" = true ] && return
 
-	db_get tasksel/desktop && [ "$RET" ] && desktop=$RET
-	[ -z "$desktop" ] && desktop="$(chroot /target apt-cache show task-desktop | sed -n 's/Recommends: task-\([^-]*\)-desktop .*/\1/p' | head -1)"
+	if [ -z "$desktop" ] ; then
+		db_get tasksel/desktop && [ "$RET" ] && desktop=$RET
+		[ -z "$desktop" ] && desktop="$(chroot /target apt-cache show task-desktop | sed -n 's/Recommends: task-\([^-]*\)-desktop .*/\1/p' | head -1)"
 
-	db_subst "pkgsel/simplified-tasksel" DESKTOP "$desktop"
+		db_subst "pkgsel/simplified-tasksel" DESKTOP "$desktop"
+	fi
+
 	db_input critical "pkgsel/simplified-tasksel"
 	db_go || true
 
